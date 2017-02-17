@@ -42,6 +42,8 @@ public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
 
     static {
         xmlDescription = builder(SubsystemExtension.SUBSYSTEM_PATH, NAMESPACE)
+                .addChild(builder(SubsystemExtension.CONFIG_SOURCE_PATH)
+                    .addAttribute(ConfigSourceDefinition.ORDINAL))
                 .build();
     }
 

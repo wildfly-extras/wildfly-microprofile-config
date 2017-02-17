@@ -1,2 +1,6 @@
 <subsystem xmlns="urn:net.jmesnil:microprofile-config:1.0">
+    <config-source name="myFirstConfigSource"
+                   ordinal="101" />
+    <config-source name="mySecondConfigSource"
+                   ordinal="201" />
 </subsystem>
