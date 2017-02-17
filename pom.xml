@@ -44,9 +44,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/wildfly/archetypes.git</connection>
-        <developerConnection>scm:git:https://github.com/wildfly/archetypes.git</developerConnection>
-        <url>https://github.com/wildfly/archetypes/</url>
+        <connection>scm:git:https://github.com/jmesnil/microprofile-config-extension.git</connection>
+        <developerConnection>scm:git:https://github.com/jmesnil/microprofile-config-extension.git</developerConnection>
+        <url>https://github.com/jmesnil/microprofile-config-extension/</url>
     </scm>
 
     <build>
