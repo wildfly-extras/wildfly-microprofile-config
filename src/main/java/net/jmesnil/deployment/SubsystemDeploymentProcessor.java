@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import net.jmesnil.extension.microprofile.config.impl.PropertiesConfigSource;
+import net.jmesnil.extension.microprofile.config.impl.WildFlyConfig;
 import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigBuilder;
 import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigProviderResolver;
 import org.eclipse.microprofile.config.Config;
@@ -18,14 +19,10 @@ import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.SubDeploymentMarker;
-import org.jboss.as.server.deployment.module.ModuleDependency;
 import org.jboss.as.server.deployment.module.ModuleRootMarker;
-import org.jboss.as.server.deployment.module.ModuleSpecification;
 import org.jboss.as.server.deployment.module.ResourceRoot;
 import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoader;
 import org.jboss.vfs.VirtualFile;
 
 /**
@@ -37,7 +34,7 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
     /**
      * See {@link Phase} for a description of the different phases
      */
-    public static final Phase PHASE = Phase.DEPENDENCIES;
+    public static final Phase PHASE = Phase.POST_MODULE;
 
     /**
      * The relative order of this processor within the {@link #PHASE}.
@@ -46,18 +43,12 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
      */
     public static final int PRIORITY = 0x4000;
 
-    public static final ModuleIdentifier MICROPROFILE_CONFIG_API = ModuleIdentifier.create("org.eclipse.microprofile.config.api");
     private static final String META_INF_MICROPROFILE_CONFIG_PROPERTIES = "META-INF/microprofile-config.properties";
     private static final String WEB_INF_MICROPROFILE_CONFIG_PROPERTIES = "WEB-INF/classes/META-INF/microprofile-config.properties";
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
-
-        ConfigProviderResolver.setInstance(WildFlyConfigProviderResolver.INSTANCE);
-
         DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
-
-        addDependencies(deploymentUnit);
 
         WildFlyConfigBuilder builder = new WildFlyConfigBuilder();
         builder.addDefaultSources();
@@ -70,7 +61,9 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
             }
         }
         Config config = builder.build();
-        WildFlyConfigProviderResolver.INSTANCE.setDefaultConfig(config);
+
+        Module module = deploymentUnit.getAttachment(Attachments.MODULE);
+        WildFlyConfigProviderResolver.INSTANCE.setConfig(config, module.getClassLoader());
     }
 
     private void load(ConfigProvider.ConfigBuilder builder, ResourceRoot resourceRoot, String path) {
@@ -90,13 +83,7 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
 
     @Override
     public void undeploy(DeploymentUnit context) {
+        Module module = context.getAttachment(Attachments.MODULE);
+        WildFlyConfigProviderResolver.INSTANCE.releaseConfig(ConfigProvider.getConfig(module.getClassLoader()));
     }
-
-    private void addDependencies(DeploymentUnit deploymentUnit) {
-        final ModuleSpecification moduleSpecification = deploymentUnit.getAttachment(Attachments.MODULE_SPECIFICATION);
-        final ModuleLoader moduleLoader = Module.getBootModuleLoader();
-
-        moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_API, false, false, true, false));
-    }
-
 }

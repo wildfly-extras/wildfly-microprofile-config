@@ -2,7 +2,10 @@ package net.jmesnil.extension.microprofile.config;
 
 import java.util.List;
 
+import net.jmesnil.deployment.DependencyProcessor;
 import net.jmesnil.deployment.SubsystemDeploymentProcessor;
+import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.as.controller.AbstractBoottimeAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
@@ -45,10 +48,12 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
         //see SubDeploymentProcessor for explanation of the phases
         context.addStep(new AbstractDeploymentChainStep() {
             public void execute(DeploymentProcessorTarget processorTarget) {
+                processorTarget.addDeploymentProcessor(SubsystemExtension.SUBSYSTEM_NAME, DependencyProcessor.PHASE, DependencyProcessor.PRIORITY, new DependencyProcessor());
                 processorTarget.addDeploymentProcessor(SubsystemExtension.SUBSYSTEM_NAME, SubsystemDeploymentProcessor.PHASE, SubsystemDeploymentProcessor.PRIORITY, new SubsystemDeploymentProcessor());
 
             }
         }, OperationContext.Stage.RUNTIME);
 
+        ConfigProviderResolver.setInstance(WildFlyConfigProviderResolver.INSTANCE);
     }
 }

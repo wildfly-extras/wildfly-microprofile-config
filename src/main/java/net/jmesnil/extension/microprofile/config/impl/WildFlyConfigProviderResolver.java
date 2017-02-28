@@ -45,16 +45,16 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
 
     @Override
     public Config getConfig() {
-        return defaultConfig;
+        return getConfig(Thread.currentThread().getContextClassLoader());
     }
 
     @Override
     public Config getConfig(ClassLoader classLoader) {
         Config config = configsForClassLoader.get(classLoader);
-        if (config == null) {
+        if (config != null) {
             return config;
         } else {
-            return getConfig();
+            return defaultConfig;
         }
     }
 
@@ -79,10 +79,5 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
                 return;
             }
         }
-    }
-
-    // FIXME
-    public void setDefaultConfig(Config config) {
-        defaultConfig = config;
     }
 }
