@@ -20,36 +20,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config;
+package net.jmesnil.extension.microprofile.config.impl;
 
-import static org.jboss.as.controller.PersistentResourceXMLDescription.builder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import org.jboss.as.controller.PersistentResourceXMLDescription;
-import org.jboss.as.controller.PersistentResourceXMLParser;
+import java.util.UUID;
+
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.junit.Test;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
-    /**
-     * The name space used for the {@code substystem} element
-     */
-    public static final String NAMESPACE = "urn:net.jmesnil:microprofile-config:1.0";
+public class SysPropConfigSourceTestCase {
 
-    static final PersistentResourceXMLParser INSTANCE = new SubsytemParser_1_0();
+    @Test
+    public void testSysProp() {
+        String name = "this.prop.exists";
+        String value = UUID.randomUUID().toString();
 
-    private static final PersistentResourceXMLDescription xmlDescription;
+        System.setProperty(name, value);
 
-    static {
-        xmlDescription = builder(SubsystemExtension.SUBSYSTEM_PATH, NAMESPACE)
-                .addChild(builder(SubsystemExtension.CONFIG_SOURCE_PATH)
-                    .addAttributes(
-                            ConfigSourceDefinition.ORDINAL))
-                .build();
-    }
+        ConfigSource configSource = new SysPropConfigSource();
+        assertEquals(value, configSource.getValue(name));
 
-    @Override
-    public PersistentResourceXMLDescription getParserDescription() {
-        return xmlDescription;
+        assertNull(configSource.getValue("this.prop.does.not.exist"));
     }
 }

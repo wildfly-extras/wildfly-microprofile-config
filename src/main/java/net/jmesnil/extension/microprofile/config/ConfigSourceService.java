@@ -22,34 +22,37 @@
 
 package net.jmesnil.extension.microprofile.config;
 
-import static org.jboss.as.controller.PersistentResourceXMLDescription.builder;
-
-import org.jboss.as.controller.PersistentResourceXMLDescription;
-import org.jboss.as.controller.PersistentResourceXMLParser;
+import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.jboss.msc.service.Service;
+import org.jboss.msc.service.StartContext;
+import org.jboss.msc.service.StartException;
+import org.jboss.msc.service.StopContext;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
-    /**
-     * The name space used for the {@code substystem} element
-     */
-    public static final String NAMESPACE = "urn:net.jmesnil:microprofile-config:1.0";
+public class ConfigSourceService implements Service<ConfigSource> {
 
-    static final PersistentResourceXMLParser INSTANCE = new SubsytemParser_1_0();
+    private final ConfigSource configSource;
 
-    private static final PersistentResourceXMLDescription xmlDescription;
-
-    static {
-        xmlDescription = builder(SubsystemExtension.SUBSYSTEM_PATH, NAMESPACE)
-                .addChild(builder(SubsystemExtension.CONFIG_SOURCE_PATH)
-                    .addAttributes(
-                            ConfigSourceDefinition.ORDINAL))
-                .build();
+    ConfigSourceService(ConfigSource configSource) {
+        this.configSource = configSource;
     }
 
     @Override
-    public PersistentResourceXMLDescription getParserDescription() {
-        return xmlDescription;
+    public void start(StartContext startContext) throws StartException {
+        System.out.println("ConfigSourceService.start");
+    }
+
+    @Override
+    public void stop(StopContext stopContext) {
+        System.out.println("ConfigSourceService.stop");
+    }
+
+    @Override
+    public ConfigSource getValue() throws IllegalStateException, IllegalArgumentException {
+        return configSource;
     }
 }

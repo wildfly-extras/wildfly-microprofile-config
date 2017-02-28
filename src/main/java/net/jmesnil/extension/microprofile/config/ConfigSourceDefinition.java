@@ -30,10 +30,13 @@ import java.util.Collection;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.OperationContext;
+import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PersistentResourceDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
+import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
@@ -48,10 +51,23 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
 
     static AttributeDefinition[] ATTRIBUTES = { ORDINAL };
 
+    private static ServiceName CONFIG_SOURCE_SERVICE = ServiceName.JBOSS.append("eclipse", "microprofile-config", "config-source");
+
     protected ConfigSourceDefinition() {
         super(CONFIG_SOURCE_PATH,
                 SubsystemExtension.getResourceDescriptionResolver(CONFIG_SOURCE_PATH.getKey()),
                 new AbstractAddStepHandler(ATTRIBUTES) {
+                    @Override
+                    protected boolean requiresRuntime(OperationContext context) {
+                        return true;
+                    }
+
+                    @Override
+                    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+                        super.performRuntime(context, operation, model);
+                        String name = context.getCurrentAddressValue();
+                        int ordinal = ORDINAL.resolveModelAttribute(context, model).asInt();
+                    }
 
                 }, new AbstractRemoveStepHandler() {
                 });
@@ -59,6 +75,6 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
 
     @Override
     public Collection<AttributeDefinition> getAttributes() {
-        return Arrays.asList(ORDINAL);
+        return Arrays.asList(ATTRIBUTES);
     }
 }

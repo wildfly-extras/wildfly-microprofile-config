@@ -1,8 +1,8 @@
 <module xmlns="urn:jboss:module:1.0" name="net.jmesnil.microprofile-config-extension">
     <resources>
-        <resource-root path="micropofile-config-extension.jar"/>
+        <resource-root path="microprofile-config-extension.jar"/>
     </resources>
-    
+
     <dependencies>
         <module name="javax.api"/>
         <module name="org.jboss.staxmapper"/>
@@ -12,5 +12,6 @@
         <module name="org.jboss.msc"/>
         <module name="org.jboss.logging"/>
         <module name="org.jboss.vfs"/>
+        <module name="org.eclipse.microprofile.config.api"/>
     </dependencies>
 </module>
