@@ -11,6 +11,14 @@
             <xs:sequence>
                 <xs:element name="config-source" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string" use="required" />
+                                    <xs:attribute name="value" type="xs:string" use="required" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
                         <xs:attribute name="ordinal" type="xs:nonNegativeInteger" use="optional" />
                         <xs:attribute name="name" type="xs:string" use="required" />
                     </xs:complexType>

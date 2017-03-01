@@ -34,6 +34,9 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  */
 public class PropertiesConfigSource implements ConfigSource {
 
+    private static final String CONFIG_ORDINAL_KEY = "config_ordinal";
+    private static final String CONFIG_ORDINAL_DEFAULT_VALUE = "100";
+
     private final Map<String, String> properties;
     private final String source;
     private final int ordinal;
@@ -41,7 +44,17 @@ public class PropertiesConfigSource implements ConfigSource {
     public PropertiesConfigSource(Properties properties, String source) {
         this.properties = new HashMap(properties);
         this.source = source;
-        this.ordinal = Integer.valueOf(properties.getProperty("config_ordinal", "100"));
+        this.ordinal = Integer.valueOf(properties.getProperty(CONFIG_ORDINAL_KEY, CONFIG_ORDINAL_DEFAULT_VALUE));
+    }
+
+    public PropertiesConfigSource(Map<String, String> properties, String source, int ordinal) {
+        this.properties = new HashMap(properties);
+        this.source = source;
+        if (properties.containsKey(CONFIG_ORDINAL_KEY)) {
+            this.ordinal = Integer.valueOf(properties.getOrDefault(CONFIG_ORDINAL_KEY, CONFIG_ORDINAL_DEFAULT_VALUE));
+        } else {
+            this.ordinal = ordinal;
+        }
     }
 
     @Override
@@ -62,5 +75,10 @@ public class PropertiesConfigSource implements ConfigSource {
     @Override
     public String getId() {
         return "PropertiesConfigSource[source=" + source + "]";
+    }
+
+    @Override
+    public String toString() {
+        return getId();
     }
 }

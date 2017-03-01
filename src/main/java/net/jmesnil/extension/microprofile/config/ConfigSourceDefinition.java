@@ -26,17 +26,22 @@ import static net.jmesnil.extension.microprofile.config.SubsystemExtension.CONFI
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
+import net.jmesnil.extension.microprofile.config.impl.PropertiesConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.AttributeMarshallers;
+import org.jboss.as.controller.AttributeParsers;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PersistentResourceDefinition;
+import org.jboss.as.controller.PropertiesAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
-import org.jboss.msc.service.ServiceName;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
@@ -48,10 +53,13 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             .setRequired(false)
             .setRestartAllServices()
             .build();
+    static AttributeDefinition PROPERTIES = new PropertiesAttributeDefinition.Builder("properties", true)
+            .setAttributeParser(new AttributeParsers.PropertiesParser(false))
+            .setAttributeMarshaller(new AttributeMarshallers.PropertiesAttributeMarshaller(null, false))
+            .setRestartAllServices()
+            .build();
 
-    static AttributeDefinition[] ATTRIBUTES = { ORDINAL };
-
-    private static ServiceName CONFIG_SOURCE_SERVICE = ServiceName.JBOSS.append("eclipse", "microprofile-config", "config-source");
+    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES };
 
     protected ConfigSourceDefinition() {
         super(CONFIG_SOURCE_PATH,
@@ -67,9 +75,18 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
                         super.performRuntime(context, operation, model);
                         String name = context.getCurrentAddressValue();
                         int ordinal = ORDINAL.resolveModelAttribute(context, model).asInt();
+                        ModelNode props = PROPERTIES.resolveModelAttribute(context, model);
+                        Map<String, String> properties = PropertiesAttributeDefinition.unwrapModel(context, props);
+                        ConfigSource configSource = new PropertiesConfigSource(properties, name, ordinal);
+                        ConfigSourceService.install(context.getServiceTarget(), name, configSource);
                     }
 
                 }, new AbstractRemoveStepHandler() {
+                    @Override
+                    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
+                        String name = context.getCurrentAddressValue();
+                        context.removeService(ConfigSourceService.SERVICE_NAME.append(name));
+                    }
                 });
     }
 

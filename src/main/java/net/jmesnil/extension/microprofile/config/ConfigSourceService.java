@@ -22,10 +22,10 @@
 
 package net.jmesnil.extension.microprofile.config;
 
-import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigProviderResolver;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.msc.service.Service;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
@@ -35,15 +35,23 @@ import org.jboss.msc.service.StopContext;
  */
 public class ConfigSourceService implements Service<ConfigSource> {
 
+    static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
     private final ConfigSource configSource;
 
     ConfigSourceService(ConfigSource configSource) {
         this.configSource = configSource;
     }
 
+    static void install(ServiceTarget serviceTarget, String name, ConfigSource configSource) {
+        ConfigSourceService service = new ConfigSourceService(configSource);
+        serviceTarget.addService(SERVICE_NAME.append(name), service)
+                .install();
+
+    }
     @Override
     public void start(StartContext startContext) throws StartException {
         System.out.println("ConfigSourceService.start");
+        System.out.println("configSource = " + configSource);
     }
 
     @Override

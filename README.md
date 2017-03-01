@@ -29,6 +29,30 @@ cp -r src/main/resources/modules/ $WILDFLY_HOME/modules/
 
 Any application that is now deployed to WildFly can use the Eclipse MicroProfile Config API by simply calling `ConfigProvider.getConfig()`.
 
+# Management API
+
+## Add a config source
+
+```
+/subsystem=microprofile-config/config-source=myConfigSource:add(ordinal=200)
+```
+
+## Add a property to a config source
+
+```
+/subsystem=microprofile-config/config-source=myConfigSource:map-put(name=properties, key=foo, value=12345)
+```
+
+The properties of the config source is stored in WildFly configuration:
+
+```
+<subsystem xmlns="urn:net.jmesnil:microprofile-config:1.0">
+    <config-source name="myConfigSource" ordinal="200">
+        <property name="foo" value="12345"/>
+    </config-source>
+</subsystem>
+```
+
 # Example
 
 A Web App that can be deployed to WildFly and uses the Config API can be found
