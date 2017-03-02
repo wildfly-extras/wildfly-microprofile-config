@@ -5,13 +5,13 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import net.jmesnil.extension.microprofile.config.ConfigSourceService;
 import net.jmesnil.extension.microprofile.config.impl.PropertiesConfigSource;
-import net.jmesnil.extension.microprofile.config.impl.WildFlyConfig;
 import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigBuilder;
 import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigProviderResolver;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -23,6 +23,9 @@ import org.jboss.as.server.deployment.module.ModuleRootMarker;
 import org.jboss.as.server.deployment.module.ResourceRoot;
 import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceRegistry;
 import org.jboss.vfs.VirtualFile;
 
 /**
@@ -60,10 +63,22 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
                 load(builder, resourceRoot, WEB_INF_MICROPROFILE_CONFIG_PROPERTIES);
             }
         }
+        addCongigSourcesFromServices(builder, phaseContext.getServiceRegistry());
         Config config = builder.build();
 
         Module module = deploymentUnit.getAttachment(Attachments.MODULE);
         WildFlyConfigProviderResolver.INSTANCE.setConfig(config, module.getClassLoader());
+    }
+
+    private void addCongigSourcesFromServices(ConfigProvider.ConfigBuilder builder, ServiceRegistry serviceRegistry) {
+        List<ServiceName> serviceNames = serviceRegistry.getServiceNames();
+        for (ServiceName serviceName: serviceNames) {
+            if (ConfigSourceService.SERVICE_NAME.isParentOf(serviceName)) {
+                ServiceController<?> service = serviceRegistry.getService(serviceName);
+                ConfigSource configSource = ConfigSource.class.cast(service.getValue());
+                builder.withSources(configSource);
+            }
+        }
     }
 
     private void load(ConfigProvider.ConfigBuilder builder, ResourceRoot resourceRoot, String path) {

@@ -35,7 +35,7 @@ import org.jboss.msc.service.StopContext;
  */
 public class ConfigSourceService implements Service<ConfigSource> {
 
-    static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
+    public static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
     private final ConfigSource configSource;
 
     ConfigSourceService(ConfigSource configSource) {
