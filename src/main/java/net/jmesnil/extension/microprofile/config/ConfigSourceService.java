@@ -50,13 +50,10 @@ public class ConfigSourceService implements Service<ConfigSource> {
     }
     @Override
     public void start(StartContext startContext) throws StartException {
-        System.out.println("ConfigSourceService.start");
-        System.out.println("configSource = " + configSource);
     }
 
     @Override
     public void stop(StopContext stopContext) {
-        System.out.println("ConfigSourceService.stop");
     }
 
     @Override

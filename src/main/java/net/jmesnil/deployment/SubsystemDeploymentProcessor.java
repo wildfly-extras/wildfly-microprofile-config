@@ -12,6 +12,7 @@ import net.jmesnil.extension.microprofile.config.impl.WildFlyConfigProviderResol
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.jboss.as.ee.weld.WeldDeploymentMarker;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -21,6 +22,7 @@ import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.SubDeploymentMarker;
 import org.jboss.as.server.deployment.module.ModuleRootMarker;
 import org.jboss.as.server.deployment.module.ResourceRoot;
+import org.jboss.as.weld.deployment.WeldPortableExtensions;
 import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
 import org.jboss.msc.service.ServiceController;
@@ -63,14 +65,20 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
                 load(builder, resourceRoot, WEB_INF_MICROPROFILE_CONFIG_PROPERTIES);
             }
         }
-        addCongigSourcesFromServices(builder, phaseContext.getServiceRegistry());
+        addConfigSourcesFromServices(builder, phaseContext.getServiceRegistry());
         Config config = builder.build();
 
         Module module = deploymentUnit.getAttachment(Attachments.MODULE);
         WildFlyConfigProviderResolver.INSTANCE.setConfig(config, module.getClassLoader());
+
+        if (WeldDeploymentMarker.isPartOfWeldDeployment(deploymentUnit)) {
+            WeldPortableExtensions extensions = WeldPortableExtensions.getPortableExtensions(deploymentUnit);
+            extensions.registerExtensionInstance(new ConfigExtension(), deploymentUnit);
+        }
+
     }
 
-    private void addCongigSourcesFromServices(ConfigProvider.ConfigBuilder builder, ServiceRegistry serviceRegistry) {
+    private void addConfigSourcesFromServices(ConfigProvider.ConfigBuilder builder, ServiceRegistry serviceRegistry) {
         List<ServiceName> serviceNames = serviceRegistry.getServiceNames();
         for (ServiceName serviceName: serviceNames) {
             if (ConfigSourceService.SERVICE_NAME.isParentOf(serviceName)) {
@@ -91,7 +99,6 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            properties.list(System.out);
             builder.withSources(new PropertiesConfigSource(properties, configProperties.getPathName()));
         }
     }

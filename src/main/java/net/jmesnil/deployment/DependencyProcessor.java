@@ -1,5 +1,6 @@
 package net.jmesnil.deployment;
 
+import org.jboss.as.ee.weld.WeldDeploymentMarker;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -14,6 +15,7 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoader;
 
 /**
+ * Add dependencies required by deployment unit to access the Config API (programmatically or using CDI).
  */
 public class DependencyProcessor implements DeploymentUnitProcessor {
 
@@ -32,6 +34,7 @@ public class DependencyProcessor implements DeploymentUnitProcessor {
     public static final int PRIORITY = 0x4000;
 
     public static final ModuleIdentifier MICROPROFILE_CONFIG_API = ModuleIdentifier.create("org.eclipse.microprofile.config.api");
+    public static final ModuleIdentifier MICROPROFILE_CONFIG_EXTENSION = ModuleIdentifier.create("net.jmesnil.microprofile-config-extension");
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
@@ -49,6 +52,10 @@ public class DependencyProcessor implements DeploymentUnitProcessor {
         final ModuleLoader moduleLoader = Module.getBootModuleLoader();
 
         moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_API, false, false, true, false));
+
+        if (WeldDeploymentMarker.isPartOfWeldDeployment(deploymentUnit)) {
+            moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_EXTENSION, false, false, true, false));
+        }
     }
 
 }

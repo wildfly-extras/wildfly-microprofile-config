@@ -62,6 +62,20 @@ Applications deployed to WildFly are able to access configuration from 4 differe
 * Application properties (backed by `META-INF/microprofile-config.properties` file)
 * config-source resources (backed by the `/subsystem=microprofile-config/config-source` resources)
 
+The Config can be injected using CDI:
+
+````
+@Inject
+Config config;
+````
+
+or created programmatically:
+
+````
+Config config = ConfigProvider.getConfig();
+````
+
+
 # Example
 
 A Web App that can be deployed to WildFly and uses the Config API can be found
