@@ -53,6 +53,15 @@ The properties of the config source is stored in WildFly configuration:
 </subsystem>
 ```
 
+# Features
+
+Applications deployed to WildFly are able to access configuration from 4 different sources:
+
+* System environment (backed by `System.getEnv()`)
+* System properties (backed by `System.getProperties`)
+* Application properties (backed by `META-INF/microprofile-config.properties` file)
+* config-source resources (backed by the `/subsystem=microprofile-config/config-source` resources)
+
 # Example
 
 A Web App that can be deployed to WildFly and uses the Config API can be found
