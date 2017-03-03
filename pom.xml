@@ -162,6 +162,11 @@
                 <version>${version.wildfly}</version>
             </dependency>
             <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-undertow</artifactId>
+                <version>11.0.0.Alpha1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <scope>test</scope>
@@ -191,6 +196,10 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-ee</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>

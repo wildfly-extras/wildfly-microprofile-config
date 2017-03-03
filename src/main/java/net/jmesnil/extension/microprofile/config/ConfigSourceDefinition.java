@@ -40,6 +40,7 @@ import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PersistentResourceDefinition;
 import org.jboss.as.controller.PropertiesAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
+import org.jboss.as.controller.capability.RuntimeCapability;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
@@ -53,13 +54,23 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             .setRequired(false)
             .setRestartAllServices()
             .build();
+    static AttributeDefinition HTTP_ENABLED = SimpleAttributeDefinitionBuilder.create("http-enabled", ModelType.BOOLEAN)
+            .setDefaultValue(new ModelNode(false))
+            .setRequired(false)
+            .setRestartAllServices()
+            .build();
     static AttributeDefinition PROPERTIES = new PropertiesAttributeDefinition.Builder("properties", true)
             .setAttributeParser(new AttributeParsers.PropertiesParser(false))
             .setAttributeMarshaller(new AttributeMarshallers.PropertiesAttributeMarshaller(null, false))
             .setRestartAllServices()
             .build();
 
-    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES };
+    public static final String REQUEST_CONTROLLER = "org.wildfly.request-controller";
+    static final RuntimeCapability CAPABILITY = RuntimeCapability.Builder.of("org.wildfly.extension.undertow.handler", true)
+            .addOptionalRequirements(REQUEST_CONTROLLER).build();
+
+
+    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, HTTP_ENABLED, PROPERTIES };
 
     protected ConfigSourceDefinition() {
         super(CONFIG_SOURCE_PATH,
@@ -75,10 +86,11 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
                         super.performRuntime(context, operation, model);
                         String name = context.getCurrentAddressValue();
                         int ordinal = ORDINAL.resolveModelAttribute(context, model).asInt();
+                        boolean httpEnabled = HTTP_ENABLED.resolveModelAttribute(context, model).asBoolean();
                         ModelNode props = PROPERTIES.resolveModelAttribute(context, model);
                         Map<String, String> properties = PropertiesAttributeDefinition.unwrapModel(context, props);
                         ConfigSource configSource = new PropertiesConfigSource(properties, name, ordinal);
-                        ConfigSourceService.install(context.getServiceTarget(), name, configSource);
+                        ConfigSourceService.install(context, name, configSource, httpEnabled);
                     }
 
                 }, new AbstractRemoveStepHandler() {

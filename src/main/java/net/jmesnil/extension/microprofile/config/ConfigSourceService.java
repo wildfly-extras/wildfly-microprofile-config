@@ -22,42 +22,65 @@
 
 package net.jmesnil.extension.microprofile.config;
 
+import io.undertow.server.handlers.PathHandler;
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.jboss.as.controller.OperationContext;
 import org.jboss.msc.service.Service;
+import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceName;
-import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
+import org.jboss.msc.value.InjectedValue;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
 public class ConfigSourceService implements Service<ConfigSource> {
 
-    public static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
-    private final ConfigSource configSource;
+    private final InjectedValue<PathHandler> pathHandlerInjectedValue = new InjectedValue<>();
 
-    ConfigSourceService(ConfigSource configSource) {
+    public static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
+    private static final String UNDERTOW_HTTP_INVOKER_CAPABILITY_NAME = "org.wildfly.undertow.http-invoker";
+
+    private final String name;
+    private final ConfigSource configSource;
+    private final boolean httpEnabled;
+
+    ConfigSourceService(String name, ConfigSource configSource, boolean httpEnabled) {
+        this.name = name;
         this.configSource = configSource;
+        this.httpEnabled = httpEnabled;
     }
 
-    static void install(ServiceTarget serviceTarget, String name, ConfigSource configSource) {
-        ConfigSourceService service = new ConfigSourceService(configSource);
-        serviceTarget.addService(SERVICE_NAME.append(name), service)
-                .install();
-
+    static void install(OperationContext context, String name, ConfigSource configSource, boolean httpEnabled) {
+        ConfigSourceService service = new ConfigSourceService(name, configSource, httpEnabled);
+        ServiceBuilder<ConfigSource> serviceBuilder = context.getServiceTarget().addService(SERVICE_NAME.append(name), service);
+        if (httpEnabled) {
+            serviceBuilder.addDependency(context.getCapabilityServiceName(UNDERTOW_HTTP_INVOKER_CAPABILITY_NAME, PathHandler.class), PathHandler.class, service.pathHandlerInjectedValue);
+        }
+        serviceBuilder.install();
     }
     @Override
     public void start(StartContext startContext) throws StartException {
+        if (httpEnabled) {
+            pathHandlerInjectedValue.getValue().addPrefixPath(getPrefix(), new ConfigSourceHttpHandler(configSource));
+        }
     }
 
     @Override
     public void stop(StopContext stopContext) {
+        if (httpEnabled) {
+            pathHandlerInjectedValue.getValue().removePrefixPath(getPrefix());
+        }
     }
 
     @Override
     public ConfigSource getValue() throws IllegalStateException, IllegalArgumentException {
         return configSource;
+    }
+
+    private String getPrefix() {
+        return "/config-source/" + name;
     }
 }

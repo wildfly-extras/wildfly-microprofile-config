@@ -53,28 +53,72 @@ The properties of the config source is stored in WildFly configuration:
 </subsystem>
 ```
 
-# Features
+# Supported Config Sources
 
 Applications deployed to WildFly are able to access configuration from 4 different sources:
 
 * System environment (backed by `System.getEnv()`)
 * System properties (backed by `System.getProperties`)
-* Application properties (backed by `META-INF/microprofile-config.properties` file)
+* Application properties (backed by `META-INF/microprofile-config.properties` file in deployed application)
 * config-source resources (backed by the `/subsystem=microprofile-config/config-source` resources)
 
-The Config can be injected using CDI:
+# Access to the Config API
+
+The Config API can be used either with CDI:
 
 ````
 @Inject
 Config config;
 ````
 
-or created programmatically:
+or programmatically:
 
 ````
 Config config = ConfigProvider.getConfig();
 ````
 
+# HTTP Access to config-source Resources
+
+Config Source that are stored in WildFly configuration can be exposed using HTTP by setting their `http-enabled` attribute to `true`.
+
+```
+# add the remoteConfigSource that can be accessed remotely
+/subsystem=microprofile-config/config-source=remoteConfigSource:add(http-enabled=true)
+# add the property my.super.property=123456
+/subsystem=microprofile-config/config-source=remoteConfigSource:map-put(name=properties, key=my.super.property, value=123456)
+# reload for the time being...
+reload
+```
+
+Properties of the config source can be accessed using HTTP at the URL:
+
+````
+http://localhost:8080/wildfly-services/config-source/<config-source name>/<property name>
+````
+
+For example, to read the value of the property `my.super.property` put in the `remoteConfigSource` config source,
+the URL is `http://localhost:8080/wildfly-services/config-source/remoteConfigSource/my.super.property`.
+
+For now, the HTTP endpoint requires authentication. Let's create an application user for this:
+
+```
+./bin/add-user.sh -a -u 'alice' -p 'mypassword'
+```
+
+Let's confirm that the properties can be read using HTTP GET (with basic authentication):
+
+````
+$ curl -u alice:mypassword http://localhost:8080/wildfly-services/config-source/remoteConfigSource/my.super.property
+12346
+````
+
+If the property does not exist, the request will return a 404 response:
+
+````
+$ curl -i -u alice:mypassword http://localhost:8080/wildfly-services/config-source/remoteConfigSource/property.does.not.exist
+...
+HTTP/1.1 404 Not Found
+````
 
 # Example
 

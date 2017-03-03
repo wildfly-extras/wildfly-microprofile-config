@@ -22,36 +22,35 @@
 
 package net.jmesnil.extension.microprofile.config;
 
-import static org.jboss.as.controller.PersistentResourceXMLDescription.builder;
-
-import org.jboss.as.controller.PersistentResourceXMLDescription;
-import org.jboss.as.controller.PersistentResourceXMLParser;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
-    /**
-     * The name space used for the {@code substystem} element
-     */
-    public static final String NAMESPACE = "urn:net.jmesnil:microprofile-config:1.0";
+public class ConfigSourceHttpHandler implements HttpHandler {
 
-    static final PersistentResourceXMLParser INSTANCE = new SubsytemParser_1_0();
+    private final ConfigSource configSource;
 
-    private static final PersistentResourceXMLDescription xmlDescription;
-
-    static {
-        xmlDescription = builder(SubsystemExtension.SUBSYSTEM_PATH, NAMESPACE)
-                .addChild(builder(SubsystemExtension.CONFIG_SOURCE_PATH)
-                    .addAttributes(
-                            ConfigSourceDefinition.ORDINAL,
-                            ConfigSourceDefinition.HTTP_ENABLED,
-                            ConfigSourceDefinition.PROPERTIES))
-                .build();
+    public ConfigSourceHttpHandler(ConfigSource configSource) {
+        this.configSource = configSource;
     }
 
     @Override
-    public PersistentResourceXMLDescription getParserDescription() {
-        return xmlDescription;
+    public void handleRequest(HttpServerExchange exchange) throws Exception {
+        // relative path is /<property>
+        String property = exchange.getRelativePath().substring(1);
+        if (property == null || property.isEmpty()) {
+            exchange.setStatusCode(404);
+            return;
+        }
+
+        String value = configSource.getValue(property);
+        if (value != null) {
+            exchange.getResponseSender().send(value);
+        } else {
+            exchange.setStatusCode(404);
+        }
     }
 }
