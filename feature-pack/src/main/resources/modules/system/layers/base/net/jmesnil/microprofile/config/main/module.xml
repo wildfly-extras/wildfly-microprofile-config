@@ -1,5 +1,6 @@
 <module xmlns="urn:jboss:module:1.0" name="net.jmesnil.microprofile.config">
     <resources>
+        <resource-root path="${net.jmesnil:microprofile-config-implementation}"/>
         <resource-root path="${net.jmesnil:microprofile-config-extension}"/>
     </resources>
 

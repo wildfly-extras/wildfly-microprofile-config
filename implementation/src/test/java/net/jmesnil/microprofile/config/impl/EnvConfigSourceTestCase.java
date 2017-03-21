@@ -20,31 +20,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config.impl;
+package net.jmesnil.microprofile.config.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.util.UUID;
+import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class SysPropConfigSourceTestCase {
+public class EnvConfigSourceTestCase {
 
     @Test
-    public void testSysProp() {
-        String name = "this.prop.exists";
-        String value = UUID.randomUUID().toString();
-
-        System.setProperty(name, value);
-
-        ConfigSource configSource = new SysPropConfigSource();
-        assertEquals(value, configSource.getValue(name));
-
-        assertNull(configSource.getValue("this.prop.does.not.exist"));
+    public void testReadPropertyFromEnv() {
+        ConfigSource envConfigSource = new EnvConfigSource();
+        for (Map.Entry<String, String> envProperty : System.getenv().entrySet()) {
+            String envValue = envProperty.getValue();
+            Assert.assertEquals(envValue, envConfigSource.getValue(envProperty.getKey()));
+        }
     }
 }

@@ -20,25 +20,39 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config.impl;
+package net.jmesnil.microprofile.config.impl;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class EnvConfigSourceTestCase {
+public class EnvConfigSource implements ConfigSource{
 
-    @Test
-    public void testReadPropertyFromEnv() {
-        ConfigSource envConfigSource = new EnvConfigSource();
-        for (Map.Entry<String, String> envProperty : System.getenv().entrySet()) {
-            String envValue = envProperty.getValue();
-            Assert.assertEquals(envValue, envConfigSource.getValue(envProperty.getKey()));
-        }
+    EnvConfigSource() {
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(System.getenv());
+    }
+
+    @Override
+    public int getOrdinal() {
+        return 300;
+    }
+
+    @Override
+    public String getValue(String name) {
+        return System.getenv(name);
+    }
+
+    @Override
+    public String getId() {
+        return "EnvConfigSource";
     }
 }

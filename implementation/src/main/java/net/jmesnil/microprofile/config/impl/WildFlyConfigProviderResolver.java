@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config.impl;
+package net.jmesnil.microprofile.config.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;

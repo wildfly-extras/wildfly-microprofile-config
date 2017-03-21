@@ -50,12 +50,18 @@
     </scm>
 
     <modules>
+        <module>implementation</module>
         <module>extension</module>
         <module>feature-pack</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>net.jmesnil</groupId>
+                <artifactId>microprofile-config-implementation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>net.jmesnil</groupId>
                 <artifactId>microprofile-config-extension</artifactId>

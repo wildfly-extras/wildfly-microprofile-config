@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import net.jmesnil.extension.microprofile.config.impl.PropertiesConfigSource;
+import net.jmesnil.microprofile.config.impl.PropertiesConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AbstractRemoveStepHandler;

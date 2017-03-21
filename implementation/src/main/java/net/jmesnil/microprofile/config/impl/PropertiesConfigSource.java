@@ -20,39 +20,65 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config.impl;
+package net.jmesnil.microprofile.config.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-class SysPropConfigSource implements ConfigSource {
+public class PropertiesConfigSource implements ConfigSource {
 
-    SysPropConfigSource() {
+    private static final String CONFIG_ORDINAL_KEY = "config_ordinal";
+    private static final String CONFIG_ORDINAL_DEFAULT_VALUE = "100";
+
+    private final Map<String, String> properties;
+    private final String source;
+    private final int ordinal;
+
+    public PropertiesConfigSource(Properties properties, String source) {
+        this.properties = new HashMap(properties);
+        this.source = source;
+        this.ordinal = Integer.valueOf(properties.getProperty(CONFIG_ORDINAL_KEY, CONFIG_ORDINAL_DEFAULT_VALUE));
+    }
+
+    public PropertiesConfigSource(Map<String, String> properties, String source, int ordinal) {
+        this.properties = new HashMap(properties);
+        this.source = source;
+        if (properties.containsKey(CONFIG_ORDINAL_KEY)) {
+            this.ordinal = Integer.valueOf(properties.getOrDefault(CONFIG_ORDINAL_KEY, CONFIG_ORDINAL_DEFAULT_VALUE));
+        } else {
+            this.ordinal = ordinal;
+        }
     }
 
     @Override
     public Map<String, String> getProperties() {
-        Map<String, String> map = new HashMap(System.getProperties());
-        return map;
+        return Collections.unmodifiableMap(properties);
     }
 
     @Override
     public int getOrdinal() {
-        return 400;
+        return ordinal;
     }
 
     @Override
     public String getValue(String s) {
-        return System.getProperty(s);
+        return properties.get(s);
     }
 
     @Override
     public String getId() {
-        return "SysPropConfigSource";
+        return "PropertiesConfigSource[source=" + source + "]";
+    }
+
+    @Override
+    public String toString() {
+        return getId();
     }
 }
