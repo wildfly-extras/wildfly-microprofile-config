@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 /**
@@ -59,14 +59,13 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder getBuilder() {
+    public ConfigBuilder getBuilder() {
         return new WildFlyConfigBuilder();
     }
 
     @Override
-    public void setConfig(Config config, ClassLoader classLoader) {
+    public void registerConfig(Config config, ClassLoader classLoader) {
         configsForClassLoader.put(classLoader, config);
-
     }
 
     @Override
@@ -78,6 +77,8 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
                 iterator.remove();
                 return;
             }
+
+
         }
     }
 }

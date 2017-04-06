@@ -24,6 +24,7 @@ package net.jmesnil.microprofile.config.impl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -46,28 +47,22 @@ public class WildFlyConfig implements Config{
     }
 
     @Override
-    public <T> Optional<T> getValue(String s, Class<T> aClass) {
-        Optional<String> value = getString(s);
-        if (!value.isPresent()) {
-            return Optional.empty();
-        }
-        for (Converter<?> converter : converters) {
-            try {
-                T convertedValue = (T) converter.convert(value.get());
-                return Optional.of(convertedValue);
-            } catch (IllegalArgumentException e) {
-                // do nothing
+    public <T> T getValue(String name, Class<T> aClass) {
+        for (ConfigSource configSource : configSources) {
+            String value = configSource.getValue(name);
+            if (value != null) {
+                return convert(value, aClass);
             }
         }
-        throw new IllegalArgumentException("No converter found to convert property to type " + aClass);
+        throw new NoSuchElementException("Property " + name + "  not found");
     }
 
     @Override
-    public Optional<String> getString(String s) {
+    public <T> Optional<T> getOptionalValue(String name, Class<T> aClass) {
         for (ConfigSource configSource : configSources) {
-            String value = configSource.getValue(s);
+            String value = configSource.getValue(name);
             if (value != null) {
-                return Optional.of(value);
+                return Optional.of(convert(value, aClass));
             }
         }
         return Optional.empty();
@@ -85,5 +80,17 @@ public class WildFlyConfig implements Config{
     @Override
     public Iterable<ConfigSource> getConfigSources() {
         return configSources;
+    }
+
+    private <T> T convert(String value, Class<T> aClass) {
+        for (Converter<?> converter : converters) {
+            try {
+                T convertedValue = (T) converter.convert(value);
+                return convertedValue;
+            } catch (IllegalArgumentException e) {
+                // do nothing
+            }
+        }
+        throw  new IllegalArgumentException("Can not convert " + value + " to " + aClass);
     }
 }

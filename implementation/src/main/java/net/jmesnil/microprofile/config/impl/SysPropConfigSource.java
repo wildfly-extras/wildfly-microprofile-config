@@ -52,7 +52,7 @@ class SysPropConfigSource implements ConfigSource {
     }
 
     @Override
-    public String getId() {
+    public String getName() {
         return "SysPropConfigSource";
     }
 }

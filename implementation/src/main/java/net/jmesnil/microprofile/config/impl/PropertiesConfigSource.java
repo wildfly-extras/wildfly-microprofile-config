@@ -73,12 +73,12 @@ public class PropertiesConfigSource implements ConfigSource {
     }
 
     @Override
-    public String getId() {
+    public String getName() {
         return "PropertiesConfigSource[source=" + source + "]";
     }
 
     @Override
     public String toString() {
-        return getId();
+        return getName();
     }
 }

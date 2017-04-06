@@ -11,6 +11,7 @@ import net.jmesnil.microprofile.config.impl.WildFlyConfigBuilder;
 import net.jmesnil.microprofile.config.impl.WildFlyConfigProviderResolver;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.ee.weld.WeldDeploymentMarker;
 import org.jboss.as.server.deployment.Attachments;
@@ -69,7 +70,7 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
         Config config = builder.build();
 
         Module module = deploymentUnit.getAttachment(Attachments.MODULE);
-        WildFlyConfigProviderResolver.INSTANCE.setConfig(config, module.getClassLoader());
+        WildFlyConfigProviderResolver.INSTANCE.registerConfig(config, module.getClassLoader());
 
         if (WeldDeploymentMarker.isPartOfWeldDeployment(deploymentUnit)) {
             WeldPortableExtensions extensions = WeldPortableExtensions.getPortableExtensions(deploymentUnit);
@@ -78,7 +79,7 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
 
     }
 
-    private void addConfigSourcesFromServices(ConfigProvider.ConfigBuilder builder, ServiceRegistry serviceRegistry) {
+    private void addConfigSourcesFromServices(ConfigBuilder builder, ServiceRegistry serviceRegistry) {
         List<ServiceName> serviceNames = serviceRegistry.getServiceNames();
         for (ServiceName serviceName: serviceNames) {
             if (ConfigSourceService.SERVICE_NAME.isParentOf(serviceName)) {
@@ -89,7 +90,7 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
         }
     }
 
-    private void load(ConfigProvider.ConfigBuilder builder, ResourceRoot resourceRoot, String path) {
+    private void load(ConfigBuilder builder, ResourceRoot resourceRoot, String path) {
         VirtualFile configProperties = resourceRoot.getRoot().getChild(path);
         if (configProperties.exists() && configProperties.isFile()) {
             log.infof("founds properties: %s", configProperties.toString());

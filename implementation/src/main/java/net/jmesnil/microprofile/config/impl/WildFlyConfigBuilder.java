@@ -28,14 +28,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class WildFlyConfigBuilder implements ConfigProvider.ConfigBuilder {
+public class WildFlyConfigBuilder implements ConfigBuilder {
 
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
@@ -43,20 +43,20 @@ public class WildFlyConfigBuilder implements ConfigProvider.ConfigBuilder {
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     @Override
-    public ConfigProvider.ConfigBuilder addDefaultSources() {
+    public ConfigBuilder addDefaultSources() {
         sources.add(new EnvConfigSource());
         sources.add(new SysPropConfigSource());
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder forClassLoader(ClassLoader classLoader) {
+    public ConfigBuilder forClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder withSources(ConfigSource... configSources) {
+    public ConfigBuilder withSources(ConfigSource... configSources) {
         for (ConfigSource source: configSources) {
             this.sources.add(source);
         }
@@ -64,7 +64,7 @@ public class WildFlyConfigBuilder implements ConfigProvider.ConfigBuilder {
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder withConverters(Converter<?>[] converters) {
+    public ConfigBuilder withConverters(Converter<?>[] converters) {
         for (Converter<?> converter: converters) {
             this.converters.add(converter);
         }

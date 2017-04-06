@@ -52,7 +52,7 @@ public class EnvConfigSource implements ConfigSource{
     }
 
     @Override
-    public String getId() {
+    public String getName() {
         return "EnvConfigSource";
     }
 }

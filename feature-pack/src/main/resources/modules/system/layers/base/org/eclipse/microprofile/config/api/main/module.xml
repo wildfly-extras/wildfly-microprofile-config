@@ -24,6 +24,6 @@
 
 <module xmlns="urn:jboss:module:1.5" name="org.eclipse.microprofile.config.api">
     <resources>
-        <resource-root path="${org.eclipse.microprofile.config.api:microprofile-config-api}"/>
+        <resource-root path="${org.eclipse.microprofile.apis:microprofile-config_1.0_api}"/>
     </resources>
 </module>
