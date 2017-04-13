@@ -83,6 +83,9 @@ public class WildFlyConfig implements Config{
     }
 
     private <T> T convert(String value, Class<T> aClass) {
+        if (aClass.equals(String.class)) {
+            return (T)value;
+        }
         for (Converter<?> converter : converters) {
             try {
                 T convertedValue = (T) converter.convert(value);
