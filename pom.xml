@@ -38,8 +38,8 @@
     <properties>
         <version.eclipse.microprofile.config>1.0-SNAPSHOT</version.eclipse.microprofile.config>
         <version.junit>4.11</version.junit>
-        <version.org.wildfly>11.0.0.Beta1-SNAPSHOT</version.org.wildfly>
-        <version.org.wildfly.core>3.0.0.Beta15</version.org.wildfly.core>
+        <version.org.wildfly>10.1.0.Final</version.org.wildfly>
+        <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.wildfly.build-tools>1.1.8.Final</version.org.wildfly.build-tools>
     </properties>

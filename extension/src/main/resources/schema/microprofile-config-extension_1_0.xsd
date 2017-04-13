@@ -19,7 +19,6 @@
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
-                        <xs:attribute name="http-enabled" type="xs:boolean" use="optional" />
                         <xs:attribute name="ordinal" type="xs:nonNegativeInteger" use="optional" />
                         <xs:attribute name="name" type="xs:string" use="required" />
                     </xs:complexType>

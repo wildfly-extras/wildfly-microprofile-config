@@ -1,12 +1,16 @@
 package net.jmesnil.extension.microprofile.config;
 
-import org.jboss.as.controller.SimpleResourceDefinition;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.PersistentResourceDefinition;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 
 /**
  * @author <a href="mailto:tcerar@redhat.com">Tomaz Cerar</a>
  */
-public class SubsystemDefinition extends SimpleResourceDefinition {
+public class SubsystemDefinition extends PersistentResourceDefinition {
     protected SubsystemDefinition() {
         super(SubsystemExtension.SUBSYSTEM_PATH,
                 SubsystemExtension.getResourceDescriptionResolver(SubsystemExtension.SUBSYSTEM_NAME),
@@ -14,6 +18,11 @@ public class SubsystemDefinition extends SimpleResourceDefinition {
                 SubsystemAdd.INSTANCE,
                 //Every resource that is added, normally needs a remove operation
                 SubsystemRemove.INSTANCE);
+    }
+
+    @Override
+    public Collection<AttributeDefinition> getAttributes() {
+        return Collections.emptySet();
     }
 
     @Override

@@ -41,46 +41,30 @@ public class ConfigSourceService implements Service<ConfigSource> {
     private final InjectedValue<PathHandler> pathHandlerInjectedValue = new InjectedValue<>();
 
     public static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
-    private static final String UNDERTOW_HTTP_INVOKER_CAPABILITY_NAME = "org.wildfly.undertow.http-invoker";
 
     private final String name;
     private final ConfigSource configSource;
-    private final boolean httpEnabled;
 
-    ConfigSourceService(String name, ConfigSource configSource, boolean httpEnabled) {
+    ConfigSourceService(String name, ConfigSource configSource) {
         this.name = name;
         this.configSource = configSource;
-        this.httpEnabled = httpEnabled;
     }
 
-    static void install(OperationContext context, String name, ConfigSource configSource, boolean httpEnabled) {
-        ConfigSourceService service = new ConfigSourceService(name, configSource, httpEnabled);
+    static void install(OperationContext context, String name, ConfigSource configSource) {
+        ConfigSourceService service = new ConfigSourceService(name, configSource);
         ServiceBuilder<ConfigSource> serviceBuilder = context.getServiceTarget().addService(SERVICE_NAME.append(name), service);
-        if (httpEnabled) {
-            serviceBuilder.addDependency(context.getCapabilityServiceName(UNDERTOW_HTTP_INVOKER_CAPABILITY_NAME, PathHandler.class), PathHandler.class, service.pathHandlerInjectedValue);
-        }
         serviceBuilder.install();
     }
     @Override
     public void start(StartContext startContext) throws StartException {
-        if (httpEnabled) {
-            pathHandlerInjectedValue.getValue().addPrefixPath(getPrefix(), new ConfigSourceHttpHandler(configSource));
-        }
     }
 
     @Override
     public void stop(StopContext stopContext) {
-        if (httpEnabled) {
-            pathHandlerInjectedValue.getValue().removePrefixPath(getPrefix());
-        }
     }
 
     @Override
     public ConfigSource getValue() throws IllegalStateException, IllegalArgumentException {
         return configSource;
-    }
-
-    private String getPrefix() {
-        return "/config-source/" + name;
     }
 }
