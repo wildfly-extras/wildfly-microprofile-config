@@ -19,16 +19,8 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-
-<build xmlns="urn:wildfly:feature-pack-build:1.1">
-    <dependencies>
-        <artifact name="org.wildfly:wildfly-feature-pack" />
-    </dependencies>
-    <config>
-        <!-- Core configs -->
-        <standalone
-                template="configuration/standalone/template.xml"
-                subsystems="configuration/standalone/subsystems.xml"
-                output-file="standalone/configuration/standalone-microprofile.xml"/>
-    </config>
-</build>
+<server-provisioning xmlns="urn:wildfly:server-provisioning:1.1" extract-schemas="true" copy-module-artifacts="true">
+    <feature-packs>
+        <feature-pack groupId="net.jmesnil" artifactId="microprofile-config-feature-pack" version="${project.version}" />
+    </feature-packs>
+</server-provisioning>

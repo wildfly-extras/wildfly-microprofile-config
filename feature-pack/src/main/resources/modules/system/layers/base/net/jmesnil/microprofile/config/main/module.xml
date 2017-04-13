@@ -1,7 +1,7 @@
-<module xmlns="urn:jboss:module:1.0" name="net.jmesnil.microprofile.config">
+<module xmlns="urn:jboss:module:1.5" name="net.jmesnil.microprofile.config">
     <resources>
-        <resource-root path="${net.jmesnil:microprofile-config-implementation}"/>
-        <resource-root path="${net.jmesnil:microprofile-config-extension}"/>
+        <artifact name="${net.jmesnil:microprofile-config-implementation}"/>
+        <artifact name="${net.jmesnil:microprofile-config-extension}"/>
     </resources>
 
     <dependencies>

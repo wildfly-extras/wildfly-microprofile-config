@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--  See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
+<config>
+    <extension-module>net.jmesnil.microprofile.config</extension-module>
+    <subsystem xmlns="urn:net.jmesnil:microprofile-config:1.0">
+        <config-source name="myFirstConfigSource"
+                       ordinal="101"
+                       http-enabled="true">
+            <property name="foo" value="123" />
+            <property name="bar" value="yes" />
+        </config-source>
+        <config-source name="mySecondConfigSource"
+                       ordinal="201" />
+    </subsystem>
+</config>
