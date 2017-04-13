@@ -1,5 +1,7 @@
 package net.jmesnil.extension.microprofile.config;
 
+import static net.jmesnil.extension.microprofile.config.MicroProfileConfigLogger.ROOT_LOGGER;
+
 import java.util.List;
 
 import net.jmesnil.deployment.DependencyProcessor;
@@ -13,6 +15,7 @@ import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.server.AbstractDeploymentChainStep;
 import org.jboss.as.server.DeploymentProcessorTarget;
 import org.jboss.dmr.ModelNode;
+import org.jboss.logging.Logger;
 import org.jboss.msc.service.ServiceController;
 
 /**
@@ -42,6 +45,8 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
     public void performBoottime(OperationContext context, ModelNode operation, ModelNode model,
                                 ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
             throws OperationFailedException {
+
+        ROOT_LOGGER.activatingSubsystem();
 
         //Add deployment processors here
         //Remove this if you don't need to hook into the deployers, or you can add as many as you like

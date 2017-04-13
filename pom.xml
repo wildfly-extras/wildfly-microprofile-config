@@ -60,6 +60,16 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging-annotations</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging-processor</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
+            <dependency>
                 <groupId>net.jmesnil</groupId>
                 <artifactId>microprofile-config-implementation</artifactId>
                 <version>${project.version}</version>
