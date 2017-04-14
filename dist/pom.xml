@@ -44,16 +44,12 @@
         <dependency>
             <groupId>net.jmesnil</groupId>
             <artifactId>microprofile-config-feature-pack</artifactId>
-            <!-- FIXME -->
-            <version>${project.version}</version>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.jmesnil</groupId>
             <artifactId>microprofile-config-feature-pack</artifactId>
-            <!-- FIXME -->
-            <version>${project.version}</version>
             <type>zip</type>
             <exclusions>
                 <exclusion>
@@ -65,7 +61,6 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-feature-pack</artifactId>
-            <version>${version.org.wildfly}</version>
             <type>zip</type>
         </dependency>
     </dependencies>

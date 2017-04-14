@@ -38,10 +38,12 @@
     <properties>
         <version.eclipse.microprofile.config>1.0-SNAPSHOT</version.eclipse.microprofile.config>
         <version.junit>4.11</version.junit>
+        <version.org.jboss.logging>2.0.1.Final</version.org.jboss.logging>
         <version.org.wildfly>10.1.0.Final</version.org.wildfly>
         <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
         <version.org.wildfly.swarm>2017.4.0</version.org.wildfly.swarm>
         <version.org.wildfly.swarm.config-api>1.0.2.Final</version.org.wildfly.swarm.config-api>
+        <version.org.wildfly.swarm.fraction.plugin>52</version.org.wildfly.swarm.fraction.plugin>
         <version.org.wildfly.plugins.maven>1.0.2.Final</version.org.wildfly.plugins.maven>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.wildfly.build-tools>1.1.8.Final</version.org.wildfly.build-tools>
@@ -59,34 +61,26 @@
         <module>feature-pack</module>
         <module>dist</module>
         <module>config-api</module>
+        <module>fraction</module>
+        <module>example</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.eclipse.microprofile.apis</groupId>
+                <artifactId>microprofile-config_1.0_api</artifactId>
+                <version>${version.eclipse.microprofile.config}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.jboss.logging</groupId>
                 <artifactId>jboss-logging-annotations</artifactId>
-                <version>2.0.1.Final</version>
+                <version>${version.org.jboss.logging}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.logging</groupId>
                 <artifactId>jboss-logging-processor</artifactId>
-                <version>2.0.1.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-implementation</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-extension</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-feature-pack</artifactId>
-                <version>${project.version}</version>
+                <version>${version.org.jboss.logging}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.core</groupId>
@@ -122,6 +116,21 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
+                <artifactId>container</artifactId>
+                <version>${version.org.wildfly.swarm}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>logging</artifactId>
+                <version>${version.org.wildfly.swarm}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>meta-spi</artifactId>
+                <version>${version.org.wildfly.swarm}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
                 <artifactId>config-api-runtime</artifactId>
                 <version>${version.org.wildfly.swarm.config-api}</version>
             </dependency>
@@ -137,10 +146,54 @@
                 <scope>test</scope>
                 <version>${version.junit}</version>
             </dependency>
+
+            <!-- Feature Packs -->
             <dependency>
-                <groupId>org.eclipse.microprofile.apis</groupId>
-                <artifactId>microprofile-config_1.0_api</artifactId>
-                <version>${version.eclipse.microprofile.config}</version>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-core-feature-pack</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-servlet-feature-pack</artifactId>
+                <version>${version.org.wildfly}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-feature-pack</artifactId>
+                <version>${version.org.wildfly}</version>
+                <type>zip</type>
+            </dependency>
+
+            <!-- Dependencies provided by the project -->
+            <dependency>
+                <groupId>net.jmesnil</groupId>
+                <artifactId>microprofile-config-implementation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jmesnil</groupId>
+                <artifactId>microprofile-config-extension</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jmesnil</groupId>
+                <artifactId>microprofile-config-feature-pack</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>net.jmesnil</groupId>
+                <artifactId>microprofile-config-feature-pack</artifactId>
+                <version>${project.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>net.jmesnil</groupId>
+                <artifactId>microprofile-config-config-api</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -160,7 +213,7 @@
                 <plugin>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>config-api-generator</artifactId>
-                    <version>${version.org.wildfly.swarm}</version>
+                    <version>${version.org.wildfly.swarm.config-api}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -28,7 +28,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>net.jmesnil</groupId>
     <artifactId>microprofile-config-extension</artifactId>
 
     <name>WildFly: MicroProfile Config Extension</name>
