@@ -1,130 +1,92 @@
 # microprofile-config-extension
 
-[WildFly][wildfly] Extension for [Eclipse MicroProfile Config][microprofile-config].
+[WildFly][wildfly]/[Swarm][swarm] Extension for [Eclipse MicroProfile Config][microprofile-config].
 
 # Instructions
 
 * Compile and install the [Eclipse MicroProfile Config][microprofile-config] project.
-* Compile and package this project:
+* Compile and install this project:
 
 ```
-mvn clean package
+mvn clean install
 ```
 
-* copy the JBoss Modules for both this extension and the Eclipse MicroProfile Config API:
 
-```
-# the extension module built by Maven
-cp -r target/module/ $WILDFLY_HOME/modules/
-# the  MicroProfile Config API
-cp -r src/main/resources/modules/ $WILDFLY_HOME/modules/
-```
+# Project structure
 
-* Start WildFly (using its default standalone configuration) and use its CLI to add the extension and subsystem:
-
-```
-/extension=net.jmesnil.microprofile-config-extension:add()
-/subsystem=microprofile-config:add()
-```
-
-Any application that is now deployed to WildFly can use the Eclipse MicroProfile Config API by simply calling `ConfigProvider.getConfig()`.
-
-# Management API
-
-## Add a config source
-
-```
-/subsystem=microprofile-config/config-source=myConfigSource:add(ordinal=200)
-```
-
-## Add a property to a config source
-
-```
-/subsystem=microprofile-config/config-source=myConfigSource:map-put(name=properties, key=foo, value=12345)
-```
-
-The properties of the config source is stored in WildFly configuration:
-
-```
-<subsystem xmlns="urn:net.jmesnil:microprofile-config:1.0">
-    <config-source name="myConfigSource" ordinal="200">
-        <property name="foo" value="12345"/>
-    </config-source>
-</subsystem>
-```
-
-# Supported Config Sources
-
-Applications deployed to WildFly are able to access configuration from 4 different sources:
-
-* System environment (backed by `System.getEnv()`)
-* System properties (backed by `System.getProperties`)
-* Application properties (backed by `META-INF/microprofile-config.properties` file in deployed application)
-* config-source resources (backed by the `/subsystem=microprofile-config/config-source` resources)
-
-# Access to the Config API
-
-The Config API can be used either with CDI:
-
-````
-@Inject
-Config config;
-````
-
-or programmatically:
-
-````
-Config config = ConfigProvider.getConfig();
-````
-
-# HTTP Access to config-source Resources
-
-Config Source that are stored in WildFly configuration can be exposed using HTTP by setting their `http-enabled` attribute to `true`.
-
-```
-# add the remoteConfigSource that can be accessed remotely
-/subsystem=microprofile-config/config-source=remoteConfigSource:add(http-enabled=true)
-# add the property my.super.property=123456
-/subsystem=microprofile-config/config-source=remoteConfigSource:map-put(name=properties, key=my.super.property, value=123456)
-# reload for the time being...
-reload
-```
-
-Properties of the config source can be accessed using HTTP at the URL:
-
-````
-http://localhost:8080/wildfly-services/config-source/<config-source name>/<property name>
-````
-
-For example, to read the value of the property `my.super.property` put in the `remoteConfigSource` config source,
-the URL is `http://localhost:8080/wildfly-services/config-source/remoteConfigSource/my.super.property`.
-
-For now, the HTTP endpoint requires authentication. Let's create an application user for this:
-
-```
-./bin/add-user.sh -a -u 'alice' -p 'mypassword'
-```
-
-Let's confirm that the properties can be read using HTTP GET (with basic authentication):
-
-````
-$ curl -u alice:mypassword http://localhost:8080/wildfly-services/config-source/remoteConfigSource/my.super.property
-12346
-````
-
-If the property does not exist, the request will return a 404 response:
-
-````
-$ curl -i -u alice:mypassword http://localhost:8080/wildfly-services/config-source/remoteConfigSource/property.does.not.exist
-...
-HTTP/1.1 404 Not Found
-````
+* [implementation](implementation/) - (__incomplete__) Implementation of the Eclipse MicroProfile Config API.
+* [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. This subsystem will ensure that a `Config` instance
+can be injected using CDI in the application. It also allows to define ConfigSources that are stored in the subsystem configuration.
+* [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Swarm.
+* [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
+* [config-api](config-api/) - Generation of Swarm Config API that provides a Java API to manage the `microprofile-config` subsystem.
+* [fraction](fraction/) - Swarm Fraction to use the MicroProfile Config API in your application.
+* [example](example/) - a Swarm application that uses an `Config` instance injected with CDI.
 
 # Example
 
-A Web App that can be deployed to WildFly and uses the Config API can be found
-in the [microprofile-config-example repository](https://github.com/jmesnil/microprofile-config-example/).
+Once this project has been installed, go to the `example` directory to run the example.
 
+
+The Web endpoint is using the Eclipse MicroProfile Config to read the value of the `FOO_BAR` property:
+
+```
+@Inject
+Config config;
+...
+String text = "FOO_BAR property is " + config.getOptionalValue("FOO_BAR", String.class);
+
+```
+
+The Eclipse MicroProfile Config can be used by the application by adding the corresponding Swarm fractions:
+
+```
+<dependency>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>cdi</artifactId>
+</dependency>
+<dependency>
+  <groupId>net.jmesnil</groupId>
+  <artifactId>microprofile-config-fraction</artifactId>
+  <version>${project.version}</version>
+</dependency>
+```
+
+First, run the example:
+
+```
+$ cd example
+$ mvn wildfly-swarm:run
+...
+2017-04-14 10:35:24,416 WARN  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction: Eclipse MicroProfile Config - UNSTABLE        net.jmesnil:microprofile-config-fraction:1.0-SNAPSHOT
+...
+2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
+```
+
+
+If you go to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message: `FOO_BAR property is Optional[My property comes from the microprofile-config.properties file]`
+
+```
+$ curl http://localhost:8080/hello
+FOO_BAR property is Optional[My property comes from the microprofile-config.properties file]
+```
+
+The application has configured this property in its [microprofile-config.properties](example/src/main/resources/META-INF/microprofile-config.properties) file.
+
+Let's now restart the application with the `FOO_BAR` environment variable set:
+
+```
+$ FOO_BAR="my property comes from the env" mvn wildfly-swarm:run
+...
+2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
+```
+
+If you now go again to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message: `FOO_BAR property is Optional[my property comes from the env]`
+
+```
+$ curl http://localhost:8080/hello
+$ FOO_BAR property is Optional[my property comes from the env]
+```
 
 # Links
 
@@ -133,6 +95,6 @@ in the [microprofile-config-example repository](https://github.com/jmesnil/micro
 * [Eclipse MicroProfile Config][microprofile-config]
 
 
-[wildfly]: https://github.com/microprofile/microprofile-config
-[swarm]: http://wildfly-swarm.io
+[wildfly]: https://wildlfy.org/
+[swarm]: http://wildfly-swarm.io/
 [microprofile-config]: https://github.com/microprofile/microprofile-config
