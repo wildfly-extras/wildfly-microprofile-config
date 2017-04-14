@@ -1,5 +1,4 @@
-package com.example.demo.rest;
-
+package net.jmesnil.microprofile.config.example;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
