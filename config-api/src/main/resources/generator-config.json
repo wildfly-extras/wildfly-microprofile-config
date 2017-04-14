@@ -1,0 +1,12 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 9990,
+    "user": "admin",
+    "pass": "passWord123"
+  },
+  "module": "org.wildfly.swarm.configuration.microprofile.config",
+  "generatorTargets": [
+      "/subsystem=microprofile-config"
+  ]
+}

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>net.jmesnil</groupId>
+    <artifactId>microprofile-config</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>net.jmesnil</groupId>
+  <artifactId>microprofile-config-config-api</artifactId>
+  <name>WildFly: Config API for MicroProfile Config</name>
+
+  <packaging>jar</packaging>
+
+  <properties>
+  </properties>
+
+  <scm>
+    <connection>scm:git:git@github.com:jmesnil/microprofile-config-config-api.git</connection>
+    <developerConnection>scm:git:git@github.com:jmesnil/microprofile-config-config-api.git</developerConnection>
+    <url>https://github.com/jmesnil/microprofile-config-config-api</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>config-api-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>config-api-generator</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>config-api-generator</artifactId>
+            <version>${version.org.wildfly.swarm.config-api}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>org.wildfly.swarm.config.generator.generator.Generator</mainClass>
+              <includePluginDependencies>true</includePluginDependencies>
+              <includeProjectDependencies>true</includeProjectDependencies>
+              <arguments>
+                <argument>${project.basedir}/src/main/resources/generator-config.json</argument>
+                <argument>${project.build.directory}/generated-sources</argument>
+                <argument>${project.groupId}:${project.artifactId}:${project.version}</argument>
+              </arguments>
+              <systemProperties>
+                <systemProperty>
+                  <key>
+                    java.util.logging.SimpleFormatter.format
+                  </key>
+                  <value>%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$-6s
+                    %2$s %5$s%6$s%n
+                  </value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>
+                  ${project.build.directory}/generated-sources
+                </source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.16</version>
+        <executions>
+          <execution>
+            <id>verify</id>
+            <phase>verify</phase>
+            <configuration>
+              <sourceDirectories>
+                <sourceDirectory>
+                  ${project.build.directory}/generated-sources
+                </sourceDirectory>
+              </sourceDirectories>
+              <configLocation>checkstyle.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <logViolationsToConsole>true</logViolationsToConsole>
+              <failsOnError>true</failsOnError>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.wildfly.plugins</groupId>
+        <artifactId>wildfly-maven-plugin</artifactId>
+        <version>${version.org.wildfly.plugins.maven}</version>
+        <executions>
+          <execution>
+            <id>start</id>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <groupId>net.jmesnil</groupId>
+              <artifactId>microprofile-config-dist</artifactId>
+              <version>${project.version}</version>
+              <packaging>zip</packaging>
+              <server-config>standalone-microprofile.xml</server-config>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop</id>
+            <goals>
+              <goal>shutdown</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>APIGEN_CFG_DIR</name>
+              <value>${project.basedir}/src/main/resources</value>
+            </property>
+            <property>
+              <name>java.util.logging.SimpleFormatter.format</name>
+              <value>%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$-6s
+                %2$s %5$s%6$s%n
+              </value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <show>public</show>
+          <reportOutputDirectory>${project.reporting.outputDirectory}/${project.version}</reportOutputDirectory>
+          <header>WildFly Configuration API, ${project.version}</header>
+          <footer>WildFly Configuration API, ${project.version}</footer>
+          <doctitle>WildFly Configuration API, ${project.version}</doctitle>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <version>1.1</version>
+        <configuration>
+          <checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
+          <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
+          <content>${project.reporting.outputDirectory}</content>
+          <skipDeletedFiles>true</skipDeletedFiles>
+          <pubScmUrl>scm:git:git@github.com:wildfly-swarm/wildfly-config-api.git</pubScmUrl>
+          <scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
