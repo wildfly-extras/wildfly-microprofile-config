@@ -97,4 +97,4 @@ $ FOO_BAR property is Optional[my property comes from the env]
 
 [wildfly]: https://wildlfy.org/
 [swarm]: http://wildfly-swarm.io/
-[microprofile-config]: https://github.com/microprofile/microprofile-config
+[microprofile-config]: https://github.com/eclipse/microprofile-config/
