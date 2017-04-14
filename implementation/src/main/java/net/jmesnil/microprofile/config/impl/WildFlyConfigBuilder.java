@@ -43,6 +43,11 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     @Override
+    public ConfigBuilder addDiscoveredSources() {
+        return this;
+    }
+
+    @Override
     public ConfigBuilder addDefaultSources() {
         sources.add(new EnvConfigSource());
         sources.add(new SysPropConfigSource());
