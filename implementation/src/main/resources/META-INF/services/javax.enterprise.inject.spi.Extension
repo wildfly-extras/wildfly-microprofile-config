@@ -1,1 +1,1 @@
-net.jmesnil.microprofile.config.impl.inject.ConfigExtension
+net.jmesnil.microprofile.config.inject.ConfigExtension

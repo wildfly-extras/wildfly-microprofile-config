@@ -20,65 +20,39 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+import java.util.UUID;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class PropertiesConfigSource implements ConfigSource {
+public class EnvConfigSource implements ConfigSource{
 
-    private static final String CONFIG_ORDINAL_KEY = "config_ordinal";
-    private static final String CONFIG_ORDINAL_DEFAULT_VALUE = "100";
-
-    private final Map<String, String> properties;
-    private final String source;
-    private final int ordinal;
-
-    public PropertiesConfigSource(Properties properties, String source) {
-        this.properties = new HashMap(properties);
-        this.source = source;
-        this.ordinal = Integer.valueOf(properties.getProperty(CONFIG_ORDINAL_KEY, CONFIG_ORDINAL_DEFAULT_VALUE));
-    }
-
-    public PropertiesConfigSource(Map<String, String> properties, String source, int ordinal) {
-        this.properties = new HashMap(properties);
-        this.source = source;
-        if (properties.containsKey(CONFIG_ORDINAL_KEY)) {
-            this.ordinal = Integer.valueOf(properties.getOrDefault(CONFIG_ORDINAL_KEY, CONFIG_ORDINAL_DEFAULT_VALUE));
-        } else {
-            this.ordinal = ordinal;
-        }
+    EnvConfigSource() {
     }
 
     @Override
     public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap(properties);
+        return Collections.unmodifiableMap(System.getenv());
     }
 
     @Override
     public int getOrdinal() {
-        return ordinal;
+        return 300;
     }
 
     @Override
-    public String getValue(String s) {
-        return properties.get(s);
+    public String getValue(String name) {
+        return System.getenv(name);
     }
 
     @Override
     public String getName() {
-        return "PropertiesConfigSource[source=" + source + "]";
-    }
-
-    @Override
-    public String toString() {
-        return getName();
+        return "EnvConfigSource";
     }
 }

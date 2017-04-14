@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl.inject;
+package net.jmesnil.microprofile.config.inject;
 
 import java.io.Serializable;
 import java.util.Optional;

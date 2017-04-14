@@ -20,39 +20,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config.inject;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
 
 /**
+ * CDI Extension to produces Config bean.
+ *
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class EnvConfigSource implements ConfigSource{
+public class ConfigExtension implements Extension {
 
-    EnvConfigSource() {
+    public ConfigExtension() {
     }
 
-    @Override
-    public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap(System.getenv());
-    }
-
-    @Override
-    public int getOrdinal() {
-        return 300;
-    }
-
-    @Override
-    public String getValue(String name) {
-        return System.getenv(name);
-    }
-
-    @Override
-    public String getName() {
-        return "EnvConfigSource";
+    private void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
+        AnnotatedType<ConfigProducer> configBean = bm.createAnnotatedType(ConfigProducer.class);
+        bbd.addAnnotatedType(configBean);
     }
 }

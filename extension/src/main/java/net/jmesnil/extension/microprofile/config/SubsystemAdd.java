@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.jmesnil.deployment.DependencyProcessor;
 import net.jmesnil.deployment.SubsystemDeploymentProcessor;
-import net.jmesnil.microprofile.config.impl.WildFlyConfigProviderResolver;
+import net.jmesnil.microprofile.config.WildFlyConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.as.controller.AbstractBoottimeAddStepHandler;
 import org.jboss.as.controller.OperationContext;
@@ -15,7 +15,6 @@ import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.server.AbstractDeploymentChainStep;
 import org.jboss.as.server.DeploymentProcessorTarget;
 import org.jboss.dmr.ModelNode;
-import org.jboss.logging.Logger;
 import org.jboss.msc.service.ServiceController;
 
 /**

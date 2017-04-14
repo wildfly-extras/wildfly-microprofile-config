@@ -1,15 +1,11 @@
 package net.jmesnil.deployment;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
 import net.jmesnil.extension.microprofile.config.ConfigSourceService;
-import net.jmesnil.microprofile.config.impl.PropertiesConfigSource;
-import net.jmesnil.microprofile.config.impl.WildFlyConfigBuilder;
-import net.jmesnil.microprofile.config.impl.WildFlyConfigProviderResolver;
-import net.jmesnil.microprofile.config.impl.inject.ConfigExtension;
+import net.jmesnil.microprofile.config.WildFlyConfigBuilder;
+import net.jmesnil.microprofile.config.WildFlyConfigProviderResolver;
+import net.jmesnil.microprofile.config.inject.ConfigExtension;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
@@ -21,16 +17,12 @@ import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
-import org.jboss.as.server.deployment.SubDeploymentMarker;
-import org.jboss.as.server.deployment.module.ModuleRootMarker;
-import org.jboss.as.server.deployment.module.ResourceRoot;
 import org.jboss.as.weld.deployment.WeldPortableExtensions;
 import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
-import org.jboss.vfs.VirtualFile;
 
 /**
  */
@@ -50,9 +42,6 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
      */
     public static final int PRIORITY = 0x4000;
 
-    private static final String META_INF_MICROPROFILE_CONFIG_PROPERTIES = "META-INF/microprofile-config.properties";
-    private static final String WEB_INF_MICROPROFILE_CONFIG_PROPERTIES = "WEB-INF/classes/META-INF/microprofile-config.properties";
-
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
         DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
@@ -60,13 +49,6 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
         WildFlyConfigBuilder builder = new WildFlyConfigBuilder();
         builder.addDefaultSources();
 
-        List<ResourceRoot> structure = deploymentUnit.getAttachmentList(Attachments.RESOURCE_ROOTS);
-        for (ResourceRoot resourceRoot : structure) {
-            if (ModuleRootMarker.isModuleRoot(resourceRoot) && !SubDeploymentMarker.isSubDeployment(resourceRoot)) {
-                load(builder, resourceRoot, META_INF_MICROPROFILE_CONFIG_PROPERTIES);
-                load(builder, resourceRoot, WEB_INF_MICROPROFILE_CONFIG_PROPERTIES);
-            }
-        }
         addConfigSourcesFromServices(builder, phaseContext.getServiceRegistry());
         Config config = builder.build();
 
@@ -88,20 +70,6 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
                 ConfigSource configSource = ConfigSource.class.cast(service.getValue());
                 builder.withSources(configSource);
             }
-        }
-    }
-
-    private void load(ConfigBuilder builder, ResourceRoot resourceRoot, String path) {
-        VirtualFile configProperties = resourceRoot.getRoot().getChild(path);
-        if (configProperties.exists() && configProperties.isFile()) {
-            log.infof("founds properties: %s", configProperties.toString());
-            Properties properties = new Properties();
-            try (InputStream in = configProperties.openStream()) {
-                properties.load(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            builder.withSources(new PropertiesConfigSource(properties, configProperties.getPathName()));
         }
     }
 

@@ -22,9 +22,7 @@
 
 package net.jmesnil.microprofile.config;
 
-import net.jmesnil.microprofile.config.impl.WildFlyConfig;
-import net.jmesnil.microprofile.config.impl.WildFlyConfigProviderResolver;
-import net.jmesnil.microprofile.config.impl.inject.ConfigExtension;
+import net.jmesnil.microprofile.config.inject.ConfigExtension;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
@@ -48,6 +46,7 @@ public class WildFlyConfigArchiveProcessor  implements ApplicationArchiveProcess
                     .addPackage(ConfigExtension.class.getPackage())
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                     .addAsServiceProvider(ConfigProviderResolver.class, WildFlyConfigProviderResolver.class);
+
             ((WebArchive) applicationArchive).addAsLibraries(configJar);
         }
     }

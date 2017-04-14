@@ -1,1 +1,1 @@
-net.jmesnil.microprofile.config.impl.WildFlyConfigProviderResolver
+net.jmesnil.microprofile.config.WildFlyConfigProviderResolver

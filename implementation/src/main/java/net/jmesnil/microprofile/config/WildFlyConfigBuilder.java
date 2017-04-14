@@ -20,17 +20,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ServiceLoader;
 
-import net.jmesnil.microprofile.config.impl.converter.SimpleConverters;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 import org.eclipse.microprofile.config.spi.Converter;
 
 /**
@@ -38,25 +39,58 @@ import org.eclipse.microprofile.config.spi.Converter;
  */
 public class WildFlyConfigBuilder implements ConfigBuilder {
 
+    private static final String META_INF_MICROPROFILE_CONFIG_PROPERTIES = "META-INF/microprofile-config.properties";
+    private static final String WEB_INF_MICROPROFILE_CONFIG_PROPERTIES = "WEB-INF/classes/META-INF/microprofile-config.properties";
+
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
     private List<Converter<?>> converters = new ArrayList<>();
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    private boolean addDefaultSources = false;
+    private boolean addDiscoveredSources = false;
 
     public WildFlyConfigBuilder() {
-        converters.addAll(SimpleConverters.ALL_CONVERTERS);
     }
 
     @Override
     public ConfigBuilder addDiscoveredSources() {
+        addDiscoveredSources = true;
         return this;
+    }
+
+    private List<ConfigSource> discoverSources() {
+        List<ConfigSource> discoveredSources = new ArrayList<>();
+        ServiceLoader<ConfigSource> configSourceLoader = ServiceLoader.load(ConfigSource.class, classLoader);
+        configSourceLoader.forEach(configSource -> {
+            discoveredSources.add(configSource);
+        });
+
+        // load all ConfigSources from ConfigSourceProviders
+        ServiceLoader<ConfigSourceProvider> configSourceProviderLoader = ServiceLoader.load(ConfigSourceProvider.class, classLoader);
+        configSourceProviderLoader.forEach(configSourceProvider -> {
+            configSourceProvider.getConfigSources(classLoader)
+                    .forEach(configSource -> {
+                        discoveredSources.add(configSource);
+                    });
+        });
+        return discoveredSources;
     }
 
     @Override
     public ConfigBuilder addDefaultSources() {
-        sources.add(new EnvConfigSource());
-        sources.add(new SysPropConfigSource());
+        addDefaultSources = true;
         return this;
+    }
+
+    private List<ConfigSource> getDefaultSources() {
+        List<ConfigSource> defaultSources = new ArrayList<>();
+
+        defaultSources.add(new EnvConfigSource());
+        defaultSources.add(new SysPropConfigSource());
+        defaultSources.addAll(new PropertiesConfigSourceProvider(META_INF_MICROPROFILE_CONFIG_PROPERTIES, true, classLoader).getConfigSources(classLoader));
+        defaultSources.addAll(new PropertiesConfigSourceProvider(WEB_INF_MICROPROFILE_CONFIG_PROPERTIES, true, classLoader).getConfigSources(classLoader));
+
+        return defaultSources;
     }
 
     @Override
@@ -83,6 +117,12 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
     @Override
     public Config build() {
+        if (addDiscoveredSources) {
+            sources.addAll(discoverSources());
+        }
+        if (addDefaultSources) {
+            sources.addAll(getDefaultSources());
+        }
         Collections.sort(sources, new Comparator<ConfigSource>() {
             @Override
             public int compare(ConfigSource o1, ConfigSource o2) {

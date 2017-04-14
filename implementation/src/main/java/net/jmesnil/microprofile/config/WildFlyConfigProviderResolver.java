@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,10 +37,6 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
 
     public static final WildFlyConfigProviderResolver INSTANCE = new WildFlyConfigProviderResolver();
 
-    private Config defaultConfig = getBuilder()
-            .addDefaultSources()
-            .build();
-
     private Map<ClassLoader,Config> configsForClassLoader = new HashMap<>();
 
     @Override
@@ -54,7 +50,12 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
         if (config != null) {
             return config;
         } else {
-            return defaultConfig;
+            config = getBuilder().forClassLoader(classLoader)
+                    .addDefaultSources()
+                    .addDiscoveredSources()
+                    .build();
+            registerConfig(config, classLoader);
+            return config;
         }
     }
 

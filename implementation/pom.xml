@@ -32,6 +32,9 @@
 
     <name>WildFly: MicroProfile Config Implementation</name>
 
+    <properties>
+        <version.org.apache.openwebbeans>1.7.3-SNAPSHOT</version.org.apache.openwebbeans>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -85,19 +88,19 @@
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-spi</artifactId>
-            <version>1.2.8</version>
+            <version>${version.org.apache.openwebbeans}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-impl</artifactId>
-            <version>1.2.8</version>
+            <version>${version.org.apache.openwebbeans}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans.arquillian</groupId>
             <artifactId>owb-arquillian-standalone</artifactId>
-            <version>1.2.8</version>
+            <version>${version.org.apache.openwebbeans}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

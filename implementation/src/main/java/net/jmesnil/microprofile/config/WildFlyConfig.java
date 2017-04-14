@@ -20,10 +20,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -37,20 +40,21 @@ import org.eclipse.microprofile.config.spi.Converter;
  */
 public class WildFlyConfig implements Config{
     private final List<ConfigSource> configSources;
-    private final List<Converter<?>> converters;
+    protected Map<Type, Converter> converters = new HashMap<>();
     private final ClassLoader classLoader;
 
     WildFlyConfig(List<ConfigSource> configSources, List<Converter<?>> converters, ClassLoader classLoader) {
         this.configSources = configSources;
-        this.converters = converters;
         this.classLoader = classLoader;
+        //FIXME add converters from the parameters
+        this.converters.putAll(Converters.ALL_CONVERTERS);
     }
 
     @Override
     public <T> T getValue(String name, Class<T> aClass) {
         for (ConfigSource configSource : configSources) {
             String value = configSource.getValue(name);
-            if (value != null) {
+            if (value != null && value.length() > 0) {
                 return convert(value, aClass);
             }
         }
@@ -61,7 +65,8 @@ public class WildFlyConfig implements Config{
     public <T> Optional<T> getOptionalValue(String name, Class<T> aClass) {
         for (ConfigSource configSource : configSources) {
             String value = configSource.getValue(name);
-            if (value != null) {
+            // treat empty value as null
+            if (value != null && value.length() > 0) {
                 return Optional.of(convert(value, aClass));
             }
         }
@@ -82,18 +87,20 @@ public class WildFlyConfig implements Config{
         return configSources;
     }
 
-    private <T> T convert(String value, Class<T> aClass) {
-        if (aClass.equals(String.class)) {
-            return (T)value;
+    public <T> T convert(String value, Class<T> asType) {
+        if (value != null) {
+            Converter<T> converter = getConverter(asType);
+            return converter.convert(value);
         }
-        for (Converter<?> converter : converters) {
-            try {
-                T convertedValue = (T) converter.convert(value);
-                return convertedValue;
-            } catch (IllegalArgumentException e) {
-                // do nothing
-            }
+
+        return null;
+    }
+
+    private <T> Converter getConverter(Class<T> asType) {
+        Converter converter = converters.get(asType);
+        if (converter == null) {
+            throw new UnsupportedOperationException("No Converter registered for class " + asType);
         }
-        throw  new IllegalArgumentException("Can not convert " + value + " to " + aClass);
+        return converter;
     }
 }

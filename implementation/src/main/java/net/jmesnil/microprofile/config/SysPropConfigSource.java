@@ -20,26 +20,39 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl.inject;
+package net.jmesnil.microprofile.config;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
- * CDI Extension to produces Config bean.
- *
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class ConfigExtension implements Extension {
+class SysPropConfigSource implements ConfigSource {
 
-    public ConfigExtension() {
+    SysPropConfigSource() {
     }
 
-    private void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-        AnnotatedType<ConfigProducer> configBean = bm.createAnnotatedType(ConfigProducer.class);
-        bbd.addAnnotatedType(configBean);
+    @Override
+    public Map<String, String> getProperties() {
+        Map<String, String> map = new HashMap(System.getProperties());
+        return map;
+    }
+
+    @Override
+    public int getOrdinal() {
+        return 400;
+    }
+
+    @Override
+    public String getValue(String s) {
+        return System.getProperty(s);
+    }
+
+    @Override
+    public String getName() {
+        return "SysPropConfigSource";
     }
 }
