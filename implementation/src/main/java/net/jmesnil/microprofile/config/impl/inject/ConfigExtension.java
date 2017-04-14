@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.deployment;
+package net.jmesnil.microprofile.config.impl.inject;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -35,7 +35,7 @@ import javax.enterprise.inject.spi.Extension;
  */
 public class ConfigExtension implements Extension {
 
-    ConfigExtension() {
+    public ConfigExtension() {
     }
 
     private void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {

@@ -9,6 +9,7 @@ import net.jmesnil.extension.microprofile.config.ConfigSourceService;
 import net.jmesnil.microprofile.config.impl.PropertiesConfigSource;
 import net.jmesnil.microprofile.config.impl.WildFlyConfigBuilder;
 import net.jmesnil.microprofile.config.impl.WildFlyConfigProviderResolver;
+import net.jmesnil.microprofile.config.impl.inject.ConfigExtension;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;

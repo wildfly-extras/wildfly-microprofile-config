@@ -27,9 +27,12 @@ public class HelloWorldEndpoint {
 	public Response doGet() {
 		Optional<String> foo = config.getOptionalValue("FOO", String.class);
 
+		Optional<Boolean> boolProp = config.getOptionalValue("BOOL_PROP", Boolean.class);
+
 		StringBuilder text = new StringBuilder();
 		text.append("FOO property = " + foo + "\n");
 		text.append("BAR property = " + bar + "\n");
+		text.append("BOOL_PROP property = " + boolProp + "\n");
 		return Response.ok(text).build();
 	}
 }

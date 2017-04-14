@@ -8,8 +8,11 @@
 * Compile and install this project:
 
 ```
-mvn clean install
+mvn clean install -DskipTests
 ```
+
+__The implementation is tested against the MicroProfile Config TCK and currently fails lots of test. Run Maven with `-DskipTests`
+until the implementation is complete.__
 
 
 # Project structure

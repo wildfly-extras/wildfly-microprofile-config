@@ -20,31 +20,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.util.UUID;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.junit.Test;
+import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class SysPropConfigSourceTestCase {
-
-    @Test
-    public void testSysProp() {
-        String name = "this.prop.exists";
-        String value = UUID.randomUUID().toString();
-
-        System.setProperty(name, value);
-
-        ConfigSource configSource = new SysPropConfigSource();
-        assertEquals(value, configSource.getValue(name));
-
-        assertNull(configSource.getValue("this.prop.does.not.exist"));
+public class WildFlyConfigExtension implements LoadableExtension {
+    @Override
+    public void register(ExtensionBuilder extensionBuilder) {
+        extensionBuilder.service(ApplicationArchiveProcessor.class, WildFlyConfigArchiveProcessor.class);
     }
 }

@@ -20,36 +20,41 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.microprofile.config.impl;
+package net.jmesnil.microprofile.config.impl.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
-import org.junit.Test;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class WildFlyConfigConverterTestCase {
+public class SimpleConverters {
 
-    @Test
-    public void testConversion() {
-        Properties props = new Properties();
-        props.put("string", "is.a.string");
-        PropertiesConfigSource source = new PropertiesConfigSource(props, "props");
-        List<ConfigSource> sources = new ArrayList<>();
-        sources.add(source);
-        WildFlyConfig config = new WildFlyConfig(sources, new ArrayList<Converter<?>>(), Thread.currentThread().getContextClassLoader());
+    static final Converter<Boolean> BOOLEAN_CONVERTER = value -> {
+        if (value != null) {
+            return "TRUE".equalsIgnoreCase(value)
+                    || "1".equalsIgnoreCase(value)
+                    || "YES".equalsIgnoreCase(value)
+                    || "Y".equalsIgnoreCase(value)
+                    || "ON".equalsIgnoreCase(value)
+                    || "JA".equalsIgnoreCase(value)
+                    || "J".equalsIgnoreCase(value)
+                    || "OUI".equalsIgnoreCase(value);
+        }
+        return null;
+    };
 
-        Optional<String> value = config.getOptionalValue("string", String.class);
-        assertTrue(value.isPresent());
-        assertEquals("is.a.string", value.get());
+    static final Converter<Double> DOUBLE_CONVERTER = value -> value != null ? Double.valueOf(value) : null;
+
+    static final Converter<Float> FLOAT_CONVERTER = value -> value != null ? Float.valueOf(value) : null;
+
+    public static final Set<Converter<?>> ALL_CONVERTERS = new HashSet<>();
+
+    static {
+        ALL_CONVERTERS.add(BOOLEAN_CONVERTER);
+        ALL_CONVERTERS.add(DOUBLE_CONVERTER);
+        ALL_CONVERTERS.add(FLOAT_CONVERTER);
     }
 }

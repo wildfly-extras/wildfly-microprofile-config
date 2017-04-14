@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.jmesnil.microprofile.config.impl.converter.SimpleConverters;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -41,6 +42,10 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
     private List<ConfigSource> sources = new ArrayList<>();
     private List<Converter<?>> converters = new ArrayList<>();
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+    public WildFlyConfigBuilder() {
+        converters.addAll(SimpleConverters.ALL_CONVERTERS);
+    }
 
     @Override
     public ConfigBuilder addDiscoveredSources() {
