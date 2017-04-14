@@ -15,8 +15,7 @@ mvn clean install
 # Project structure
 
 * [implementation](implementation/) - (__incomplete__) Implementation of the Eclipse MicroProfile Config API.
-* [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. This subsystem will ensure that a `Config` instance
-can be injected using CDI in the application. It also allows to define ConfigSources that are stored in the subsystem configuration.
+* [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. It also allows to define ConfigSources that are stored in the subsystem configuration.
 * [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Swarm.
 * [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
 * [config-api](config-api/) - Generation of Swarm Config API that provides a Java API to manage the `microprofile-config` subsystem.
@@ -33,8 +32,14 @@ The Web endpoint is using the Eclipse MicroProfile Config to read the value of t
 ```
 @Inject
 Config config;
+
+@Inject
+@ConfigProperty(name = "BAR", defaultValue = "my BAR property comes from the code")
+String bar;
+
 ...
-String text = "FOO_BAR property is " + config.getOptionalValue("FOO_BAR", String.class);
+Optional<String> foo = config.getOptionalValue("FOO", String.class);
+...
 
 ```
 
@@ -64,28 +69,31 @@ $ mvn wildfly-swarm:run
 ```
 
 
-If you go to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message: `FOO_BAR property is Optional[My property comes from the microprofile-config.properties file]`
+If you go to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message:
 
 ```
 $ curl http://localhost:8080/hello
-FOO_BAR property is Optional[My property comes from the microprofile-config.properties file]
+FOO property = Optional[My FOO property comes from the microprofile-config.properties file]
+BAR property = my BAR property comes from the code
 ```
 
-The application has configured this property in its [microprofile-config.properties](example/src/main/resources/META-INF/microprofile-config.properties) file.
+The application has configured its `FOO` property in its [microprofile-config.properties](example/src/main/resources/META-INF/microprofile-config.properties) file.
+The `BAR` property was configured with a `defaultValue` using the `@ConfigProperty` annotation.
 
-Let's now restart the application with the `FOO_BAR` environment variable set:
+Let's now restart the application with the `FOO` and `BAR` environment variables set:
 
 ```
-$ FOO_BAR="my property comes from the env" mvn wildfly-swarm:run
+$ FOO="my FOO property comes from the env" BAR="my BAR property comes from the env" mvn wildfly-swarm:run
 ...
 2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
 ```
 
-If you now go again to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message: `FOO_BAR property is Optional[my property comes from the env]`
+If you now go again to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message:
 
 ```
-$ curl http://localhost:8080/hello
-$ FOO_BAR property is Optional[my property comes from the env]
+curl http://localhost:8080/hello
+FOO property = Optional[my FOO property comes from the env]
+BAR property = my BAR property comes from the env
 ```
 
 # Links

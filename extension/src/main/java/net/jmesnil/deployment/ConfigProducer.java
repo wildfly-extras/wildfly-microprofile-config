@@ -23,12 +23,14 @@
 package net.jmesnil.deployment;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * CDI producer for {@link Config} bean.
@@ -42,5 +44,20 @@ public class ConfigProducer implements Serializable{
         // return the Config for the TCCL
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         return ConfigProvider.getConfig(tccl);
+    }
+
+    // FIXME anything else that a String field would break...
+    @Produces @ConfigProperty
+    String getParamValue(InjectionPoint ip) {
+        Config config = getConfig(ip);
+        ConfigProperty configProperty = ip.getAnnotated().getAnnotation(ConfigProperty.class);
+        String name = configProperty.name();
+        String defaultValue = configProperty.defaultValue();
+        Optional<String> value = config.getOptionalValue(name, String.class);
+        if (value.isPresent()) {
+            return value.get();
+        } else {
+            return defaultValue;
+        }
     }
 }
