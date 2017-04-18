@@ -3,7 +3,6 @@
 ## Implementation
 
 * CDI injection of @ConfigProperty
-* Add Converters to WildFlyConfig (by extracting the converter type)
 
 ## TCK
 

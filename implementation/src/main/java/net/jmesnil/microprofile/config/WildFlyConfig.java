@@ -22,6 +22,7 @@
 
 package net.jmesnil.microprofile.config;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,14 +41,12 @@ import org.eclipse.microprofile.config.spi.Converter;
  */
 public class WildFlyConfig implements Config{
     private final List<ConfigSource> configSources;
-    protected Map<Type, Converter> converters = new HashMap<>();
-    private final ClassLoader classLoader;
+    private Map<Type, Converter> converters;
 
-    WildFlyConfig(List<ConfigSource> configSources, List<Converter<?>> converters, ClassLoader classLoader) {
+    WildFlyConfig(List<ConfigSource> configSources, List<Converter<?>> converters) {
         this.configSources = configSources;
-        this.classLoader = classLoader;
-        //FIXME add converters from the parameters
-        this.converters.putAll(Converters.ALL_CONVERTERS);
+        this.converters = new HashMap<>(Converters.ALL_CONVERTERS);
+        addConverters(converters);
     }
 
     @Override
@@ -102,5 +101,36 @@ public class WildFlyConfig implements Config{
             throw new UnsupportedOperationException("No Converter registered for class " + asType);
         }
         return converter;
+    }
+
+    private void addConverters(List<Converter<?>> converters) {
+        for (Converter converter: converters) {
+            Type type = getConverterType(converter.getClass());
+            if (type == null) {
+                throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
+            }
+            this.converters.put(type, converter);
+        }
+    }
+
+    private Type getConverterType(Class clazz) {
+        if (clazz.equals(Object.class)) {
+            return null;
+        }
+
+        for (Type type : clazz.getGenericInterfaces()) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) type;
+                if (pt.getRawType().equals(Converter.class)) {
+                    Type[] typeArguments = pt.getActualTypeArguments();
+                    if (typeArguments.length != 1) {
+                        throw new IllegalStateException("Converter " + clazz + " must be parameterized with a single type");
+                    }
+                    return typeArguments[0];
+                }
+            }
+        }
+
+        return getConverterType(clazz.getSuperclass());
     }
 }

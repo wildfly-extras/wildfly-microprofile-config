@@ -130,6 +130,6 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
             }
         });
 
-        return new WildFlyConfig(sources, converters, classLoader);
+        return new WildFlyConfig(sources, converters);
     }
 }
