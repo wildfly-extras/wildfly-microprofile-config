@@ -32,76 +32,15 @@
 
     <name>WildFly: MicroProfile Config Implementation</name>
 
-    <properties>
-        <version.org.apache.openwebbeans>1.7.3-SNAPSHOT</version.org.apache.openwebbeans>
-    </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>tck-suite.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.1.10.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.microprofile.apis</groupId>
             <artifactId>microprofile-config_1.0_api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.microprofile.config.tck</groupId>
-            <artifactId>microprofile-config-tck</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- FIXME I'd like to use Swarm instead but the Arquillian fraction is installed
-             twice and the tests fail to run (looks like https://issues.jboss.org/browse/SWARM-1150) -->
-        <!--
-		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>arquillian</artifactId>
-			<scope>test</scope>
-		</dependency>
-        -->
-        <dependency>
-            <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-spi</artifactId>
-            <version>${version.org.apache.openwebbeans}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-impl</artifactId>
-            <version>${version.org.apache.openwebbeans}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openwebbeans.arquillian</groupId>
-            <artifactId>owb-arquillian-standalone</artifactId>
-            <version>${version.org.apache.openwebbeans}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
