@@ -18,6 +18,7 @@ until the implementation is complete.__
 # Project structure
 
 * [implementation](implementation/) - (__incomplete__) Implementation of the Eclipse MicroProfile Config API.
+* [tck](tck/) - Test suite to run the implementation against the Eclipse MicroProfile Config TCK.
 * [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. It also allows to define ConfigSources that are stored in the subsystem configuration.
 * [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Swarm.
 * [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
