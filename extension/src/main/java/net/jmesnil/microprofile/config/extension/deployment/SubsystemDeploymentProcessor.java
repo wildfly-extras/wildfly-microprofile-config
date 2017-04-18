@@ -1,8 +1,8 @@
-package net.jmesnil.deployment;
+package net.jmesnil.microprofile.config.extension.deployment;
 
 import java.util.List;
 
-import net.jmesnil.extension.microprofile.config.ConfigSourceService;
+import net.jmesnil.microprofile.config.extension.ConfigSourceService;
 import net.jmesnil.microprofile.config.WildFlyConfigBuilder;
 import net.jmesnil.microprofile.config.WildFlyConfigProviderResolver;
 import net.jmesnil.microprofile.config.inject.ConfigExtension;

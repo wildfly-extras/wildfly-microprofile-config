@@ -1,4 +1,4 @@
-package net.jmesnil.extension.microprofile.config;
+package net.jmesnil.microprofile.config.extension;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 

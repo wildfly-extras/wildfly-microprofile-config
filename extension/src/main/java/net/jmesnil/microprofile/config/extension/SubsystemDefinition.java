@@ -1,4 +1,4 @@
-package net.jmesnil.extension.microprofile.config;
+package net.jmesnil.microprofile.config.extension;
 
 import java.util.Collection;
 import java.util.Collections;

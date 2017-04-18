@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config;
+package net.jmesnil.microprofile.config.extension;
 
 import io.undertow.server.handlers.PathHandler;
 import org.eclipse.microprofile.config.spi.ConfigSource;

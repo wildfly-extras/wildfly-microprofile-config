@@ -1,4 +1,4 @@
-package net.jmesnil.extension.microprofile.config;
+package net.jmesnil.microprofile.config.extension;
 
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.OperationContext;

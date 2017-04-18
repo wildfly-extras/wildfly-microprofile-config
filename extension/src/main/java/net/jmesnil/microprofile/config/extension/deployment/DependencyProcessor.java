@@ -1,4 +1,4 @@
-package net.jmesnil.deployment;
+package net.jmesnil.microprofile.config.extension.deployment;
 
 import org.jboss.as.ee.weld.WeldDeploymentMarker;
 import org.jboss.as.server.deployment.Attachments;

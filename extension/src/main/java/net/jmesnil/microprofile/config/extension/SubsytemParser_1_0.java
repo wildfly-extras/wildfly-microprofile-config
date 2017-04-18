@@ -20,30 +20,37 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config;
+package net.jmesnil.microprofile.config.extension;
 
-import static org.jboss.logging.Logger.Level.INFO;
+import static org.jboss.as.controller.PersistentResourceXMLDescription.builder;
 
-import org.jboss.logging.BasicLogger;
-import org.jboss.logging.Logger;
-import org.jboss.logging.annotations.LogMessage;
-import org.jboss.logging.annotations.Message;
-import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.as.controller.PersistentResourceXMLDescription;
+import org.jboss.as.controller.PersistentResourceXMLParser;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-@MessageLogger(projectCode = "EMPCONF", length = 4)
-public interface MicroProfileConfigLogger extends BasicLogger {
+public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
     /**
-     * The root logger with a category of the package name.
+     * The name space used for the {@code substystem} element
      */
-    MicroProfileConfigLogger ROOT_LOGGER = Logger.getMessageLogger(MicroProfileConfigLogger.class, "net.jmesnil.extension.microprofile.config");
+    public static final String NAMESPACE = "urn:net.jmesnil:microprofile-config:1.0";
 
-    /**
-     * Logs an informational message indicating the naming subsystem is being activated.
-     */
-    @LogMessage(level = INFO)
-    @Message(id = 1, value = "Activating Eclipse MicroProfile Config Subsystem")
-    void activatingSubsystem();
+    static final PersistentResourceXMLParser INSTANCE = new SubsytemParser_1_0();
+
+    private static final PersistentResourceXMLDescription xmlDescription;
+
+    static {
+        xmlDescription = builder(new SubsystemDefinition(), NAMESPACE)
+                .addChild(builder(new ConfigSourceDefinition())
+                    .addAttributes(
+                            ConfigSourceDefinition.ORDINAL,
+                            ConfigSourceDefinition.PROPERTIES))
+                .build();
+    }
+
+    @Override
+    public PersistentResourceXMLDescription getParserDescription() {
+        return xmlDescription;
+    }
 }

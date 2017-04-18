@@ -20,9 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package net.jmesnil.extension.microprofile.config;
-
-import static net.jmesnil.extension.microprofile.config.SubsystemExtension.CONFIG_SOURCE_PATH;
+package net.jmesnil.microprofile.config.extension;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,8 +60,8 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
     static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES };
 
     protected ConfigSourceDefinition() {
-        super(CONFIG_SOURCE_PATH,
-                SubsystemExtension.getResourceDescriptionResolver(CONFIG_SOURCE_PATH.getKey()),
+        super(SubsystemExtension.CONFIG_SOURCE_PATH,
+                SubsystemExtension.getResourceDescriptionResolver(SubsystemExtension.CONFIG_SOURCE_PATH.getKey()),
                 new AbstractAddStepHandler(ATTRIBUTES) {
                     @Override
                     protected boolean requiresRuntime(OperationContext context) {
