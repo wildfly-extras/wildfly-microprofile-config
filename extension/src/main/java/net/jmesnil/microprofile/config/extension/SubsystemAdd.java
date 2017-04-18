@@ -39,9 +39,7 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
      * {@inheritDoc}
      */
     @Override
-    public void performBoottime(OperationContext context, ModelNode operation, ModelNode model,
-                                ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
-            throws OperationFailedException {
+    public void performBoottime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
 
         MicroProfileConfigLogger.ROOT_LOGGER.activatingSubsystem();
 
