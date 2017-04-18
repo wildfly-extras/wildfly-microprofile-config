@@ -8,11 +8,11 @@
 * Compile and install this project:
 
 ```
-mvn clean install -DskipTests
+mvn clean install -pl \!tck
 ```
 
-__The implementation is tested against the MicroProfile Config TCK and currently fails lots of test. Run Maven with `-DskipTests`
-until the implementation is complete.__
+__The implementation is tested against the MicroProfile Config TCK and currently fails some tests.
+You need to exclude the `tck` submodule to build the project until the implementation passes the TCK.__
 
 
 # Project structure
