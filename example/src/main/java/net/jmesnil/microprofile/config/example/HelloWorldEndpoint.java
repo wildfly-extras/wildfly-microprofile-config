@@ -22,12 +22,14 @@ public class HelloWorldEndpoint {
 	@ConfigProperty(name = "BAR", defaultValue = "my BAR property comes from the code")
 	String bar;
 
+	@Inject
+	@ConfigProperty(name = "BOOL_PROP", defaultValue = "no")
+	boolean boolProp;
+
 	@GET
 	@Produces("text/plain")
 	public Response doGet() {
 		Optional<String> foo = config.getOptionalValue("FOO", String.class);
-
-		Optional<Boolean> boolProp = config.getOptionalValue("BOOL_PROP", Boolean.class);
 
 		StringBuilder text = new StringBuilder();
 		text.append("FOO property = " + foo + "\n");

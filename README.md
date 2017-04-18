@@ -8,16 +8,12 @@
 * Compile and install this project:
 
 ```
-mvn clean install -pl \!tck
+mvn clean install
 ```
-
-__The implementation is tested against the MicroProfile Config TCK and currently fails some tests.
-You need to exclude the `tck` submodule to build the project until the implementation passes the TCK.__
-
 
 # Project structure
 
-* [implementation](implementation/) - (__incomplete__) Implementation of the Eclipse MicroProfile Config API.
+* [implementation](implementation/) - Implementation of the Eclipse MicroProfile Config API.
 * [tck](tck/) - Test suite to run the implementation against the Eclipse MicroProfile Config TCK.
 * [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. It also allows to define ConfigSources that are stored in the subsystem configuration.
 * [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Swarm.
@@ -40,6 +36,10 @@ Config config;
 @Inject
 @ConfigProperty(name = "BAR", defaultValue = "my BAR property comes from the code")
 String bar;
+
+@Inject
+@ConfigProperty(name = "BOOL_PROP", defaultValue = "no")
+boolean boolProp;
 
 ...
 Optional<String> foo = config.getOptionalValue("FOO", String.class);
@@ -79,15 +79,16 @@ If you go to [http://localhost:8080/hello](http://localhost:8080/hello), you wil
 $ curl http://localhost:8080/hello
 FOO property = Optional[My FOO property comes from the microprofile-config.properties file]
 BAR property = my BAR property comes from the code
+BOOL_PROP property = false
 ```
 
 The application has configured its `FOO` property in its [microprofile-config.properties](example/src/main/resources/META-INF/microprofile-config.properties) file.
-The `BAR` property was configured with a `defaultValue` using the `@ConfigProperty` annotation.
+The `BAR` and `BOOL_PROP` properties are configured with `defaultValue` using the `@ConfigProperty` annotation.
 
-Let's now restart the application with the `FOO` and `BAR` environment variables set:
+Let's now restart the application with the `FOO`, `BAR`, and 'BOOL_PROP` environment variables set:
 
 ```
-$ FOO="my FOO property comes from the env" BAR="my BAR property comes from the env" mvn wildfly-swarm:run
+$ BOOL_PROP="yes" FOO="my FOO property comes from the env" BAR="my BAR property comes from the env" mvn wildfly-swarm:run
 ...
 2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
 ```
@@ -98,6 +99,7 @@ If you now go again to [http://localhost:8080/hello](http://localhost:8080/hello
 curl http://localhost:8080/hello
 FOO property = Optional[my FOO property comes from the env]
 BAR property = my BAR property comes from the env
+BOOL_PROP property = true
 ```
 
 # Links

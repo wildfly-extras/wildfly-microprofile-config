@@ -26,4 +26,8 @@
     <resources>
         <artifact name="${org.eclipse.microprofile.apis:microprofile-config_1.0_api}"/>
     </resources>
+
+    <dependencies>
+        <module name="javax.enterprise.api" />
+    </dependencies>
 </module>

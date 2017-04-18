@@ -1,9 +1,5 @@
 # Remaining Tasks
 
-## Implementation
-
-* CDI injection of @ConfigProperty
-
 ## TCK
 
 * Use Swarm or WildFly as the Arquillian container to run the TCK 

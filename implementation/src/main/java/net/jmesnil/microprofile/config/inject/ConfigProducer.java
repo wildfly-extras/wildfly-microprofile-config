@@ -23,11 +23,17 @@
 package net.jmesnil.microprofile.config.inject;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import net.jmesnil.microprofile.config.WildFlyConfig;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -37,6 +43,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  *
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
+@ApplicationScoped
 public class ConfigProducer implements Serializable{
 
     @Produces
@@ -46,18 +53,105 @@ public class ConfigProducer implements Serializable{
         return ConfigProvider.getConfig(tccl);
     }
 
-    // FIXME anything else that a String field would break...
+    @Dependent
     @Produces @ConfigProperty
-    String getParamValue(InjectionPoint ip) {
-        Config config = getConfig(ip);
-        ConfigProperty configProperty = ip.getAnnotated().getAnnotation(ConfigProperty.class);
-        String name = configProperty.name();
-        String defaultValue = configProperty.defaultValue();
-        Optional<String> value = config.getOptionalValue(name, String.class);
-        if (value.isPresent()) {
-            return value.get();
+    String produceStringConfigProperty(InjectionPoint ip) {
+        return getValue(ip, String.class);
+    }
+
+    @Dependent
+    @Produces @ConfigProperty
+    Long getLongValue(InjectionPoint ip) {
+        return getValue(ip, Long.class);
+    }
+
+    @Dependent
+    @Produces @ConfigProperty
+    Integer getIntegerValue(InjectionPoint ip) {
+        return getValue(ip, Integer.class);
+    }
+
+    @Dependent
+    @Produces @ConfigProperty
+    Float produceFloatConfigProperty(InjectionPoint ip) {
+        return getValue(ip, Float.class);
+    }
+
+    @Dependent
+    @Produces @ConfigProperty
+    Double produceDoubleConfigProperty(InjectionPoint ip) {
+        return getValue(ip, Double.class);
+    }
+
+    @Dependent
+    @Produces @ConfigProperty
+    Boolean produceBooleanConfigProperty(InjectionPoint ip) {
+        return getValue(ip, Boolean.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Dependent
+    @Produces @ConfigProperty
+    <T> Optional<T> produceOptionalConfigValue(InjectionPoint injectionPoint) {
+        Type type = injectionPoint.getAnnotated().getBaseType();
+        final Class<T> valueType;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            valueType = unwrapType(typeArguments[0]);
         } else {
-            return defaultValue;
+            valueType = (Class<T>) String.class;
         }
+        return Optional.ofNullable(getValue(injectionPoint, valueType));
+    }
+
+    private <T> Class<T> unwrapType(Type type) {
+        if (type instanceof ParameterizedType) {
+            type = ((ParameterizedType) type).getRawType();
+        }
+        return (Class<T>) type;
+    }
+
+    private <T> T getValue
+            (InjectionPoint injectionPoint, Class<T> target) {
+        Config config = getConfig(injectionPoint);
+        String name = getName(injectionPoint);
+        try {
+            if (name == null) {
+                return null;
+            }
+            Optional<T> optionalValue = config.getOptionalValue(name, target);
+            if (optionalValue.isPresent()) {
+                return optionalValue.get();
+            } else {
+                String defaultValue = getDefaultValue(injectionPoint);
+                if (defaultValue != null && defaultValue.length() > 0) {
+                    return ((WildFlyConfig)config).convert(defaultValue, target);
+                } else {
+                    return null;
+                }
+            }
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    private String getName(InjectionPoint injectionPoint) {
+        for (Annotation qualifier : injectionPoint.getQualifiers()) {
+            if (qualifier.annotationType().equals(ConfigProperty.class)) {
+                return ((ConfigProperty) qualifier).name();
+            }
+        }
+        return null;
+    }
+
+    private String getDefaultValue(InjectionPoint injectionPoint) {
+        for (Annotation qualifier : injectionPoint.getQualifiers()) {
+            if (qualifier.annotationType().equals(ConfigProperty.class)) {
+                return ((ConfigProperty) qualifier).defaultValue();
+            }
+        }
+        return null;
     }
 }

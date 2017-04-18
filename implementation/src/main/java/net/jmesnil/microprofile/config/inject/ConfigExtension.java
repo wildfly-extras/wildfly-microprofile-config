@@ -22,11 +22,25 @@
 
 package net.jmesnil.microprofile.config.inject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
+
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * CDI Extension to produces Config bean.
@@ -35,11 +49,46 @@ import javax.enterprise.inject.spi.Extension;
  */
 public class ConfigExtension implements Extension {
 
+    private Set<InjectionPoint> injectionPoints = new HashSet<>();
+
     public ConfigExtension() {
     }
 
     private void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<ConfigProducer> configBean = bm.createAnnotatedType(ConfigProducer.class);
         bbd.addAnnotatedType(configBean);
+    }
+
+    public void collectConfigProducer(@Observes ProcessInjectionPoint<?, ?> pip) {
+        ConfigProperty configProperty = pip.getInjectionPoint().getAnnotated().getAnnotation(ConfigProperty.class);
+        if (configProperty != null) {
+            injectionPoints.add(pip.getInjectionPoint());
+        }
+    }
+
+    public void validate(@Observes AfterDeploymentValidation add, BeanManager bm) {
+        List<String> deploymentProblems = new ArrayList<>();
+
+        Config config = ConfigProvider.getConfig();
+        for (InjectionPoint injectionPoint : injectionPoints) {
+            Type type = injectionPoint.getType();
+            ConfigProperty configProperty = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
+            if (type instanceof Class) {
+                String key = configProperty.name();
+
+                if (!config.getOptionalValue(key, (Class)type).isPresent()) {
+                    String defaultValue = configProperty.defaultValue();
+                    if (defaultValue == null || defaultValue.length() == 0) {
+                        deploymentProblems.add("No Config Value exists for " + key);
+                    }
+                }
+            }
+        }
+
+        if (!deploymentProblems.isEmpty()) {
+            add.addDeploymentProblem(new DeploymentException("Error while validating Configuration\n"
+                    + String.join("\n", deploymentProblems)));
+        }
+
     }
 }

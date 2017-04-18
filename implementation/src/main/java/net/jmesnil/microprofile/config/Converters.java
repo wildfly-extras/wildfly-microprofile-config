@@ -98,14 +98,28 @@ class Converters {
 
     static {
         ALL_CONVERTERS.put(String.class, STRING_CONVERTER);
+
         ALL_CONVERTERS.put(Boolean.class, BOOLEAN_CONVERTER);
+        ALL_CONVERTERS.put(Boolean.TYPE, BOOLEAN_CONVERTER);
+
         ALL_CONVERTERS.put(Double.class, DOUBLE_CONVERTER);
+        ALL_CONVERTERS.put(Double.TYPE, DOUBLE_CONVERTER);
+
         ALL_CONVERTERS.put(Float.class, FLOAT_CONVERTER);
+        ALL_CONVERTERS.put(Float.TYPE, FLOAT_CONVERTER);
+
         ALL_CONVERTERS.put(Long.class, LONG_CONVERTER);
+        ALL_CONVERTERS.put(Long.TYPE, LONG_CONVERTER);
+
         ALL_CONVERTERS.put(Integer.class, INTEGER_CONVERTER);
+        ALL_CONVERTERS.put(Integer.TYPE, INTEGER_CONVERTER);
+
         ALL_CONVERTERS.put(Duration.class, DURATION_CONVERTER);
+
         ALL_CONVERTERS.put(LocalDate.class, LOCAL_DATE_CONVERTER);
+
         ALL_CONVERTERS.put(LocalTime.class, LOCAL_TIME_CONVERTER);
+
         ALL_CONVERTERS.put(LocalDateTime.class, LOCAL_DATE_TIME_CONVERTER);
     }
 }
