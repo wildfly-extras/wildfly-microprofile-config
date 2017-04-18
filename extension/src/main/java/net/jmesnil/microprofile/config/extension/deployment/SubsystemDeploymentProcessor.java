@@ -45,14 +45,15 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
         DeploymentUnit deploymentUnit = phaseContext.getDeploymentUnit();
+        Module module = deploymentUnit.getAttachment(Attachments.MODULE);
 
         WildFlyConfigBuilder builder = new WildFlyConfigBuilder();
-        builder.addDefaultSources();
-
+        builder.forClassLoader(module.getClassLoader())
+                .addDefaultSources()
+                .addDiscoveredSources();
         addConfigSourcesFromServices(builder, phaseContext.getServiceRegistry());
         Config config = builder.build();
 
-        Module module = deploymentUnit.getAttachment(Attachments.MODULE);
         WildFlyConfigProviderResolver.INSTANCE.registerConfig(config, module.getClassLoader());
 
         if (WeldDeploymentMarker.isPartOfWeldDeployment(deploymentUnit)) {
