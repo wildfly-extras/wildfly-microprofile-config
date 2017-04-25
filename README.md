@@ -85,7 +85,7 @@ BOOL_PROP property = false
 The application has configured its `FOO` property in its [microprofile-config.properties](example/src/main/resources/META-INF/microprofile-config.properties) file.
 The `BAR` and `BOOL_PROP` properties are configured with `defaultValue` using the `@ConfigProperty` annotation.
 
-Let's now restart the application with the `FOO`, `BAR`, and 'BOOL_PROP` environment variables set:
+Let's now restart the application with the `FOO`, `BAR`, and `BOOL_PROP` environment variables set:
 
 ```
 $ BOOL_PROP="yes" FOO="my FOO property comes from the env" BAR="my BAR property comes from the env" mvn wildfly-swarm:run
@@ -96,7 +96,7 @@ $ BOOL_PROP="yes" FOO="my FOO property comes from the env" BAR="my BAR property 
 If you now go again to [http://localhost:8080/hello](http://localhost:8080/hello), you will see the message:
 
 ```
-curl http://localhost:8080/hello
+$ curl http://localhost:8080/hello
 FOO property = Optional[my FOO property comes from the env]
 BAR property = my BAR property comes from the env
 BOOL_PROP property = true
