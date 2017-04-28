@@ -43,7 +43,7 @@ public class WildFlyConfig implements Config{
     private final List<ConfigSource> configSources;
     private Map<Type, Converter> converters;
 
-    WildFlyConfig(List<ConfigSource> configSources, List<Converter<?>> converters) {
+    WildFlyConfig(List<ConfigSource> configSources, List<Converter> converters) {
         this.configSources = configSources;
         this.converters = new HashMap<>(Converters.ALL_CONVERTERS);
         addConverters(converters);
@@ -103,7 +103,7 @@ public class WildFlyConfig implements Config{
         return converter;
     }
 
-    private void addConverters(List<Converter<?>> converters) {
+    private void addConverters(List<Converter> converters) {
         for (Converter converter: converters) {
             Type type = getConverterType(converter.getClass());
             if (type == null) {

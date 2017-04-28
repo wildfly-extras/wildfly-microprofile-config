@@ -23,12 +23,19 @@
 package net.jmesnil.microprofile.config.inject;
 
 import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -64,6 +71,30 @@ public class ConfigExtension implements Extension {
         if (configProperty != null) {
             injectionPoints.add(pip.getInjectionPoint());
         }
+    }
+
+    public void registerConfigProducer(@Observes AfterBeanDiscovery abd, BeanManager bm) {
+        // excludes type that are already produced by ConfigProducer
+        Set<Class> types = injectionPoints.stream()
+                .filter(ip -> ip.getType() instanceof Class
+                        && ip.getType() != String.class
+                        && ip.getType() != Boolean.class
+                        && ip.getType() != Boolean.TYPE
+                        && ip.getType() != Integer.class
+                        && ip.getType() != Integer.TYPE
+                        && ip.getType() != Long.class
+                        && ip.getType() != Long.TYPE
+                        && ip.getType() != Float.class
+                        && ip.getType() != Float.TYPE
+                        && ip.getType() != Double.class
+                        && ip.getType() != Double.TYPE
+                        && ip.getType() != Duration.class
+                        && ip.getType() != LocalDate.class
+                        && ip.getType() != LocalTime.class
+                        && ip.getType() != LocalDateTime.class)
+                .map(ip -> (Class) ip.getType())
+                .collect(Collectors.toSet());
+        types.forEach(type -> abd.addBean(new ConfigInjectionBean(bm, type)));
     }
 
     public void validate(@Observes AfterDeploymentValidation add, BeanManager bm) {

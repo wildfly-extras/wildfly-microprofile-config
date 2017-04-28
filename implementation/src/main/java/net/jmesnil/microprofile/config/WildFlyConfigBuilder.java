@@ -44,7 +44,7 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
-    private List<Converter<?>> converters = new ArrayList<>();
+    private List<Converter> converters = new ArrayList<>();
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     private boolean addDefaultSources = false;
     private boolean addDiscoveredSources = false;
@@ -74,6 +74,15 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
                     });
         });
         return discoveredSources;
+    }
+
+    private List<Converter> discoverConverters() {
+        List<Converter> converters = new ArrayList<>();
+        ServiceLoader<Converter> converterLoader = ServiceLoader.load(Converter.class, classLoader);
+        converterLoader.forEach(converter -> {
+            converters.add(converter);
+        });
+        return converters;
     }
 
     @Override
@@ -123,6 +132,9 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
         if (addDefaultSources) {
             sources.addAll(getDefaultSources());
         }
+
+        converters.addAll(discoverConverters());
+
         Collections.sort(sources, new Comparator<ConfigSource>() {
             @Override
             public int compare(ConfigSource o1, ConfigSource o2) {

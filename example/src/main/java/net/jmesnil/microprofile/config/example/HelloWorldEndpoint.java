@@ -26,6 +26,11 @@ public class HelloWorldEndpoint {
 	@ConfigProperty(name = "BOOL_PROP", defaultValue = "no")
 	boolean boolProp;
 
+	// FIXME injecting directly a Duck does not work
+	@Inject
+	@ConfigProperty(name = "DUCK")
+	Optional<Duck> duck;
+
 	@GET
 	@Produces("text/plain")
 	public Response doGet() {
@@ -35,6 +40,7 @@ public class HelloWorldEndpoint {
 		text.append("FOO property = " + foo + "\n");
 		text.append("BAR property = " + bar + "\n");
 		text.append("BOOL_PROP property = " + boolProp + "\n");
+		text.append("DUCK property =" + duck.get().getName());
 		return Response.ok(text).build();
 	}
 }
