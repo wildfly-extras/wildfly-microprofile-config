@@ -45,7 +45,8 @@ public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
                 .addChild(builder(new ConfigSourceDefinition())
                     .addAttributes(
                             ConfigSourceDefinition.ORDINAL,
-                            ConfigSourceDefinition.PROPERTIES))
+                            ConfigSourceDefinition.PROPERTIES,
+                            ConfigSourceDefinition.CLASS))
                 .build();
     }
 

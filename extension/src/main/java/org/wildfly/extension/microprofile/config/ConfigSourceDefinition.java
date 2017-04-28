@@ -22,6 +22,11 @@
 
 package org.wildfly.extension.microprofile.config;
 
+import static org.jboss.as.controller.SimpleAttributeDefinitionBuilder.create;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MODULE;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
+import static org.wildfly.extension.microprofile.config.MicroProfileConfigLogger.ROOT_LOGGER;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -31,8 +36,10 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.AttributeDefinition;
+import org.jboss.as.controller.AttributeMarshaller;
 import org.jboss.as.controller.AttributeMarshallers;
 import org.jboss.as.controller.AttributeParsers;
+import org.jboss.as.controller.ObjectTypeAttributeDefinition;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PersistentResourceDefinition;
@@ -40,6 +47,8 @@ import org.jboss.as.controller.PropertiesAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
@@ -54,10 +63,23 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
     static AttributeDefinition PROPERTIES = new PropertiesAttributeDefinition.Builder("properties", true)
             .setAttributeParser(new AttributeParsers.PropertiesParser(false))
             .setAttributeMarshaller(new AttributeMarshallers.PropertiesAttributeMarshaller(null, false))
+            .setAlternatives("class")
+            .setAllowNull(true)
             .setRestartAllServices()
             .build();
+    static ObjectTypeAttributeDefinition CLASS = ObjectTypeAttributeDefinition.Builder.of("class",
+            create(NAME, ModelType.STRING, false)
+                    .setAllowExpression(false)
+                    .build(),
+            create(MODULE, ModelType.STRING, false)
+                    .setAllowExpression(false)
+                    .build())
+            .setAlternatives("properties")
+            .setAllowNull(true)
+            .setAttributeMarshaller(AttributeMarshaller.ATTRIBUTE_OBJECT)
+            .build();
 
-    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES };
+    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES, CLASS };
 
     protected ConfigSourceDefinition() {
         super(SubsystemExtension.CONFIG_SOURCE_PATH,
@@ -74,11 +96,22 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
                         String name = context.getCurrentAddressValue();
                         int ordinal = ORDINAL.resolveModelAttribute(context, model).asInt();
                         ModelNode props = PROPERTIES.resolveModelAttribute(context, model);
-                        Map<String, String> properties = PropertiesAttributeDefinition.unwrapModel(context, props);
-                        ConfigSource configSource = new PropertiesConfigSource(properties, name, ordinal);
-                        ConfigSourceService.install(context, name, configSource);
+                        if (props.isDefined()) {
+                            Map<String, String> properties = PropertiesAttributeDefinition.unwrapModel(context, props);
+                            ConfigSource configSource = new PropertiesConfigSource(properties, name, ordinal);
+                            ConfigSourceService.install(context, name, configSource);
+                        }
+                        ModelNode classModel = CLASS.resolveModelAttribute(context, model);
+                        if (classModel.isDefined()) {
+                            Class configSourceClass = unwrapClass(classModel);
+                            try {
+                                ConfigSource configSource = ConfigSource.class.cast(configSourceClass.newInstance());
+                                ConfigSourceService.install(context, name, configSource);
+                            } catch (Exception e) {
+                                throw new OperationFailedException(e);
+                            }
+                        }
                     }
-
                 }, new AbstractRemoveStepHandler() {
                     @Override
                     protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
@@ -91,5 +124,18 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
     @Override
     public Collection<AttributeDefinition> getAttributes() {
         return Arrays.asList(ATTRIBUTES);
+    }
+
+    private static Class unwrapClass(ModelNode classModel) throws OperationFailedException {
+        String className = classModel.get(NAME).asString();
+        String moduleName = classModel.get(MODULE).asString();
+        try {
+            ModuleIdentifier moduleID = ModuleIdentifier.fromString(moduleName);
+            Module module = Module.getCallerModuleLoader().loadModule(moduleID);
+            Class<?> clazz = module.getClassLoader().loadClass(className);
+            return clazz;
+        } catch (Exception e) {
+            throw ROOT_LOGGER.unableToLoadClassFromModule(className, moduleName);
+        }
     }
 }
