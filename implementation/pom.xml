@@ -34,8 +34,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.eclipse.microprofile.apis</groupId>
-            <artifactId>microprofile-config_1.0_api</artifactId>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

@@ -75,12 +75,12 @@
                 <version>${version.javax.javaee-api}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.microprofile.apis</groupId>
-                <artifactId>microprofile-config_1.0_api</artifactId>
+                <groupId>org.eclipse.microprofile.config</groupId>
+                <artifactId>microprofile-config-api</artifactId>
                 <version>${version.eclipse.microprofile.config}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.microprofile.config.tck</groupId>
+                <groupId>org.eclipse.microprofile.config</groupId>
                 <artifactId>microprofile-config-tck</artifactId>
                 <version>${version.eclipse.microprofile.config}</version>
             </dependency>
