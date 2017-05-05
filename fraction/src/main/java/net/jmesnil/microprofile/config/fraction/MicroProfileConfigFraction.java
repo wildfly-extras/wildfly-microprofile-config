@@ -31,7 +31,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-@WildFlyExtension(module = "net.jmesnil.microprofile.config")
+@WildFlyExtension(module = "org.wildfly.extension.microprofile.config")
 @MarshalDMR
 @DeploymentModule(name = "org.eclipse.microprofile.config.api")
 public class MicroProfileConfigFraction extends MicroprofileConfig<MicroProfileConfigFraction> implements Fraction<MicroProfileConfigFraction> {

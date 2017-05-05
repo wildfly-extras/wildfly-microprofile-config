@@ -55,8 +55,8 @@ The Eclipse MicroProfile Config can be used by the application by adding the cor
   <artifactId>cdi</artifactId>
 </dependency>
 <dependency>
-  <groupId>net.jmesnil</groupId>
-  <artifactId>microprofile-config-fraction</artifactId>
+  <groupId>org.wildfly</groupId>
+  <artifactId>wildfly-microprofile-config-fraction</artifactId>
   <version>${project.version}</version>
 </dependency>
 ```

@@ -4,13 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>net.jmesnil</groupId>
-    <artifactId>microprofile-config</artifactId>
+    <groupId>org.wildfly</groupId>
+    <artifactId>wildfly-microprofile-config</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>microprofile-config-example</artifactId>
-  <name>WildFly: Swarm Example for MicroProfile Config</name>
+  <name>WildFly Swarm: Example for MicroProfile Config</name>
   <packaging>war</packaging>
 
   <properties>
@@ -65,8 +66,8 @@
       <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
-      <groupId>net.jmesnil</groupId>
-      <artifactId>microprofile-config-fraction</artifactId>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>microprofile-config</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

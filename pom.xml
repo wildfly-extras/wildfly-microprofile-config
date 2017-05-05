@@ -28,8 +28,8 @@
         <version>22</version>
     </parent>
 
-    <groupId>net.jmesnil</groupId>
-    <artifactId>microprofile-config</artifactId>
+    <groupId>org.wildfly</groupId>
+    <artifactId>wildfly-microprofile-config</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -51,9 +51,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/jmesnil/microprofile-config-extension.git</connection>
-        <developerConnection>scm:git:https://github.com/jmesnil/microprofile-config-extension.git</developerConnection>
-        <url>https://github.com/jmesnil/microprofile-config-extension/</url>
+        <connection>scm:git:https://github.com/wildlfy-extras/wildlfy-microprofile-config.git</connection>
+        <developerConnection>scm:git:https://github.com/wildlfy-extras/wildlfy-microprofile-config.git</developerConnection>
+        <url>https://github.com/wildlfy-extras/wildlfy-microprofile-config/</url>
     </scm>
 
     <modules>
@@ -181,30 +181,30 @@
 
             <!-- Dependencies provided by the project -->
             <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-implementation</artifactId>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-microprofile-config-implementation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-extension</artifactId>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-microprofile-config-extension</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-feature-pack</artifactId>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-microprofile-config-feature-pack</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-feature-pack</artifactId>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-microprofile-config-feature-pack</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
             </dependency>
             <dependency>
-                <groupId>net.jmesnil</groupId>
-                <artifactId>microprofile-config-config-api</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>microprofile-config-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

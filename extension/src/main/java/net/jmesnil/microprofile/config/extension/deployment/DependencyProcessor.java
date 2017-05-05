@@ -34,7 +34,7 @@ public class DependencyProcessor implements DeploymentUnitProcessor {
     public static final int PRIORITY = 0x4000;
 
     public static final ModuleIdentifier MICROPROFILE_CONFIG_API = ModuleIdentifier.create("org.eclipse.microprofile.config.api");
-    public static final ModuleIdentifier MICROPROFILE_CONFIG_EXTENSION = ModuleIdentifier.create("net.jmesnil.microprofile.config");
+    public static final ModuleIdentifier MICROPROFILE_CONFIG_EXTENSION = ModuleIdentifier.create("org.wildfly.extension.microprofile.config");
 
     @Override
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {

@@ -2,7 +2,7 @@
 
 <!--  See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config>
-    <extension-module>net.jmesnil.microprofile.config</extension-module>
+    <extension-module>org.wildfly.extension.microprofile.config</extension-module>
     <subsystem xmlns="urn:net.jmesnil:microprofile-config:1.0">
         <config-source name="myFirstConfigSource"
                        ordinal="101">

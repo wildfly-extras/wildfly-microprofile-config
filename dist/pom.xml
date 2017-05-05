@@ -28,12 +28,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.jmesnil</groupId>
-        <artifactId>microprofile-config</artifactId>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-microprofile-config</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>microprofile-config-dist</artifactId>
+    <artifactId>wildfly-microprofile-config-dist</artifactId>
     <name>WildFly: MicroProfile Config Distribution</name>
     <packaging>jar</packaging>
 
@@ -42,14 +42,14 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>net.jmesnil</groupId>
-            <artifactId>microprofile-config-feature-pack</artifactId>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-microprofile-config-feature-pack</artifactId>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.jmesnil</groupId>
-            <artifactId>microprofile-config-feature-pack</artifactId>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-microprofile-config-feature-pack</artifactId>
             <type>zip</type>
             <exclusions>
                 <exclusion>

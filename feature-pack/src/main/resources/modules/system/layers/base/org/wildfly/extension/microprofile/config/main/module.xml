@@ -1,7 +1,7 @@
-<module xmlns="urn:jboss:module:1.5" name="net.jmesnil.microprofile.config">
+<module xmlns="urn:jboss:module:1.5" name="org.wildfly.extension.microprofile.config">
     <resources>
-        <artifact name="${net.jmesnil:microprofile-config-implementation}"/>
-        <artifact name="${net.jmesnil:microprofile-config-extension}"/>
+        <artifact name="${org.wildfly:wildfly-microprofile-config-implementation}"/>
+        <artifact name="${org.wildfly:wildfly-microprofile-config-extension}"/>
     </resources>
 
     <dependencies>
