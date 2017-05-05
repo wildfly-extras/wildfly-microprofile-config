@@ -1,1 +1,1 @@
-net.jmesnil.microprofile.config.extension.SubsystemExtension
+org.wildfly.extension.microprofile.config.SubsystemExtension

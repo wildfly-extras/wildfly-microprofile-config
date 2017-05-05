@@ -67,7 +67,7 @@ First, run the example:
 $ cd example
 $ mvn wildfly-swarm:run
 ...
-2017-04-14 10:35:24,416 WARN  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction: Eclipse MicroProfile Config - UNSTABLE        net.jmesnil:microprofile-config-fraction:1.0-SNAPSHOT
+2017-04-14 10:35:24,416 WARN  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction: Eclipse MicroProfile Config - UNSTABLE        org.wildfly.swarm:microprofile-config:1.0-SNAPSHOT
 ...
 2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
 ```

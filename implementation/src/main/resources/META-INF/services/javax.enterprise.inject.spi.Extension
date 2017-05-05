@@ -1,1 +1,1 @@
-net.jmesnil.microprofile.config.inject.ConfigExtension
+org.wildfly.microprofile.config.inject.ConfigExtension

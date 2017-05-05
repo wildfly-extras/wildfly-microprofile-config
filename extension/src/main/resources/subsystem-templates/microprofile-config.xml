@@ -3,7 +3,7 @@
 <!--  See src/resources/configuration/ReadMe.txt for how the configuration assembly works -->
 <config>
     <extension-module>org.wildfly.extension.microprofile.config</extension-module>
-    <subsystem xmlns="urn:net.jmesnil:microprofile-config:1.0">
+    <subsystem xmlns="urn:wildfly:microprofile-config:1.0">
         <config-source name="myFirstConfigSource"
                        ordinal="101">
             <property name="foo" value="123" />

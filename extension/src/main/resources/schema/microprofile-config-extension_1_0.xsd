@@ -1,6 +1,6 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="urn:net.jmesnil:microprofile-config:1.0"
-            xmlns="urn:net.jmesnil:microprofile-config:1.0"
+            targetNamespace="urn:wildfly:microprofile-config:1.0"
+            xmlns="urn:wildfly:microprofile-config:1.0"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified"
             version="1.0">

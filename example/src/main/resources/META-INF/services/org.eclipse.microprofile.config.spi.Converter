@@ -1,1 +1,1 @@
-net.jmesnil.microprofile.config.example.DuckConverter
+org.wildfly.swarm.microprofile.config.example.DuckConverter

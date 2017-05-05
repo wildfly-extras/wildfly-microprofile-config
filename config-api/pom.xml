@@ -134,8 +134,8 @@
             </goals>
             <phase>validate</phase>
             <configuration>
-              <groupId>net.jmesnil</groupId>
-              <artifactId>microprofile-config-dist</artifactId>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-microprofile-config-dist</artifactId>
               <version>${project.version}</version>
               <packaging>zip</packaging>
               <server-config>standalone-microprofile.xml</server-config>
