@@ -22,6 +22,7 @@
 
 package net.jmesnil.microprofile.config;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -38,9 +39,9 @@ import org.eclipse.microprofile.config.spi.Converter;
  */
 class Converters {
 
-    static final Converter<String> STRING_CONVERTER = value -> value;
+    static final Converter<String> STRING_CONVERTER = (Converter & Serializable) value -> value;
 
-    static final Converter<Boolean> BOOLEAN_CONVERTER = value -> {
+    static final Converter<Boolean> BOOLEAN_CONVERTER = (Converter & Serializable) value -> {
         if (value != null) {
             return "TRUE".equalsIgnoreCase(value)
                     || "1".equalsIgnoreCase(value)
@@ -54,15 +55,15 @@ class Converters {
         return null;
     };
 
-    static final Converter<Double> DOUBLE_CONVERTER = value -> value != null ? Double.valueOf(value) : null;
+    static final Converter<Double> DOUBLE_CONVERTER = (Converter & Serializable) value -> value != null ? Double.valueOf(value) : null;
 
-    static final Converter<Float> FLOAT_CONVERTER = value -> value != null ? Float.valueOf(value) : null;
+    static final Converter<Float> FLOAT_CONVERTER = (Converter & Serializable) value -> value != null ? Float.valueOf(value) : null;
 
-    static final Converter<Long> LONG_CONVERTER = value -> value != null ? Long.valueOf(value) : null;
+    static final Converter<Long> LONG_CONVERTER = (Converter & Serializable) value -> value != null ? Long.valueOf(value) : null;
 
-    static final Converter<Integer> INTEGER_CONVERTER = value -> value != null ? Integer.valueOf(value) : null;
+    static final Converter<Integer> INTEGER_CONVERTER = (Converter & Serializable) value -> value != null ? Integer.valueOf(value) : null;
 
-    static final Converter<Duration> DURATION_CONVERTER = value -> {
+    static final Converter<Duration> DURATION_CONVERTER = (Converter & Serializable) value -> {
         try {
             return value != null ? Duration.parse(value) : null;
         } catch (DateTimeParseException e) {
@@ -70,7 +71,7 @@ class Converters {
         }
     };
 
-    static final Converter<LocalDate> LOCAL_DATE_CONVERTER = value -> {
+    static final Converter<LocalDate> LOCAL_DATE_CONVERTER = (Converter & Serializable) value -> {
         try {
             return value != null ? LocalDate.parse(value) : null;
         } catch (DateTimeParseException e) {
@@ -78,7 +79,7 @@ class Converters {
         }
     };
 
-    static final Converter<LocalTime> LOCAL_TIME_CONVERTER = value -> {
+    static final Converter<LocalTime> LOCAL_TIME_CONVERTER = (Converter & Serializable) value -> {
         try {
             return value != null ? LocalTime.parse(value) : null;
         } catch (DateTimeParseException e) {
@@ -86,7 +87,7 @@ class Converters {
         }
     };
 
-    static final Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = value -> {
+    static final Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = (Converter & Serializable) value -> {
         try {
             return value != null ? LocalDateTime.parse(value) : null;
         } catch (DateTimeParseException e) {

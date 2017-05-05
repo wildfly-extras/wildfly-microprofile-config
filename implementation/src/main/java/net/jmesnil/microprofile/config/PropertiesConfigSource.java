@@ -24,6 +24,7 @@ package net.jmesnil.microprofile.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class PropertiesConfigSource implements ConfigSource {
+public class PropertiesConfigSource implements ConfigSource, Serializable {
 
     private static final String CONFIG_ORDINAL_KEY = "config_ordinal";
     private static final String CONFIG_ORDINAL_DEFAULT_VALUE = "100";

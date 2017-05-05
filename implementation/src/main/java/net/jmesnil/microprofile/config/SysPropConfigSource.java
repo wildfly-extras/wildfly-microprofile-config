@@ -22,6 +22,7 @@
 
 package net.jmesnil.microprofile.config;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-class SysPropConfigSource implements ConfigSource {
+class SysPropConfigSource implements ConfigSource, Serializable {
 
     SysPropConfigSource() {
     }

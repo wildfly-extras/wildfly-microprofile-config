@@ -22,6 +22,7 @@
 
 package net.jmesnil.microprofile.config;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -39,7 +40,8 @@ import org.eclipse.microprofile.config.spi.Converter;
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class WildFlyConfig implements Config{
+public class WildFlyConfig implements Config, Serializable {
+
     private final List<ConfigSource> configSources;
     private Map<Type, Converter> converters;
 

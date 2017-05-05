@@ -22,6 +22,7 @@
 
 package net.jmesnil.microprofile.config;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -31,7 +32,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class EnvConfigSource implements ConfigSource{
+public class EnvConfigSource implements ConfigSource, Serializable {
 
     EnvConfigSource() {
     }
