@@ -4,19 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly</groupId>
-    <artifactId>wildfly-microprofile-config</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>microprofile-config-examples</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>microprofile-config-example</artifactId>
-  <name>WildFly Swarm: Example for MicroProfile Config</name>
-  <packaging>war</packaging>
-
-  <properties>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
-  </properties>
+  <artifactId>microprofile-config-complex-example</artifactId>
+  <name>WildFly Swarm: Example for MicroProfile Config (Complex)</name>
+  <packaging>jar</packaging>
 
   <dependencyManagement>
     <dependencies>
@@ -31,17 +26,26 @@
   </dependencyManagement>
 
   <build>
-    <finalName>demo</finalName>
     <plugins>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
         <version>${version.org.wildfly.swarm}</version>
+        <configuration>
+          <mainClass>org.wildfly.swarm.microprofile.config.example.complex.Main</mainClass>
+        </configuration>
         <executions>
           <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
+            <id>package</id>
+          </execution>
+          <execution>
+            <id>start</id>
+            <configuration>
+              <useUberJar>true</useUberJar>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop</id>
           </execution>
         </executions>
       </plugin>

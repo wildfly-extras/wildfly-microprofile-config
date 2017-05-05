@@ -64,7 +64,7 @@
         <module>dist</module>
         <module>config-api</module>
         <module>fraction</module>
-        <module>example</module>
+        <module>examples</module>
     </modules>
 
     <dependencyManagement>
