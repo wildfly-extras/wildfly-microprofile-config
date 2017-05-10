@@ -138,6 +138,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
+                <artifactId>cdi</artifactId>
+                <version>${version.org.wildfly.swarm}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
                 <artifactId>meta-spi</artifactId>
                 <version>${version.org.wildfly.swarm}</version>
             </dependency>

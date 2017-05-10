@@ -76,6 +76,11 @@
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>microprofile-config-api</artifactId>
         </dependency>
+        <!-- CDI fraction is required to be able to inject Config -->
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>cdi</artifactId>
+        </dependency>
         <!-- Provided APIs -->
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
