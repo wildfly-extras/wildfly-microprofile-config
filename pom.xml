@@ -51,9 +51,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/wildlfy-extras/wildlfy-microprofile-config.git</connection>
-        <developerConnection>scm:git:https://github.com/wildlfy-extras/wildlfy-microprofile-config.git</developerConnection>
-        <url>https://github.com/wildlfy-extras/wildlfy-microprofile-config/</url>
+        <connection>scm:git:https://github.com/wildfly-extras/wildfly-microprofile-config.git</connection>
+        <developerConnection>scm:git:https://github.com/wildfly-extras/wildfly-microprofile-config.git</developerConnection>
+        <url>https://github.com/wildfly-extras/wildfly-microprofile-config/</url>
     </scm>
 
     <modules>

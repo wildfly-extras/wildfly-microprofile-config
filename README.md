@@ -20,14 +20,14 @@ mvn clean install
 * [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
 * [config-api](config-api/) - Generation of Swarm Config API that provides a Java API to manage the `microprofile-config` subsystem.
 * [fraction](fraction/) - Swarm Fraction to use the MicroProfile Config API in your application.
-* [example](example/) - a Swarm application that uses an `Config` instance injected with CDI.
+* [example](example/) - Examples of Swarm applications that uses an `Config` instance injected with CDI.
 
 # Example
 
-Once this project has been installed, go to the `example` directory to run the example.
+Once this project has been installed, go to the `examples/simple` directory to run the simple example.
 
 
-The Web endpoint is using the Eclipse MicroProfile Config to read the value of the `FOO_BAR` property:
+The Web endpoint is using the Eclipse MicroProfile Config to read the value of the some properties:
 
 ```
 @Inject
@@ -51,17 +51,13 @@ The Eclipse MicroProfile Config can be used by the application by adding the cor
 
 ```
 <dependency>
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>cdi</artifactId>
-</dependency>
-<dependency>
   <groupId>org.wildfly</groupId>
   <artifactId>wildfly-microprofile-config-fraction</artifactId>
   <version>${project.version}</version>
 </dependency>
 ```
 
-First, run the example:
+First, run the `simple` example:
 
 ```
 $ cd examples/simple/
