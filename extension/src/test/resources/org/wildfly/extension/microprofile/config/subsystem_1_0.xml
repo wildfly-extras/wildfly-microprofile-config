@@ -9,4 +9,7 @@
     <config-source name="configSourceFromClass">
         <class name="foo.bar.MyConfigSource" module="foo.bar" />
     </config-source>
+    <config-source-provider name="myConfigSourceProvider">
+        <class name="foo.bar.MyConfigSourceProvider" module="foo.bar" />
+    </config-source-provider>
 </subsystem>

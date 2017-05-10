@@ -2,6 +2,8 @@ package org.wildfly.extension.microprofile.config.deployment;
 
 import java.util.List;
 
+import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
+import org.wildfly.extension.microprofile.config.ConfigSourceProviderService;
 import org.wildfly.extension.microprofile.config.ConfigSourceService;
 import org.wildfly.microprofile.config.WildFlyConfigBuilder;
 import org.wildfly.microprofile.config.WildFlyConfigProviderResolver;
@@ -52,7 +54,7 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
                 .addDefaultSources()
                 .addDiscoveredSources()
                 .addDiscoveredConverters();
-        addConfigSourcesFromServices(builder, phaseContext.getServiceRegistry());
+        addConfigSourcesFromServices(builder, phaseContext.getServiceRegistry(), module.getClassLoader());
         Config config = builder.build();
 
         WildFlyConfigProviderResolver.INSTANCE.registerConfig(config, module.getClassLoader());
@@ -64,13 +66,19 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
 
     }
 
-    private void addConfigSourcesFromServices(ConfigBuilder builder, ServiceRegistry serviceRegistry) {
+    private void addConfigSourcesFromServices(ConfigBuilder builder, ServiceRegistry serviceRegistry, ClassLoader classloader) {
         List<ServiceName> serviceNames = serviceRegistry.getServiceNames();
         for (ServiceName serviceName: serviceNames) {
             if (ConfigSourceService.SERVICE_NAME.isParentOf(serviceName)) {
                 ServiceController<?> service = serviceRegistry.getService(serviceName);
                 ConfigSource configSource = ConfigSource.class.cast(service.getValue());
                 builder.withSources(configSource);
+            } else if (ConfigSourceProviderService.SERVICE_NAME.isParentOf(serviceName)) {
+                ServiceController<?> service = serviceRegistry.getService(serviceName);
+                ConfigSourceProvider configSourceProvider = ConfigSourceProvider.class.cast(service.getValue());
+                for (ConfigSource configSource : configSourceProvider.getConfigSources(classloader)) {
+                    builder.withSources(configSource);
+                }
             }
         }
     }

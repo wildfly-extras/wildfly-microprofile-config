@@ -38,9 +38,9 @@ public class Main {
 
         swarm.fraction(new MicroProfileConfigFraction()
                 .configSource("my-config-source", (cs) -> {
-            cs.ordinal(500)
+                    cs.ordinal(500)
                     .property("my.prop", "Hello, World");
-        }));
+                }));
         // Start the swarm
         swarm.start();
 
