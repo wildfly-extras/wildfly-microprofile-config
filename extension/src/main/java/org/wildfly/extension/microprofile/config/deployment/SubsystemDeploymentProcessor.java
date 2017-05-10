@@ -50,7 +50,8 @@ public class SubsystemDeploymentProcessor implements DeploymentUnitProcessor {
         WildFlyConfigBuilder builder = new WildFlyConfigBuilder();
         builder.forClassLoader(module.getClassLoader())
                 .addDefaultSources()
-                .addDiscoveredSources();
+                .addDiscoveredSources()
+                .addDiscoveredConverters();
         addConfigSourcesFromServices(builder, phaseContext.getServiceRegistry());
         Config config = builder.build();
 

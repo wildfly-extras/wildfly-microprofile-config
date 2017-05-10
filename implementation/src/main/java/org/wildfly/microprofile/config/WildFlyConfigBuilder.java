@@ -48,6 +48,7 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     private boolean addDefaultSources = false;
     private boolean addDiscoveredSources = false;
+    private boolean addDiscoveredConverters = false;
 
     public WildFlyConfigBuilder() {
     }
@@ -55,6 +56,12 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
     @Override
     public ConfigBuilder addDiscoveredSources() {
         addDiscoveredSources = true;
+        return this;
+    }
+
+    @Override
+    public ConfigBuilder addDiscoveredConverters() {
+        addDiscoveredConverters = true;
         return this;
     }
 
@@ -133,7 +140,9 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
             sources.addAll(getDefaultSources());
         }
 
-        converters.addAll(discoverConverters());
+        if (addDiscoveredConverters) {
+            converters.addAll(discoverConverters());
+        }
 
         Collections.sort(sources, new Comparator<ConfigSource>() {
             @Override

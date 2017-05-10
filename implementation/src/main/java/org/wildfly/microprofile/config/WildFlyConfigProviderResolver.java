@@ -53,6 +53,7 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
             config = getBuilder().forClassLoader(classLoader)
                     .addDefaultSources()
                     .addDiscoveredSources()
+                    .addDiscoveredConverters()
                     .build();
             registerConfig(config, classLoader);
             return config;

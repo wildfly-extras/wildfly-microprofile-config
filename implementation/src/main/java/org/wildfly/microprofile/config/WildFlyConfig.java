@@ -100,7 +100,7 @@ public class WildFlyConfig implements Config, Serializable {
     private <T> Converter getConverter(Class<T> asType) {
         Converter converter = converters.get(asType);
         if (converter == null) {
-            throw new UnsupportedOperationException("No Converter registered for class " + asType);
+            throw new IllegalArgumentException("No Converter registered for class " + asType);
         }
         return converter;
     }
