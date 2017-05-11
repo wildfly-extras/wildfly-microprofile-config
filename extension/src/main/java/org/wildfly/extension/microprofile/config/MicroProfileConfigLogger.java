@@ -24,6 +24,7 @@ package org.wildfly.extension.microprofile.config;
 
 import static org.jboss.logging.Logger.Level.INFO;
 
+import org.jboss.as.controller.OperationFailedException;
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.LogMessage;
@@ -46,4 +47,7 @@ public interface MicroProfileConfigLogger extends BasicLogger {
     @LogMessage(level = INFO)
     @Message(id = 1, value = "Activating Eclipse MicroProfile Config Subsystem")
     void activatingSubsystem();
+
+    @Message(id = 2, value = "Unable to load class %s from module %s")
+    OperationFailedException unableToLoadClassFromModule(String className, String moduleName);
 }

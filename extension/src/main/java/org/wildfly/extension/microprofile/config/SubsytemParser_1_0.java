@@ -24,6 +24,7 @@ package org.wildfly.extension.microprofile.config;
 
 import static org.jboss.as.controller.PersistentResourceXMLDescription.builder;
 
+import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 import org.jboss.as.controller.PersistentResourceXMLDescription;
 import org.jboss.as.controller.PersistentResourceXMLParser;
 
@@ -43,9 +44,13 @@ public class SubsytemParser_1_0  extends PersistentResourceXMLParser {
     static {
         xmlDescription = builder(new SubsystemDefinition(), NAMESPACE)
                 .addChild(builder(new ConfigSourceDefinition())
-                    .addAttributes(
-                            ConfigSourceDefinition.ORDINAL,
-                            ConfigSourceDefinition.PROPERTIES))
+                        .addAttributes(
+                                ConfigSourceDefinition.ORDINAL,
+                                ConfigSourceDefinition.PROPERTIES,
+                                ConfigSourceDefinition.CLASS))
+                .addChild(builder(new ConfigSourceProviderDefinition())
+                        .addAttributes(
+                                ConfigSourceProviderDefinition.CLASS))
                 .build();
     }
 

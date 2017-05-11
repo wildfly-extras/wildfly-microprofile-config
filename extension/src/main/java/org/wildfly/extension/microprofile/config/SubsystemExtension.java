@@ -26,6 +26,7 @@ public class SubsystemExtension implements Extension {
 
     protected static final PathElement SUBSYSTEM_PATH = PathElement.pathElement(SUBSYSTEM, SUBSYSTEM_NAME);
     protected static final PathElement CONFIG_SOURCE_PATH = PathElement.pathElement("config-source");
+    protected static final PathElement CONFIG_SOURCE_PROVIDER_PATH = PathElement.pathElement("config-source-provider");
 
     private static final String RESOURCE_NAME = SubsystemExtension.class.getPackage().getName() + ".LocalDescriptions";
 
@@ -55,6 +56,7 @@ public class SubsystemExtension implements Extension {
         registration.registerOperationHandler(GenericSubsystemDescribeHandler.DEFINITION, GenericSubsystemDescribeHandler.INSTANCE);
 
         registration.registerSubModel(new ConfigSourceDefinition());
+        registration.registerSubModel(new ConfigSourceProviderDefinition());
     }
 
     public void initializeParsers(ExtensionParsingContext context) {

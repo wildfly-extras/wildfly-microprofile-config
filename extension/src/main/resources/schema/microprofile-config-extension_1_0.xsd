@@ -11,19 +11,36 @@
             <xs:sequence>
                 <xs:element name="config-source" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
-                                <xs:complexType>
-                                    <xs:attribute name="name" type="xs:string" use="required" />
-                                    <xs:attribute name="value" type="xs:string" use="required" />
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
+                        <xs:choice>
+                            <xs:sequence>
+                                <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="name" type="xs:string" use="required" />
+                                        <xs:attribute name="value" type="xs:string" use="required" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:element name="class" type="classType" minOccurs="0" maxOccurs="1" />
+                        </xs:choice>
                         <xs:attribute name="ordinal" type="xs:nonNegativeInteger" use="optional" />
                         <xs:attribute name="name" type="xs:string" use="required" />
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="config-source-provider" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="class" type="classType" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                        <xs:attribute name="name" type="xs:string" use="required" />
+                    </xs:complexType>
+
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="classType">
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="module" type="xs:string" use="required" />
+    </xs:complexType>
 </xs:schema>

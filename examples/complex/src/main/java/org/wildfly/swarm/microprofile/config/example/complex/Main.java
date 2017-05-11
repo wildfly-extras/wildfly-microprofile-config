@@ -36,10 +36,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Swarm swarm = new Swarm();
 
-        swarm.fraction(new MicroProfileConfigFraction().configSource("my-config-source", (cs) -> {
-            cs.ordinal(500)
+        swarm.fraction(new MicroProfileConfigFraction()
+                .configSource("my-config-source", (cs) -> {
+                    cs.ordinal(500)
                     .property("my.prop", "Hello, World");
-        }));
+                }));
         // Start the swarm
         swarm.start();
 
