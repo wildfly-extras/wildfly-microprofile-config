@@ -20,7 +20,7 @@ mvn clean install
 * [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
 * [config-api](config-api/) - Generation of Swarm Config API that provides a Java API to manage the `microprofile-config` subsystem.
 * [fraction](fraction/) - Swarm Fraction to use the MicroProfile Config API in your application.
-* [example](example/) - Examples of Swarm applications that uses an `Config` instance injected with CDI.
+* [examples](examples/) - Examples of Swarm applications that uses an `Config` instance injected with CDI.
 
 # Example
 
