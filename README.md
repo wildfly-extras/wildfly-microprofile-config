@@ -1,4 +1,4 @@
-# microprofile-config-extension
+# wildfly-microprofile-config
 
 [WildFly][wildfly]/[Swarm][swarm] Extension for [Eclipse MicroProfile Config][microprofile-config].
 
