@@ -59,13 +59,18 @@
   </scm>
 
     <modules>
+        <!-- MicroProfile Config modules -->
         <module>implementation</module>
         <module>tck</module>
+        <!-- JSR #382 modules -->
         <module>jsr-implementation</module>
         <module>jsr-tck</module>
+        <!-- WildFly modules -->
         <module>extension</module>
         <module>feature-pack</module>
         <module>dist</module>
+        <module>testsuite</module>
+        <!-- Swarm modules -->
         <module>config-api</module>
         <module>fraction</module>
         <module>examples</module>
