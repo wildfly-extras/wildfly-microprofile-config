@@ -108,7 +108,9 @@ public class ConfigExtension implements Extension {
 
                 if (!config.getOptionalValue(key, (Class)type).isPresent()) {
                     String defaultValue = configProperty.defaultValue();
-                    if (defaultValue == null || defaultValue.length() == 0) {
+                    if (defaultValue == null ||
+                            defaultValue.length() == 0 ||
+                            defaultValue.equals(ConfigProperty.UNCONFIGURED_VALUE)) {
                         deploymentProblems.add("No Config Value exists for " + key);
                     }
                 }
