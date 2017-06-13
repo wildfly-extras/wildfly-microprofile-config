@@ -19,30 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.wildfly.microprofile.config;
 
-package org.wildfly.swarm.microprofile.config.example.complex;
+import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-@ApplicationScoped
-@ApplicationPath("/")
-public class MyApplication extends Application {
+public class DirConfigSourceTestCase {
 
-    public MyApplication() {
-    }
+    @Test
+    public void testConfigSourceFromDir() throws URISyntaxException {
+        URL configDirURL = this.getClass().getResource("configDir");
+        File dir = new File(configDirURL.toURI());
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-        classes.add(HelloWorldEndpoint.class);
-        return classes;
+        DirConfigSource configSource = new DirConfigSource(dir);
+        assertEquals("myValue1", configSource.getValue("myKey1"));
+        assertEquals("true", configSource.getValue("myKey2"));
     }
 }

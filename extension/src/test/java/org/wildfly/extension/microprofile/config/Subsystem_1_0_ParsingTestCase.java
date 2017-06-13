@@ -1,6 +1,7 @@
 package org.wildfly.extension.microprofile.config;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.jboss.as.subsystem.test.AbstractSubsystemBaseTest;
 
@@ -26,6 +27,11 @@ public class Subsystem_1_0_ParsingTestCase extends AbstractSubsystemBaseTest {
     protected String getSubsystemXsdPath() throws IOException {
         return "schema/microprofile-config-extension_1_0.xsd";
     }
+
+    protected Properties getResolvedProperties() {
+        return System.getProperties();
+    }
+
 
 
 }

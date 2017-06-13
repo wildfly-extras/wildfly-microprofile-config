@@ -17,5 +17,6 @@
   <modules>
     <module>simple</module>
     <module>complex</module>
+    <module>openshift</module>
   </modules>
 </project>

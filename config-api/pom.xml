@@ -12,7 +12,6 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>microprofile-config-api</artifactId>
   <name>WildFly Swarm: Config API for MicroProfile Config</name>
-
   <packaging>jar</packaging>
 
   <dependencies>

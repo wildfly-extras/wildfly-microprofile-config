@@ -22,9 +22,6 @@
 
 package org.wildfly.swarm.microprofile.config.example.complex;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.microprofile.config.fraction.MicroProfileConfigFraction;
 
@@ -42,14 +39,6 @@ public class Main {
                     .property("my.prop", "Hello, World");
                 }));
         // Start the swarm
-        swarm.start();
-
-        WebArchive app = ShrinkWrap.create(WebArchive.class)
-                .addClass(MyApplication.class)
-                .addClass(HelloWorldEndpoint.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-
-        // Deploy your app
-        swarm.deploy(app);
+        swarm.start().deploy();
     }
 }
