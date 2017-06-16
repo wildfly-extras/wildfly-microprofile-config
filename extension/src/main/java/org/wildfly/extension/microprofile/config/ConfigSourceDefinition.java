@@ -27,10 +27,12 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MOD
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 import static org.wildfly.extension.microprofile.config.MicroProfileConfigLogger.ROOT_LOGGER;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import org.wildfly.microprofile.config.DirConfigSource;
 import org.wildfly.microprofile.config.PropertiesConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.controller.AbstractAddStepHandler;
@@ -63,7 +65,7 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
     static AttributeDefinition PROPERTIES = new PropertiesAttributeDefinition.Builder("properties", true)
             .setAttributeParser(new AttributeParsers.PropertiesParser(false))
             .setAttributeMarshaller(new AttributeMarshallers.PropertiesAttributeMarshaller(null, false))
-            .setAlternatives("class")
+            .setAlternatives("class", "dir")
             .setAllowNull(true)
             .setRestartAllServices()
             .build();
@@ -74,12 +76,18 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             create(MODULE, ModelType.STRING, false)
                     .setAllowExpression(false)
                     .build())
-            .setAlternatives("properties")
+            .setAlternatives("properties", "dir")
             .setAllowNull(true)
             .setAttributeMarshaller(AttributeMarshaller.ATTRIBUTE_OBJECT)
             .build();
+    static AttributeDefinition DIR = SimpleAttributeDefinitionBuilder.create("dir", ModelType.STRING)
+            .setAllowExpression(true)
+            .setAlternatives("class", "properties")
+            .setAllowNull(true)
+            .setRestartAllServices()
+            .build();
 
-    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES, CLASS };
+    static AttributeDefinition[] ATTRIBUTES = { ORDINAL, PROPERTIES, CLASS, DIR };
 
     protected ConfigSourceDefinition() {
         super(SubsystemExtension.CONFIG_SOURCE_PATH,
@@ -96,21 +104,25 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
                         String name = context.getCurrentAddressValue();
                         int ordinal = ORDINAL.resolveModelAttribute(context, model).asInt();
                         ModelNode props = PROPERTIES.resolveModelAttribute(context, model);
-                        if (props.isDefined()) {
-                            Map<String, String> properties = PropertiesAttributeDefinition.unwrapModel(context, props);
-                            ConfigSource configSource = new PropertiesConfigSource(properties, name, ordinal);
-                            ConfigSourceService.install(context, name, configSource);
-                        }
                         ModelNode classModel = CLASS.resolveModelAttribute(context, model);
+                        ModelNode dirModel = DIR.resolveModelAttribute(context, model);
+                        final ConfigSource configSource;
                         if (classModel.isDefined()) {
                             Class configSourceClass = unwrapClass(classModel);
                             try {
-                                ConfigSource configSource = ConfigSource.class.cast(configSourceClass.newInstance());
-                                ConfigSourceService.install(context, name, configSource);
+                                configSource = ConfigSource.class.cast(configSourceClass.newInstance());
                             } catch (Exception e) {
                                 throw new OperationFailedException(e);
                             }
+                        } else if (dirModel.isDefined()) {
+                            File dir = new File(dirModel.asString());
+                            configSource = new DirConfigSource(dir, ordinal);
+                        } else {
+                            Map<String, String> properties = PropertiesAttributeDefinition.unwrapModel(context, props);
+                            configSource = new PropertiesConfigSource(properties, name, ordinal);
                         }
+                        MicroProfileConfigLogger.ROOT_LOGGER.info("Reading properties from " + configSource.getName());
+                        ConfigSourceService.install(context, name, configSource);
                     }
                 }, new AbstractRemoveStepHandler() {
                     @Override

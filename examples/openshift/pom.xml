@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>microprofile-config-complex-example</artifactId>
-  <name>WildFly Swarm: Example for MicroProfile Config (Complex)</name>
+  <artifactId>microprofile-config-openshift-example</artifactId>
+  <name>WildFly Swarm: Example for MicroProfile Config (OpenShift)</name>
   <packaging>war</packaging>
 
   <dependencyManagement>
@@ -24,36 +24,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${version.org.wildfly.swarm}</version>
-        <configuration>
-          <mainClass>org.wildfly.swarm.microprofile.config.example.complex.Main</mainClass>
-        </configuration>
-        <executions>
-          <execution>
-            <id>package</id>
-            <configuration>
-              <useUberJar>true</useUberJar>
-            </configuration>
-          </execution>
-          <execution>
-            <id>start</id>
-            <configuration>
-              <useUberJar>true</useUberJar>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop</id>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <!-- Java EE 7 dependency -->
@@ -74,4 +44,28 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-plugin</artifactId>
+        <version>${version.org.wildfly.swarm}</version>
+        <configuration>
+          <mainClass>org.wildfly.swarm.microprofile.config.example.openshift.Main</mainClass>
+        </configuration>
+
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+            <configuration>
+              <useUberJar>true</useUberJar>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

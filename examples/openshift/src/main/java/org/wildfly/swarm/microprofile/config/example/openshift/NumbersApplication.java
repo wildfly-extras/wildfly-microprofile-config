@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.swarm.microprofile.config.example.complex;
+package org.wildfly.swarm.microprofile.config.example.openshift;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,15 +34,16 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationScoped
 @ApplicationPath("/")
-public class MyApplication extends Application {
+public class NumbersApplication extends Application {
 
-    public MyApplication() {
+    public NumbersApplication() {
     }
 
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(HelloWorldEndpoint.class);
+        classes.add(NumbersGenerator.class);
         return classes;
     }
+
 }

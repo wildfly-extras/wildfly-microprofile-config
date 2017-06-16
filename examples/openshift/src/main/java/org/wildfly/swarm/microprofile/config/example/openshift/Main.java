@@ -20,29 +20,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.swarm.microprofile.config.example.complex;
+package org.wildfly.swarm.microprofile.config.example.openshift;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.microprofile.config.fraction.MicroProfileConfigFraction;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-@ApplicationScoped
-@ApplicationPath("/")
-public class MyApplication extends Application {
+public class Main {
 
-    public MyApplication() {
-    }
+    public static void main(String[] args) throws Exception {
+        Swarm swarm = new Swarm();
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-        classes.add(HelloWorldEndpoint.class);
-        return classes;
+        swarm.fraction(new MicroProfileConfigFraction()
+                .configSource("numbers-dir-config-source", (cs) -> {
+                    cs.ordinal(600)
+                            .dir("/etc/config/numbers-app/");
+                }));
+
+        swarm.start().deploy();
     }
 }
