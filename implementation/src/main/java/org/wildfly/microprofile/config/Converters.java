@@ -25,9 +25,12 @@ package org.wildfly.microprofile.config;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,6 +98,30 @@ class Converters {
         }
     };
 
+    static final Converter<Instant> INSTANT_CONVERTER = (Converter & Serializable) value -> {
+        try {
+            return value != null ? Instant.parse(value) : null;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    };
+
+    static final Converter<OffsetTime> OFFSET_TIME_CONVERTER = (Converter & Serializable) value -> {
+        try {
+            return value != null ? OffsetTime.parse(value) : null;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    };
+
+    static final Converter<OffsetDateTime> OFFSET_DATE_TIME_CONVERTER = (Converter & Serializable) value -> {
+      try {
+         return value != null ? OffsetDateTime.parse(value) : null;
+      } catch (DateTimeParseException e) {
+         throw new IllegalArgumentException(e);
+      }
+   };
+
     public static final Map<Type, Converter> ALL_CONVERTERS = new HashMap<>();
 
     static {
@@ -116,11 +143,11 @@ class Converters {
         ALL_CONVERTERS.put(Integer.TYPE, INTEGER_CONVERTER);
 
         ALL_CONVERTERS.put(Duration.class, DURATION_CONVERTER);
-
         ALL_CONVERTERS.put(LocalDate.class, LOCAL_DATE_CONVERTER);
-
         ALL_CONVERTERS.put(LocalTime.class, LOCAL_TIME_CONVERTER);
-
         ALL_CONVERTERS.put(LocalDateTime.class, LOCAL_DATE_TIME_CONVERTER);
+        ALL_CONVERTERS.put(Instant.class, INSTANT_CONVERTER);
+        ALL_CONVERTERS.put(OffsetDateTime.class, OFFSET_DATE_TIME_CONVERTER);
+        ALL_CONVERTERS.put(OffsetTime.class, OFFSET_TIME_CONVERTER);
     }
 }
