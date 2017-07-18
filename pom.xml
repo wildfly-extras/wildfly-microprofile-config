@@ -36,7 +36,7 @@
     <name>WildFly: MicroProfile Config</name>
 
     <properties>
-        <version.eclipse.microprofile.config>1.0-RC1</version.eclipse.microprofile.config>
+        <version.eclipse.microprofile.config>1.0-RC3</version.eclipse.microprofile.config>
         <version.javax.javaee-api>7.0</version.javax.javaee-api>
         <version.junit>4.11</version.junit>
         <version.org.jboss.logging>2.0.1.Final</version.org.jboss.logging>
