@@ -33,7 +33,7 @@
     <name>WildFly: MicroProfile Config TCK</name>
 
     <properties>
-        <version.org.apache.openwebbeans>1.7.3-SNAPSHOT</version.org.apache.openwebbeans>
+        <version.org.apache.openwebbeans>1.7.3</version.org.apache.openwebbeans>
     </properties>
     <build>
         <plugins>
