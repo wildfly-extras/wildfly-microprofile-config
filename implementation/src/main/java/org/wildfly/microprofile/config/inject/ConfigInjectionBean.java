@@ -95,7 +95,7 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
         }
         Annotated annotated = ip.getAnnotated();
         ConfigProperty configProperty = annotated.getAnnotation(ConfigProperty.class);
-        String key = configProperty.name();
+        String key = ConfigExtension.getConfigKey(ip, configProperty);
         String defaultValue = configProperty.defaultValue();
 
         if (annotated.getBaseType() instanceof ParameterizedType) {

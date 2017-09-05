@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 
@@ -55,11 +56,11 @@ public class WildFlyConfig implements Config, Serializable {
     public <T> T getValue(String name, Class<T> aClass) {
         for (ConfigSource configSource : configSources) {
             String value = configSource.getValue(name);
-            if (value != null && value.length() > 0) {
+            if (value != null) {
                 return convert(value, aClass);
             }
         }
-        throw new NoSuchElementException("Property " + name + "  not found");
+        throw new NoSuchElementException("Property " + name + " not found");
     }
 
     @Override

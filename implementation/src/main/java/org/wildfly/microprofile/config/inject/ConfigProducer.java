@@ -126,7 +126,7 @@ public class ConfigProducer implements Serializable{
                 return optionalValue.get();
             } else {
                 String defaultValue = getDefaultValue(injectionPoint);
-                if (defaultValue != null && defaultValue.length() > 0) {
+                if (defaultValue != null) {
                     return ((WildFlyConfig)config).convert(defaultValue, target);
                 } else {
                     return null;
@@ -140,7 +140,8 @@ public class ConfigProducer implements Serializable{
     private String getName(InjectionPoint injectionPoint) {
         for (Annotation qualifier : injectionPoint.getQualifiers()) {
             if (qualifier.annotationType().equals(ConfigProperty.class)) {
-                return ((ConfigProperty) qualifier).name();
+                ConfigProperty configProperty = ((ConfigProperty)qualifier);
+                return ConfigExtension.getConfigKey(injectionPoint, configProperty);
             }
         }
         return null;

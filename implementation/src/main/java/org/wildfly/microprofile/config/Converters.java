@@ -24,6 +24,8 @@ package org.wildfly.microprofile.config;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -122,6 +124,14 @@ class Converters {
       }
    };
 
+    static final Converter<URL> URL_CONVERTER = (Converter & Serializable) value -> {
+        try {
+            return value != null ? new URL(value) : null;
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    };
+
     public static final Map<Type, Converter> ALL_CONVERTERS = new HashMap<>();
 
     static {
@@ -149,5 +159,7 @@ class Converters {
         ALL_CONVERTERS.put(Instant.class, INSTANT_CONVERTER);
         ALL_CONVERTERS.put(OffsetDateTime.class, OFFSET_DATE_TIME_CONVERTER);
         ALL_CONVERTERS.put(OffsetTime.class, OFFSET_TIME_CONVERTER);
+
+        ALL_CONVERTERS.put(URL.class, URL_CONVERTER);
     }
 }

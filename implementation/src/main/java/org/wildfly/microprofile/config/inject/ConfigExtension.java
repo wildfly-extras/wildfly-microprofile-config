@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -104,12 +105,11 @@ public class ConfigExtension implements Extension {
             Type type = injectionPoint.getType();
             ConfigProperty configProperty = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
             if (type instanceof Class) {
-                String key = configProperty.name();
+                String key = getConfigKey(injectionPoint, configProperty);
 
                 if (!config.getOptionalValue(key, (Class)type).isPresent()) {
                     String defaultValue = configProperty.defaultValue();
                     if (defaultValue == null ||
-                            defaultValue.length() == 0 ||
                             defaultValue.equals(ConfigProperty.UNCONFIGURED_VALUE)) {
                         deploymentProblems.add("No Config Value exists for " + key);
                     }
@@ -122,5 +122,28 @@ public class ConfigExtension implements Extension {
                     + String.join("\n", deploymentProblems)));
         }
 
+    }
+
+    static String getConfigKey(InjectionPoint ip, ConfigProperty configProperty) {
+        String key = configProperty.name();
+        if (!key.trim().isEmpty()) {
+            return key;
+        }
+        if (ip.getAnnotated() instanceof AnnotatedMember) {
+            AnnotatedMember member = (AnnotatedMember) ip.getAnnotated();
+            AnnotatedType declaringType = member.getDeclaringType();
+            if (declaringType != null) {
+                String[] parts = declaringType.getJavaClass().getCanonicalName().split("\\.");
+                String cn = parts[parts.length-1];
+                parts[parts.length-1] = Character.toLowerCase(cn.charAt(0)) + (cn.length() > 1 ? cn.substring(1) : "");
+                StringBuilder sb = new StringBuilder(parts[0]);
+                for (int i = 1; i < parts.length; i++) {
+                    sb.append(".").append(parts[i]);
+                }
+                sb.append(".").append(member.getJavaMember().getName());
+                return sb.toString();
+            }
+        }
+        throw new IllegalStateException("Could not find default name for @ConfigProperty InjectionPoint " + ip);
     }
 }
