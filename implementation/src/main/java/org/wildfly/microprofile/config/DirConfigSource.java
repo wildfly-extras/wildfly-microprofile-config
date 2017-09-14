@@ -53,7 +53,6 @@ public class DirConfigSource implements ConfigSource {
     }
 
     private Map<String, String> scan() {
-        System.out.println("Scanning " + dir);
         Map<String, String> props = new HashMap<>();
         if (dir == null || !dir.isDirectory()) {
             return props;
