@@ -134,8 +134,6 @@ public class ConfigExtension implements Extension {
             AnnotatedType declaringType = member.getDeclaringType();
             if (declaringType != null) {
                 String[] parts = declaringType.getJavaClass().getCanonicalName().split("\\.");
-                String cn = parts[parts.length-1];
-                parts[parts.length-1] = Character.toLowerCase(cn.charAt(0)) + (cn.length() > 1 ? cn.substring(1) : "");
                 StringBuilder sb = new StringBuilder(parts[0]);
                 for (int i = 1; i < parts.length; i++) {
                     sb.append(".").append(parts[i]);
