@@ -37,6 +37,7 @@
 
     <properties>
         <version.eclipse.microprofile.config>1.1</version.eclipse.microprofile.config>
+        <version.javax.config.javaconfig-api>1.0-SNAPSHOT</version.javax.config.javaconfig-api>
         <version.javax.javaee-api>7.0</version.javax.javaee-api>
         <version.junit>4.11</version.junit>
         <version.org.jboss.logging>2.0.1.Final</version.org.jboss.logging>
@@ -60,6 +61,7 @@
     <modules>
         <module>implementation</module>
         <module>tck</module>
+        <module>jsr-implementation</module>
         <module>extension</module>
         <module>feature-pack</module>
         <module>dist</module>
@@ -74,6 +76,11 @@
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>${version.javax.javaee-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.config</groupId>
+                <artifactId>javaconfig-api</artifactId>
+                <version>${version.javax.config.javaconfig-api}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.microprofile.config</groupId>
