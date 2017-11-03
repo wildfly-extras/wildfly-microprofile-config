@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.microprofile.config.inject;
+package org.wildfly.microprofile.config.jsr.inject;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -45,7 +45,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Provider;
 
-import org.wildfly.microprofile.config.WildFlyConfig;
+import org.wildfly.microprofile.config.jsr.WildFlyConfig;
 
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>

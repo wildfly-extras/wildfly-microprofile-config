@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.microprofile.config;
+package org.wildfly.microprofile.config.jsr;
 
 import java.io.IOException;
 import java.net.URL;

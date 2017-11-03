@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.microprofile.config.inject;
+package org.wildfly.microprofile.config.jsr.inject;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -36,7 +36,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.wildfly.microprofile.config.WildFlyConfig;
+import org.wildfly.microprofile.config.jsr.WildFlyConfig;
 
 /**
  * CDI producer for {@link Config} bean.

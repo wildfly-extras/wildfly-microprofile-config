@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.microprofile.config.inject;
+package org.wildfly.microprofile.config.jsr.inject;
 
 import java.lang.reflect.Type;
 import java.time.Duration;

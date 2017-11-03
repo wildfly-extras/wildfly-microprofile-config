@@ -19,29 +19,41 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.wildfly.microprofile.config;
 
-import static org.junit.Assert.assertEquals;
+package org.wildfly.microprofile.config.jsr;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import javax.config.spi.ConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class DirConfigSourceTestCase {
+class SysPropConfigSource implements ConfigSource, Serializable {
 
-    @Test
-    public void testConfigSourceFromDir() throws URISyntaxException {
-        URL configDirURL = this.getClass().getResource("configDir");
-        File dir = new File(configDirURL.toURI());
+    SysPropConfigSource() {
+    }
 
-        DirConfigSource configSource = new DirConfigSource(dir);
-        assertEquals("myValue1", configSource.getValue("myKey1"));
-        assertEquals("true", configSource.getValue("myKey2"));
+    @Override
+    public Map<String, String> getProperties() {
+        Map<String, String> map = new HashMap(System.getProperties());
+        return map;
+    }
+
+    @Override
+    public int getOrdinal() {
+        return 400;
+    }
+
+    @Override
+    public String getValue(String s) {
+        return System.getProperty(s);
+    }
+
+    @Override
+    public String getName() {
+        return "SysPropConfigSource";
     }
 }
