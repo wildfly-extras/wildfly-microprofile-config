@@ -62,6 +62,7 @@
         <module>implementation</module>
         <module>tck</module>
         <module>jsr-implementation</module>
+        <module>jsr-tck</module>
         <module>extension</module>
         <module>feature-pack</module>
         <module>dist</module>
@@ -80,6 +81,11 @@
             <dependency>
                 <groupId>javax.config</groupId>
                 <artifactId>javaconfig-api</artifactId>
+                <version>${version.javax.config.javaconfig-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.config</groupId>
+                <artifactId>javaconfig-tck</artifactId>
                 <version>${version.javax.config.javaconfig-api}</version>
             </dependency>
             <dependency>
@@ -196,6 +202,11 @@
             <dependency>
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-microprofile-config-implementation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-microprofile-config-jsr-implementation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

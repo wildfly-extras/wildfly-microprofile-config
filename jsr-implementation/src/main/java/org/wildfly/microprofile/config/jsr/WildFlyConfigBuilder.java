@@ -40,8 +40,8 @@ import javax.config.spi.Converter;
  */
 public class WildFlyConfigBuilder implements ConfigBuilder {
 
-    private static final String META_INF_MICROPROFILE_CONFIG_PROPERTIES = "META-INF/microprofile-config.properties";
-    private static final String WEB_INF_MICROPROFILE_CONFIG_PROPERTIES = "WEB-INF/classes/META-INF/microprofile-config.properties";
+    private static final String META_INF_JAVACONFIG_PROPERTIES = "META-INF/javaconfig.properties";
+    private static final String WEB_INF_JAVACONFIG_PROPERTIES = "WEB-INF/classes/META-INF/javaconfig.properties";
 
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
@@ -104,8 +104,8 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
         defaultSources.add(new EnvConfigSource());
         defaultSources.add(new SysPropConfigSource());
-        defaultSources.addAll(new PropertiesConfigSourceProvider(META_INF_MICROPROFILE_CONFIG_PROPERTIES, true, classLoader).getConfigSources(classLoader));
-        defaultSources.addAll(new PropertiesConfigSourceProvider(WEB_INF_MICROPROFILE_CONFIG_PROPERTIES, true, classLoader).getConfigSources(classLoader));
+        defaultSources.addAll(new PropertiesConfigSourceProvider(META_INF_JAVACONFIG_PROPERTIES, true, classLoader).getConfigSources(classLoader));
+        defaultSources.addAll(new PropertiesConfigSourceProvider(WEB_INF_JAVACONFIG_PROPERTIES, true, classLoader).getConfigSources(classLoader));
 
         return defaultSources;
     }
