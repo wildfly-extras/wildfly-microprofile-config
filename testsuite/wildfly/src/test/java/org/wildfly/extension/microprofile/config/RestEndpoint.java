@@ -22,6 +22,8 @@
 
 package org.wildfly.extension.microprofile.config;
 
+import static org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask.MY_PROP_FROM_SUBSYSTEM_PROP_NAME;
+
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -50,6 +52,10 @@ public class RestEndpoint {
     @ConfigProperty(name = "my.other.prop", defaultValue = "no")
     boolean prop2;
 
+    @Inject
+    @ConfigProperty(name = MY_PROP_FROM_SUBSYSTEM_PROP_NAME)
+    String prop3;
+
     @GET
     @Produces("text/plain")
     public Response doGet() {
@@ -58,6 +64,7 @@ public class RestEndpoint {
         text.append("my.prop.never.defined = " + foo + "\n");
         text.append("my.prop = " + prop1 + "\n");
         text.append("my.other.prop = " + prop2 + "\n");
+        text.append(MY_PROP_FROM_SUBSYSTEM_PROP_NAME + " = " + prop3 + "\n");
         return Response.ok(text).build();
     }
 }

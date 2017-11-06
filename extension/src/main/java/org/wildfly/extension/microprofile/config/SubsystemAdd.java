@@ -51,5 +51,6 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
             }
         }, OperationContext.Stage.RUNTIME);
 
+        javax.config.spi.ConfigProviderResolver.setInstance(org.wildfly.microprofile.config.jsr.WildFlyConfigProviderResolver.INSTANCE);
     }
 }

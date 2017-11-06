@@ -55,8 +55,8 @@
         <connection>scm:git:https://github.com/wildfly-extras/wildfly-microprofile-config.git</connection>
         <developerConnection>scm:git:https://github.com/wildfly-extras/wildfly-microprofile-config.git</developerConnection>
         <url>https://github.com/wildfly-extras/wildfly-microprofile-config/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <modules>
         <!-- MicroProfile Config modules -->

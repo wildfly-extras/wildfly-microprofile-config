@@ -22,7 +22,8 @@
     <container qualifier="jboss" default="true">
         <configuration>
             <property name="jbossHome">${basedir}/../../dist/target/microprofile-config-${project.version}</property>
-            <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=256m</property>
+            <!-- for debugging, add: -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8787 -->
+            <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=256m </property>
             <property name="serverConfig">standalone-microprofile.xml</property>
         </configuration>
     </container>

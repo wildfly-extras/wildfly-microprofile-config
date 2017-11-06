@@ -22,27 +22,28 @@
 
 package org.wildfly.extension.microprofile.config;
 
-import static org.junit.Assert.assertTrue;
+import static org.wildfly.extension.microprofile.config.AssertUtils.assertTextContainsProperty;
 import static org.wildfly.extension.microprofile.config.HttpUtils.getContent;
+import static org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask.MY_PROP_FROM_SUBSYSTEM_PROP_NAME;
+import static org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask.MY_PROP_FROM_SUBSYSTEM_PROP_VALUE;
 
 import java.net.URL;
+import java.util.Optional;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.HTTP;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,6 +52,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
+@ServerSetup(SubsystemConfigSourceTask.class)
 public class MicroProfileConfigTestCase {
 
     @Deployment
@@ -70,9 +72,10 @@ public class MicroProfileConfigTestCase {
             HttpResponse response = client.execute(new HttpGet(url + "microprofile/test"));
             Assert.assertEquals(200, response.getStatusLine().getStatusCode());
             String text = getContent(response);
-            assertTrue(text, text.contains("my.prop.never.defined = Optional.empty"));
-            assertTrue(text, text.contains("my.prop = BAR"));
-            assertTrue(text, text.contains("my.other.prop = false"));
+            assertTextContainsProperty(text, "my.prop.never.defined", Optional.empty().toString());
+            assertTextContainsProperty(text, "my.prop", "BAR");
+            assertTextContainsProperty(text, "my.other.prop", false);
+            assertTextContainsProperty(text, MY_PROP_FROM_SUBSYSTEM_PROP_NAME, MY_PROP_FROM_SUBSYSTEM_PROP_VALUE);
         }
     }
 }

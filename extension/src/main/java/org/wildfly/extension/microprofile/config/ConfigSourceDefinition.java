@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.wildfly.microprofile.config.DirConfigSource;
 import org.wildfly.microprofile.config.PropertiesConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -62,7 +63,7 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             .setAllowNull(true)
             .setRestartAllServices()
             .build();
-    static AttributeDefinition PROPERTIES = new PropertiesAttributeDefinition.Builder("properties", true)
+    static AttributeDefinition PROPERTIES = new PropertiesAttributeDefinition.Builder(ModelDescriptionConstants.PROPERTIES, true)
             .setAttributeParser(new AttributeParsers.PropertiesParser(false))
             .setAttributeMarshaller(new AttributeMarshallers.PropertiesAttributeMarshaller(null, false))
             .setAlternatives("class", "dir")
@@ -76,7 +77,7 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             create(MODULE, ModelType.STRING, false)
                     .setAllowExpression(false)
                     .build())
-            .setAlternatives("properties", "dir")
+            .setAlternatives(ModelDescriptionConstants.PROPERTIES, "dir")
             .setAllowNull(true)
             .setAttributeMarshaller(AttributeMarshaller.ATTRIBUTE_OBJECT)
             .setAllowNull(true)
@@ -84,7 +85,7 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             .build();
     static AttributeDefinition DIR = SimpleAttributeDefinitionBuilder.create("dir", ModelType.STRING)
             .setAllowExpression(true)
-            .setAlternatives("class", "properties")
+            .setAlternatives("class", ModelDescriptionConstants.PROPERTIES)
             .setAllowNull(true)
             .setRestartAllServices()
             .build();

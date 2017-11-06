@@ -22,13 +22,11 @@
 
 package org.wildfly.extension.microprofile.config.deployment;
 
-import java.util.List;
+import static org.wildfly.extension.microprofile.config.deployment.MicroProfileConfigDeploymentProcessor.getMicroProfileConfigSourceFromServices;
 
 import javax.config.Config;
 import javax.config.ConfigProvider;
-import javax.config.spi.ConfigBuilder;
 import javax.config.spi.ConfigSource;
-import javax.config.spi.ConfigSourceProvider;
 
 import org.jboss.as.ee.weld.WeldDeploymentMarker;
 import org.jboss.as.server.deployment.Attachments;
@@ -39,11 +37,7 @@ import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.weld.deployment.WeldPortableExtensions;
 import org.jboss.modules.Module;
-import org.jboss.msc.service.ServiceController;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
-import org.wildfly.extension.microprofile.config.ConfigSourceProviderService;
-import org.wildfly.extension.microprofile.config.ConfigSourceService;
 import org.wildfly.microprofile.config.jsr.WildFlyConfigBuilder;
 import org.wildfly.microprofile.config.jsr.WildFlyConfigProviderResolver;
 import org.wildfly.microprofile.config.jsr.inject.ConfigExtension;
@@ -77,7 +71,11 @@ public class JavaxConfigDeploymentProcessor implements DeploymentUnitProcessor {
                     .addDefaultSources()
                     .addDiscoveredSources()
                     .addDiscoveredConverters();
-            addMicroProfileConfigSourcesFromServices(builder, serviceRegistry, module.getClassLoader());
+            // convert MicroProfile ConfigSources from the subsystem to javax.config ConfigSource
+            for (org.eclipse.microprofile.config.spi.ConfigSource microProfileConfigSource : getMicroProfileConfigSourceFromServices(serviceRegistry, module.getClassLoader())) {
+                ConfigSource javaxConfigSource = MicroProfileToJavaxUtils.toJavax(microProfileConfigSource);
+                builder.withSources(javaxConfigSource);
+            }
             Config config = builder.build();
 
             WildFlyConfigProviderResolver.INSTANCE.registerConfig(config, module.getClassLoader());
@@ -97,22 +95,5 @@ public class JavaxConfigDeploymentProcessor implements DeploymentUnitProcessor {
             WildFlyConfigProviderResolver.INSTANCE.releaseConfig(ConfigProvider.getConfig(module.getClassLoader()));
         }
 
-    }
-
-    private void addMicroProfileConfigSourcesFromServices(ConfigBuilder builder, ServiceRegistry serviceRegistry, ClassLoader classloader) {
-        List<ServiceName> serviceNames = serviceRegistry.getServiceNames();
-        for (ServiceName serviceName: serviceNames) {
-            if (ConfigSourceService.SERVICE_NAME.isParentOf(serviceName)) {
-                ServiceController<?> service = serviceRegistry.getService(serviceName);
-                ConfigSource configSource = ConfigSource.class.cast(service.getValue());
-                builder.withSources(configSource);
-            } else if (ConfigSourceProviderService.SERVICE_NAME.isParentOf(serviceName)) {
-                ServiceController<?> service = serviceRegistry.getService(serviceName);
-                ConfigSourceProvider configSourceProvider = ConfigSourceProvider.class.cast(service.getValue());
-                for (ConfigSource configSource : configSourceProvider.getConfigSources(classloader)) {
-                    builder.withSources(configSource);
-                }
-            }
-        }
     }
 }

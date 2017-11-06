@@ -22,11 +22,12 @@
 
 package org.wildfly.extension.microprofile.config.deployment;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 import org.jboss.as.ee.weld.WeldDeploymentMarker;
@@ -75,7 +76,9 @@ public class MicroProfileConfigDeploymentProcessor implements DeploymentUnitProc
                     .addDefaultSources()
                     .addDiscoveredSources()
                     .addDiscoveredConverters();
-            addMicroProfileConfigSourcesFromServices(builder, serviceRegistry, module.getClassLoader());
+            for (ConfigSource configSource : getMicroProfileConfigSourceFromServices(serviceRegistry, module.getClassLoader())) {
+                builder.withSources(configSource);
+            }
             Config config = builder.build();
 
             WildFlyConfigProviderResolver.INSTANCE.registerConfig(config, module.getClassLoader());
@@ -97,20 +100,22 @@ public class MicroProfileConfigDeploymentProcessor implements DeploymentUnitProc
 
     }
 
-    private void addMicroProfileConfigSourcesFromServices(ConfigBuilder builder, ServiceRegistry serviceRegistry, ClassLoader classloader) {
+    static Set<ConfigSource> getMicroProfileConfigSourceFromServices(ServiceRegistry serviceRegistry, ClassLoader classloader) {
+        Set<ConfigSource> configSources = new HashSet<>();
         List<ServiceName> serviceNames = serviceRegistry.getServiceNames();
         for (ServiceName serviceName: serviceNames) {
             if (ServiceNames.CONFIG_SOURCE.isParentOf(serviceName)) {
                 ServiceController<?> service = serviceRegistry.getService(serviceName);
                 ConfigSource configSource = ConfigSource.class.cast(service.getValue());
-                builder.withSources(configSource);
+                configSources.add(configSource);
             } else if (ServiceNames.CONFIG_SOURCE_PROVIDER.isParentOf(serviceName)) {
                 ServiceController<?> service = serviceRegistry.getService(serviceName);
                 ConfigSourceProvider configSourceProvider = ConfigSourceProvider.class.cast(service.getValue());
                 for (ConfigSource configSource : configSourceProvider.getConfigSources(classloader)) {
-                    builder.withSources(configSource);
+                    configSources.add(configSource);
                 }
             }
         }
+        return configSources;
     }
 }
