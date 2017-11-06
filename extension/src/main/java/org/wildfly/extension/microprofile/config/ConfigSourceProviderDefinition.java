@@ -29,27 +29,20 @@ import static org.wildfly.extension.microprofile.config.MicroProfileConfigLogger
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 
-import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AbstractRemoveStepHandler;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.AttributeMarshaller;
-import org.jboss.as.controller.AttributeMarshallers;
-import org.jboss.as.controller.AttributeParsers;
 import org.jboss.as.controller.ObjectTypeAttributeDefinition;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PersistentResourceDefinition;
-import org.jboss.as.controller.PropertiesAttributeDefinition;
-import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
-import org.wildfly.microprofile.config.PropertiesConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
