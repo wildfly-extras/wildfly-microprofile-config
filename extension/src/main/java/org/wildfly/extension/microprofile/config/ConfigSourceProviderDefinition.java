@@ -117,7 +117,7 @@ public class ConfigSourceProviderDefinition extends PersistentResourceDefinition
             Class<?> clazz = module.getClassLoader().loadClass(className);
             return clazz;
         } catch (Exception e) {
-            throw ROOT_LOGGER.unableToLoadClassFromModule(className, moduleName);
+            throw ROOT_LOGGER.unableToLoadClassFromModule(className, moduleName, e);
         }
     }
 }

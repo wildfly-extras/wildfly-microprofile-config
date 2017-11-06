@@ -27,6 +27,7 @@ import static org.jboss.logging.Logger.Level.INFO;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
@@ -49,5 +50,5 @@ public interface MicroProfileConfigLogger extends BasicLogger {
     void activatingSubsystem();
 
     @Message(id = 2, value = "Unable to load class %s from module %s")
-    OperationFailedException unableToLoadClassFromModule(String className, String moduleName);
+    OperationFailedException unableToLoadClassFromModule(String className, String moduleName, @Cause Throwable cause);
 }
