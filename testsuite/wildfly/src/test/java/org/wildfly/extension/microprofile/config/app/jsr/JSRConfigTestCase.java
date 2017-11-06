@@ -20,12 +20,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.extension.microprofile.config.module.provider;
+package org.wildfly.extension.microprofile.config.app.jsr;
 
+import static org.junit.Assert.assertTrue;
 import static org.wildfly.extension.microprofile.config.AssertUtils.assertTextContainsProperty;
 import static org.wildfly.extension.microprofile.config.HttpUtils.getContent;
+import static org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask.MY_PROP_FROM_SUBSYSTEM_PROP_NAME;
+import static org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask.MY_PROP_FROM_SUBSYSTEM_PROP_VALUE;
 
 import java.net.URL;
+import java.util.Optional;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -43,22 +47,20 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.extension.microprofile.config.module.CustomConfigSource;
+import org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask;
 
 /**
- * Load a ConfigSource from a class (in a module).
- *
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@ServerSetup(ConfigSourceProviderFromClassSetupTask.class)
-public class ConfigSourceProviderFromClassTestCase {
+@ServerSetup(SubsystemConfigSourceTask.class)
+public class JSRConfigTestCase {
 
     @Deployment
     public static Archive<?> deploy() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "ConfigSourceProviderFromClassTestCase.war")
-                .addClasses(RestApplication.class, RestApplication.Resource.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "JSRConfigTestCase.war")
+                .addClasses(TestApplication.class, TestApplication.Resource.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return war;
     }
@@ -69,10 +71,13 @@ public class ConfigSourceProviderFromClassTestCase {
     @Test
     public void testGetWithConfigProperties() throws Exception {
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            HttpResponse response = client.execute(new HttpGet(url + "custom-config-source-provider/test"));
+            HttpResponse response = client.execute(new HttpGet(url + "jsr/test"));
             Assert.assertEquals(200, response.getStatusLine().getStatusCode());
             String text = getContent(response);
-            assertTextContainsProperty(text, CustomConfigSource.PROP_NAME, CustomConfigSource.PROP_VALUE);
+            assertTextContainsProperty(text, "my.prop.never.defined", Optional.empty().toString());
+            assertTextContainsProperty(text, "my.prop", "BAR");
+            assertTextContainsProperty(text, "my.other.prop", false);
+            assertTextContainsProperty(text, MY_PROP_FROM_SUBSYSTEM_PROP_NAME, MY_PROP_FROM_SUBSYSTEM_PROP_VALUE);
         }
     }
 }

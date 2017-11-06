@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.extension.microprofile.config;
+package org.wildfly.extension.microprofile.config.app.microprofile;
 
 import static org.wildfly.extension.microprofile.config.AssertUtils.assertTextContainsProperty;
 import static org.wildfly.extension.microprofile.config.HttpUtils.getContent;
@@ -46,6 +46,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
@@ -58,7 +59,7 @@ public class MicroProfileConfigTestCase {
     @Deployment
     public static Archive<?> deploy() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "MicroProfileConfigTestCase.war")
-                .addClasses(RestEndpoint.class, RestApplication.class)
+                .addClasses(TestApplication.class, TestApplication.Resource.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return war;
     }

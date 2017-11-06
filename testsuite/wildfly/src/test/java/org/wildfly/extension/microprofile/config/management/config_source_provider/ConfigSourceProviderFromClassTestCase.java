@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.extension.microprofile.config.module;
+package org.wildfly.extension.microprofile.config.management.config_source_provider;
 
 import static org.wildfly.extension.microprofile.config.AssertUtils.assertTextContainsProperty;
 import static org.wildfly.extension.microprofile.config.HttpUtils.getContent;
@@ -43,6 +43,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.extension.microprofile.config.management.config_source.CustomConfigSource;
 
 /**
  * Load a ConfigSource from a class (in a module).
@@ -51,13 +52,13 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@ServerSetup(ConfigSourceFromClassSetupTask.class)
-public class ConfigSourceFromClassTestCase {
+@ServerSetup(SetupTask.class)
+public class ConfigSourceProviderFromClassTestCase {
 
     @Deployment
     public static Archive<?> deploy() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "ConfigSourceFromClassTestCase.war")
-                .addClasses(RestEndpoint.class, RestApplication.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "ConfigSourceProviderFromClassTestCase.war")
+                .addClasses(TestApplication.class, TestApplication.Resource.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return war;
     }
@@ -65,11 +66,10 @@ public class ConfigSourceFromClassTestCase {
     @ArquillianResource
     private URL url;
 
-
     @Test
     public void testGetWithConfigProperties() throws Exception {
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            HttpResponse response = client.execute(new HttpGet(url + "custom-config-source/test"));
+            HttpResponse response = client.execute(new HttpGet(url + "custom-config-source-provider/test"));
             Assert.assertEquals(200, response.getStatusLine().getStatusCode());
             String text = getContent(response);
             assertTextContainsProperty(text, CustomConfigSource.PROP_NAME, CustomConfigSource.PROP_VALUE);

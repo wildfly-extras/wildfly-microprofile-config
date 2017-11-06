@@ -20,20 +20,40 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.extension.microprofile.config.module.provider;
+package org.wildfly.extension.microprofile.config.management.config_source;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
-import org.wildfly.extension.microprofile.config.module.CustomConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class CustomConfigSourceProvider implements ConfigSourceProvider{
+public class CustomConfigSource implements ConfigSource{
+    public static final String PROP_NAME = "my.prop.from.class";
+    public static final String PROP_VALUE = "I'm from a custom config source!";
+
+    final Map<String, String> props;
+
+    public CustomConfigSource() {
+        props = new HashMap<>();
+        props.put(PROP_NAME, PROP_VALUE);
+    }
+
     @Override
-    public Iterable<ConfigSource> getConfigSources(ClassLoader classLoader) {
-        return Arrays.asList(new CustomConfigSource());
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(props);
+    }
+
+    @Override
+    public String getValue(String s) {
+        return props.get(s);
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
     }
 }

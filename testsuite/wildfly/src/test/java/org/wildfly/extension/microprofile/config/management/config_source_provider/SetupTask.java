@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.extension.microprofile.config.module;
+package org.wildfly.extension.microprofile.config.management.config_source_provider;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
@@ -37,50 +37,54 @@ import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.test.module.util.TestModule;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.extension.microprofile.config.management.config_source.CustomConfigSource;
 
 /**
+ * Add a config-source-provider with a custom class in the microprofile-config subsystem.
+ *
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class ConfigSourceFromClassSetupTask implements ServerSetupTask {
-    private static final String MODULE_NAME = "test.custom-config-source";
+public class SetupTask implements ServerSetupTask {
+    private static final String MODULE_NAME = "test.custom-config-source-provider";
 
     private static TestModule testModule;
 
     @Override
     public void setup(ManagementClient managementClient, String s) throws Exception {
-        URL url = ConfigSourceFromClassTestCase.class.getResource("module.xml");
+        URL url = ConfigSourceProviderFromClassTestCase.class.getResource("module.xml");
         File moduleXmlFile = new File(url.toURI());
         testModule = new TestModule(MODULE_NAME, moduleXmlFile);
-        testModule.addResource("config-source.jar")
+        testModule.addResource("config-source-provider.jar")
+                .addClass(CustomConfigSourceProvider.class)
                 .addClass(CustomConfigSource.class);
         testModule.create();
 
-        addConfigSource(managementClient.getControllerClient());
+        addConfigSourceProvider(managementClient.getControllerClient());
     }
 
     @Override
     public void tearDown(ManagementClient managementClient, String s) throws Exception {
-        removeConfigSource(managementClient.getControllerClient());
+        removeConfigSourceProvider(managementClient.getControllerClient());
 
         testModule.remove();
     }
 
-    private void addConfigSource(ModelControllerClient client) throws IOException {
+    private void addConfigSourceProvider(ModelControllerClient client) throws IOException {
         ModelNode op;
         op = new ModelNode();
         op.get(OP_ADDR).add(SUBSYSTEM, "microprofile-config");
-        op.get(OP_ADDR).add("config-source", "cs-from-class");
+        op.get(OP_ADDR).add("config-source-provider", "my-config-source-config_source_provider");
         op.get(OP).set(ADD);
         op.get("class").get("module").set(MODULE_NAME);
-        op.get("class").get("name").set(CustomConfigSource.class.getName());
+        op.get("class").get("name").set(CustomConfigSourceProvider.class.getName());
         client.execute(op);
     }
 
-    private void removeConfigSource(ModelControllerClient client) throws IOException {
+    private void removeConfigSourceProvider(ModelControllerClient client) throws IOException {
         ModelNode op;
         op = new ModelNode();
         op.get(OP_ADDR).add(SUBSYSTEM, "microprofile-config");
-        op.get(OP_ADDR).add("config-source", "cs-from-class");
+        op.get(OP_ADDR).add("config-source-provider", "my-config-source-config_source_provider");
         op.get(OP).set(REMOVE);
         client.execute(op);
     }

@@ -20,7 +20,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.extension.microprofile.config.module.provider;
+package org.wildfly.extension.microprofile.config.app.microprofile;
+
+import static org.wildfly.extension.microprofile.config.SubsystemConfigSourceTask.MY_PROP_FROM_SUBSYSTEM_PROP_NAME;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
@@ -30,26 +34,42 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.wildfly.extension.microprofile.config.module.CustomConfigSource;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-@ApplicationPath("/custom-config-source-provider")
-public class RestApplication extends Application {
+@ApplicationPath("/microprofile")
+public class TestApplication extends Application {
 
     @Path("/test")
     public static class Resource {
+
         @Inject
-        @ConfigProperty(name = CustomConfigSource.PROP_NAME)
-        String prop;
+        Config config;
+
+        @Inject
+        @ConfigProperty(name = "my.prop", defaultValue = "BAR")
+        String prop1;
+
+        @Inject
+        @ConfigProperty(name = "my.other.prop", defaultValue = "no")
+        boolean prop2;
+
+        @Inject
+        @ConfigProperty(name = MY_PROP_FROM_SUBSYSTEM_PROP_NAME)
+        String prop3;
 
         @GET
         @Produces("text/plain")
         public Response doGet() {
+            Optional<String> foo = config.getOptionalValue("my.prop.never.defined", String.class);
             StringBuilder text = new StringBuilder();
-            text.append(CustomConfigSource.PROP_NAME + " = " + prop + "\n");
+            text.append("my.prop.never.defined = " + foo + "\n");
+            text.append("my.prop = " + prop1 + "\n");
+            text.append("my.other.prop = " + prop2 + "\n");
+            text.append(MY_PROP_FROM_SUBSYSTEM_PROP_NAME + " = " + prop3 + "\n");
             return Response.ok(text).build();
         }
     }

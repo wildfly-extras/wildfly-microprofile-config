@@ -38,6 +38,8 @@ import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.dmr.ModelNode;
 
 /**
+ * Add a config-source with a property class in the microprofile-config subsystem.
+ *
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
 public class SubsystemConfigSourceTask implements ServerSetupTask {
