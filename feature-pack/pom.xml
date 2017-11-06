@@ -38,6 +38,11 @@
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>javax.config</groupId>
+            <artifactId>javaconfig-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

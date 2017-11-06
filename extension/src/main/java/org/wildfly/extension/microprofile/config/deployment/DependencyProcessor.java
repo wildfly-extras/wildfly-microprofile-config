@@ -35,6 +35,7 @@ public class DependencyProcessor implements DeploymentUnitProcessor {
     public static final int PRIORITY = 0x4000;
 
     public static final ModuleIdentifier MICROPROFILE_CONFIG_API = ModuleIdentifier.create("org.eclipse.microprofile.config.api");
+    public static final ModuleIdentifier JAVAX_CONFIG_API = ModuleIdentifier.create("javax.config.api");
     public static final ModuleIdentifier MICROPROFILE_CONFIG_EXTENSION = ModuleIdentifier.create("org.wildfly.extension.microprofile.config");
 
     @Override
@@ -54,15 +55,27 @@ public class DependencyProcessor implements DeploymentUnitProcessor {
         final ModuleLoader moduleLoader = Module.getBootModuleLoader();
 
         moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_API, false, false, true, false));
-
+        moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, JAVAX_CONFIG_API, false, false, true, false));
 
         if (WeldDeploymentMarker.isPartOfWeldDeployment(deploymentUnit)) {
+            boolean addConfigExtension = false;
             for (final MicroProfileConfigAnnotations annotation : MicroProfileConfigAnnotations.values()) {
                 if (!index.getAnnotations(annotation.getDotName()).isEmpty()) {
                     ConfigMarkers.markMicroProfileConfig(deploymentUnit);
-                    moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_EXTENSION, false, false, true, false));
+                    addConfigExtension = true;
                     break;
                 }
+            }
+
+            for (final JavaxConfigAnnotations annotation : JavaxConfigAnnotations.values()) {
+                if (!index.getAnnotations(annotation.getDotName()).isEmpty()) {
+                    ConfigMarkers.markJavaxConfig(deploymentUnit);
+                    addConfigExtension = true;
+                    break;
+                }
+            }
+            if (addConfigExtension) {
+                moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_EXTENSION, false, false, true, false));
             }
         }
     }

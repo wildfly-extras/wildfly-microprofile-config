@@ -1,11 +1,13 @@
 <module xmlns="urn:jboss:module:1.5" name="org.wildfly.extension.microprofile.config">
     <resources>
         <artifact name="${org.wildfly:wildfly-microprofile-config-implementation}"/>
+        <artifact name="${org.wildfly:wildfly-microprofile-config-jsr-implementation}"/>
         <artifact name="${org.wildfly:wildfly-microprofile-config-extension}"/>
     </resources>
 
     <dependencies>
         <module name="javax.api"/>
+        <module name="javax.config.api" />
         <module name="io.undertow.core"/>
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.as.controller"/>

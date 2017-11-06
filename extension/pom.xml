@@ -86,6 +86,14 @@
             <artifactId>wildfly-microprofile-config-implementation</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.config</groupId>
+            <artifactId>javaconfig-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-microprofile-config-jsr-implementation</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-ee</artifactId>
         </dependency>

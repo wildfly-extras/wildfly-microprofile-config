@@ -31,6 +31,7 @@ import org.jboss.as.server.deployment.DeploymentUnit;
 public class ConfigMarkers {
 
     private static final AttachmentKey<Boolean> MICROPROFILE_CONFIG_MARKER = AttachmentKey.create(Boolean.class);
+    private static final AttachmentKey<Boolean> JAVAX_CONFIG_MARKER = AttachmentKey.create(Boolean.class);
 
     public static void markMicroProfileConfig(DeploymentUnit unit) {
         unit.putAttachment(MICROPROFILE_CONFIG_MARKER, Boolean.TRUE);
@@ -41,6 +42,17 @@ public class ConfigMarkers {
 
     public static boolean isMicroProfileConfigDeployment(DeploymentUnit unit) {
         return unit.getAttachment(MICROPROFILE_CONFIG_MARKER) != null;
+    }
+
+    public static void markJavaxConfig(DeploymentUnit unit) {
+        unit.putAttachment(JAVAX_CONFIG_MARKER, Boolean.TRUE);
+        if (unit.getParent() != null) {
+            markMicroProfileConfig(unit.getParent());
+        }
+    }
+
+    public static boolean isJavaxConfigDeployment(DeploymentUnit unit) {
+        return unit.getAttachment(JAVAX_CONFIG_MARKER) != null;
     }
 
 }

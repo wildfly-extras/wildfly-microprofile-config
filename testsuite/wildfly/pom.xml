@@ -71,6 +71,11 @@
             <artifactId>microprofile-config-api</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.config</groupId>
+            <artifactId>javaconfig-api</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
