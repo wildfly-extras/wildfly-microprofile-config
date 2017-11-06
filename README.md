@@ -2,6 +2,8 @@
 
 [WildFly][wildfly]/[Swarm][swarm] Extension for [Eclipse MicroProfile Config][microprofile-config] & [JSR #382 Config][jsr-382].
 
+[![Build Status](https://ci.wildfly.org/app/rest/builds/buildType:(id:MicroProfileJsr_WildflyMicroprofileConfig_Jsr382Branch)/statusIcon)](https://ci.wildfly.org/viewType.html?buildTypeId=MicroProfileJsr_WildflyMicroprofileConfig_Jsr382Branch&guest=1)
+
 # Instructions
 
 * Compile and install the [Eclipse MicroProfile Config][microprofile-config] project.
