@@ -1,6 +1,6 @@
 # wildfly-microprofile-config
 
-[WildFly][wildfly]/[Swarm][swarm] Extension for [Eclipse MicroProfile Config][microprofile-config].
+[WildFly][wildfly]/[Swarm][swarm] Extension for [Eclipse MicroProfile Config][microprofile-config] & [JSR #382 Config][jsr-382].
 
 # Instructions
 
@@ -15,9 +15,12 @@ mvn clean install
 
 * [implementation](implementation/) - Implementation of the Eclipse MicroProfile Config API.
 * [tck](tck/) - Test suite to run the implementation against the Eclipse MicroProfile Config TCK.
+* [jsr-implementation](jsr-implementation/) - Implementation of the JSR #382 Config API.
+* [jsr-tck](jsr-tck/) - Test suite to run the JSR #382 implementation against the JSR #382 Config TCK.
 * [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. It also allows to define ConfigSources that are stored in the subsystem configuration.
 * [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Swarm.
 * [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
+* [testsuite](testsuite/) - Integration test suite that uses the WildFly distribution from [dist](dist/) to test deployed applications which uses Config APIs.
 * [config-api](config-api/) - Generation of Swarm Config API that provides a Java API to manage the `microprofile-config` subsystem.
 * [fraction](fraction/) - Swarm Fraction to use the MicroProfile Config API in your application.
 * [examples](examples/) - Examples of Swarm applications that uses an `Config` instance injected with CDI.
@@ -139,3 +142,4 @@ You can also configure values directly in the `subsystem`, e.g.:
 [wildfly]: https://wildlfy.org/
 [swarm]: http://wildfly-swarm.io/
 [microprofile-config]: https://github.com/eclipse/microprofile-config/
+[jsr-382]: https://jcp.org/en/jsr/detail?id=382
