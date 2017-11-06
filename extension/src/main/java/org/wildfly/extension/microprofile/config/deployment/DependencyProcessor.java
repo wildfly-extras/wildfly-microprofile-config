@@ -7,6 +7,7 @@ import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.Phase;
+import org.jboss.as.server.deployment.annotation.CompositeIndex;
 import org.jboss.as.server.deployment.module.ModuleDependency;
 import org.jboss.as.server.deployment.module.ModuleSpecification;
 import org.jboss.logging.Logger;
@@ -19,7 +20,7 @@ import org.jboss.modules.ModuleLoader;
  */
 public class DependencyProcessor implements DeploymentUnitProcessor {
 
-    Logger log = Logger.getLogger(SubsystemDeploymentProcessor.class);
+    Logger log = Logger.getLogger(DependencyProcessor.class);
 
     /**
      * See {@link Phase} for a description of the different phases
@@ -48,14 +49,21 @@ public class DependencyProcessor implements DeploymentUnitProcessor {
     }
 
     private void addDependencies(DeploymentUnit deploymentUnit) {
+        final CompositeIndex index = deploymentUnit.getAttachment(Attachments.COMPOSITE_ANNOTATION_INDEX);
         final ModuleSpecification moduleSpecification = deploymentUnit.getAttachment(Attachments.MODULE_SPECIFICATION);
         final ModuleLoader moduleLoader = Module.getBootModuleLoader();
 
         moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_API, false, false, true, false));
 
+
         if (WeldDeploymentMarker.isPartOfWeldDeployment(deploymentUnit)) {
-            moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_EXTENSION, false, false, true, false));
+            for (final MicroProfileConfigAnnotations annotation : MicroProfileConfigAnnotations.values()) {
+                if (!index.getAnnotations(annotation.getDotName()).isEmpty()) {
+                    ConfigMarkers.markMicroProfileConfig(deploymentUnit);
+                    moduleSpecification.addSystemDependency(new ModuleDependency(moduleLoader, MICROPROFILE_CONFIG_EXTENSION, false, false, true, false));
+                    break;
+                }
+            }
         }
     }
-
 }
