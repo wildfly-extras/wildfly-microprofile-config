@@ -45,6 +45,10 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>tck-suite.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <!-- this should not be required after https://github.com/eclipse/ConfigJSR/pull/18/files is fixed -->
+                        <org.eclipse.configjsr.CDIPlainInjectionTest.DefaultPropertyBean.configProperty>pathConfigValue</org.eclipse.configjsr.CDIPlainInjectionTest.DefaultPropertyBean.configProperty>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
