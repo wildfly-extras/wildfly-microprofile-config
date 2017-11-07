@@ -45,12 +45,12 @@
         <version.org.wildfly>11.0.0.Final</version.org.wildfly>
         <version.org.wildfly.core>3.0.8.Final</version.org.wildfly.core>
         <version.org.wildfly.swarm>2017.11.0</version.org.wildfly.swarm>
-        <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
+        <version.org.wildfly.arquillian>2.1.0.Final</version.org.wildfly.arquillian>
         <version.org.wildfly.swarm.config-api>1.1.0.Final</version.org.wildfly.swarm.config-api>
         <version.org.wildfly.swarm.fraction.plugin>55</version.org.wildfly.swarm.fraction.plugin>
         <version.org.wildfly.plugins.maven>1.0.2.Final</version.org.wildfly.plugins.maven>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.org.wildfly.build-tools>1.1.8.Final</version.org.wildfly.build-tools>
+        <version.org.wildfly.build-tools>1.2.2.Final</version.org.wildfly.build-tools>
         <version.org.apache.httcomponents>4.5.2</version.org.apache.httcomponents>
     </properties>
 

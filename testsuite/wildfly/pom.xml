@@ -115,6 +115,7 @@
                             <systemPropertyVariables>
                                 <project.build.directory>${project.build.directory}</project.build.directory>
                                 <jboss.home>${basedir}/../../dist/target/microprofile-config-${project.version}</jboss.home>
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
