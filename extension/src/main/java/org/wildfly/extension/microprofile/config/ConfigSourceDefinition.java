@@ -79,6 +79,8 @@ public class ConfigSourceDefinition extends PersistentResourceDefinition {
             .setAlternatives("properties", "dir")
             .setAllowNull(true)
             .setAttributeMarshaller(AttributeMarshaller.ATTRIBUTE_OBJECT)
+            .setAllowNull(true)
+            .setRestartAllServices()
             .build();
     static AttributeDefinition DIR = SimpleAttributeDefinitionBuilder.create("dir", ModelType.STRING)
             .setAllowExpression(true)
