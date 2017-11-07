@@ -98,6 +98,37 @@ BAR property = my BAR property comes from the env
 BOOL_PROP property = true
 ```
 
+# Install on WildFly
+
+To add it to an existing WildFly server installation:
+
+1. Build it as described above, or download and unzip the distribution `wildfly-microprofile-config-dist` zip
+   (e.g. https://repo1.maven.org/maven2/org/wildfly/wildfly-microprofile-config-dist/1.1.1/wildfly-microprofile-config-dist-1.1.1.zip).
+
+2. Copy the relevant modules to your WildFly installation:
+    ```bash
+    cd modules/system/layers/base
+    cp -R ./org/eclipse/microprofile $JBOSS_HOME/modules/system/layers/base/org/eclipse
+    cp -R ./org/wildfly/extension/microprofile $JBOSS_HOME/modules/system/layers/base/org/wildfly/extension
+    ```
+
+3. Add the extension and subsystem to your `standalone.xml` et.al.:
+
+    a. In the `<extensions>` add `<extension module="org.wildfly.extension.microprofile.config"/>`
+    
+    b. In the `<profile>` add `<subsystem xmlns="urn:wildfly:microprofile-config:1.0"/>`
+
+You can also configure values directly in the `subsystem`, e.g.:
+
+```xml
+    <subsystem xmlns="urn:wildfly:microprofile-config:1.0">
+        <config-source name="appConfigSource">
+            <property name="app.timeout" value="2500"/>
+        </config-source>
+    </subsystem>
+```
+
+
 # Links
 
 * [WildFly][wildfly]
