@@ -27,7 +27,6 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceBuilder;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
@@ -40,8 +39,6 @@ public class ConfigSourceService implements Service<ConfigSource> {
 
     private final InjectedValue<PathHandler> pathHandlerInjectedValue = new InjectedValue<>();
 
-    public static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("eclipse", "microprofile", "config", "config-source");
-
     private final String name;
     private final ConfigSource configSource;
 
@@ -52,7 +49,7 @@ public class ConfigSourceService implements Service<ConfigSource> {
 
     static void install(OperationContext context, String name, ConfigSource configSource) {
         ConfigSourceService service = new ConfigSourceService(name, configSource);
-        ServiceBuilder<ConfigSource> serviceBuilder = context.getServiceTarget().addService(SERVICE_NAME.append(name), service);
+        ServiceBuilder<ConfigSource> serviceBuilder = context.getServiceTarget().addService(ServiceNames.CONFIG_SOURCE.append(name), service);
         serviceBuilder.install();
     }
     @Override
