@@ -98,7 +98,7 @@ public class ConfigSourceProviderDefinition extends PersistentResourceDefinition
                     @Override
                     protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
                         String name = context.getCurrentAddressValue();
-                        context.removeService(ConfigSourceProviderService.SERVICE_NAME.append(name));
+                        context.removeService(ServiceNames.CONFIG_SOURCE_PROVIDER.append(name));
                     }
                 });
     }

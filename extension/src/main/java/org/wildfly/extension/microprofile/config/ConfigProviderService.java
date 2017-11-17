@@ -22,44 +22,42 @@
 
 package org.wildfly.extension.microprofile.config;
 
-import static org.wildfly.extension.microprofile.config.ServiceNames.CONFIG_SOURCE_PROVIDER;
-
-import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.msc.service.Service;
-import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
+import org.wildfly.microprofile.config.WildFlyConfigProviderResolver;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class ConfigSourceProviderService implements Service<ConfigSourceProvider> {
+public class ConfigProviderService implements Service<ConfigProviderResolver> {
 
-    private final ConfigSourceProvider configSourceProvider;
+    private ConfigProviderService() {
 
-    public ConfigSourceProviderService(String name, ConfigSourceProvider configSourceProvider) {
-        this.configSourceProvider = configSourceProvider;
     }
 
-    public static void install(OperationContext context, String name, ConfigSourceProvider configSourceProvider) {
-        ConfigSourceProviderService service = new ConfigSourceProviderService(name, configSourceProvider);
-        ServiceBuilder<ConfigSourceProvider> serviceBuilder = context.getServiceTarget().addService(CONFIG_SOURCE_PROVIDER.append(name), service);
-        serviceBuilder.install();
-    }
-
-    @Override
-    public void start(StartContext startContext) throws StartException {
+    static void install(OperationContext context) {
+        ConfigProviderService service = new ConfigProviderService();
+        context.getServiceTarget().addService(ServiceNames.CONFIG_PROVIDER, service)
+                .install();
     }
 
     @Override
-    public void stop(StopContext stopContext) {
+    public void start(StartContext context) throws StartException {
+        ConfigProviderResolver.setInstance(WildFlyConfigProviderResolver.INSTANCE);
     }
 
     @Override
-    public ConfigSourceProvider getValue() throws IllegalStateException, IllegalArgumentException {
-        return configSourceProvider;
+    public void stop(StopContext context) {
+        ConfigProviderResolver.setInstance(null);
+
     }
 
+    @Override
+    public ConfigProviderResolver getValue() throws IllegalStateException, IllegalArgumentException {
+        return WildFlyConfigProviderResolver.INSTANCE;
+    }
 }
