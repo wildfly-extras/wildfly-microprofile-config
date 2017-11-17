@@ -13,4 +13,8 @@ public interface ServiceNames {
     ServiceName CONFIG_PROVIDER = MICROPROFILE_CONFIG.append("config-provider");
     ServiceName CONFIG_SOURCE = MICROPROFILE_CONFIG.append("config-source");
     ServiceName CONFIG_SOURCE_PROVIDER = MICROPROFILE_CONFIG.append("config-source-provider");
+
+    ServiceName JSR_CONFIG = MICROPROFILE_CONFIG.append("jsr");
+    ServiceName JSR_CONFIG_PROVIDER = JSR_CONFIG.append("config-provider");
+
 }
