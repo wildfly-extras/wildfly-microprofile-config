@@ -1,15 +1,13 @@
 package org.wildfly.extension.microprofile.config;
 
-import org.wildfly.microprofile.config.WildFlyConfigProviderResolver;
-import org.wildfly.extension.microprofile.config.deployment.DependencyProcessor;
-import org.wildfly.extension.microprofile.config.deployment.SubsystemDeploymentProcessor;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.as.controller.AbstractBoottimeAddStepHandler;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.server.AbstractDeploymentChainStep;
 import org.jboss.as.server.DeploymentProcessorTarget;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.extension.microprofile.config.deployment.DependencyProcessor;
+import org.wildfly.extension.microprofile.config.deployment.SubsystemDeploymentProcessor;
 
 /**
  * Handler responsible for adding the subsystem resource to the model
@@ -39,6 +37,8 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
 
         MicroProfileConfigLogger.ROOT_LOGGER.activatingSubsystem();
 
+        ConfigProviderService.install(context);
+
         //Add deployment processors here
         //Remove this if you don't need to hook into the deployers, or you can add as many as you like
         //see SubDeploymentProcessor for explanation of the phases
@@ -50,6 +50,5 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
             }
         }, OperationContext.Stage.RUNTIME);
 
-        ConfigProviderResolver.setInstance(WildFlyConfigProviderResolver.INSTANCE);
     }
 }
