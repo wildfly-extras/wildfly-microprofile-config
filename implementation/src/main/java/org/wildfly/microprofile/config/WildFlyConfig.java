@@ -101,6 +101,13 @@ public class WildFlyConfig implements Config, Serializable {
     private <T> Converter getConverter(Class<T> asType) {
         Converter converter = converters.get(asType);
         if (converter == null) {
+            // look for implicit converters
+            synchronized (converters) {
+                converter = ImplicitConverters.getConverter(asType);
+                converters.putIfAbsent(asType, converter);
+            }
+        }
+        if (converter == null) {
             throw new IllegalArgumentException("No Converter registered for class " + asType);
         }
         return converter;
