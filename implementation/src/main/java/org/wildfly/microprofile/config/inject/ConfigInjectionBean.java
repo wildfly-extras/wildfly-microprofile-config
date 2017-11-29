@@ -164,7 +164,7 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
 
     @Override
     public boolean isAlternative() {
-        return true;
+        return false;
     }
 
     @Override
