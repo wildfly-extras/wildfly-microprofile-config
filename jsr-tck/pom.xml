@@ -32,9 +32,6 @@
 
     <name>WildFly: Config JSR #382 TCK</name>
 
-    <properties>
-        <version.org.apache.openwebbeans>1.7.3</version.org.apache.openwebbeans>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -53,17 +50,6 @@
             </plugin>
         </plugins>
     </build>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.1.10.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.wildfly</groupId>
@@ -79,31 +65,24 @@
             <artifactId>javaee-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- FIXME I'd like to use Swarm instead but the Arquillian fraction is installed
-             twice and the tests fail to run (looks like https://issues.jboss.org/browse/SWARM-1150) -->
-        <!--
-		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>arquillian</artifactId>
-			<scope>test</scope>
-		</dependency>
-        -->
         <dependency>
-            <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-spi</artifactId>
-            <version>${version.org.apache.openwebbeans}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-impl</artifactId>
-            <version>${version.org.apache.openwebbeans}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-spi</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.openwebbeans.arquillian</groupId>
-            <artifactId>owb-arquillian-standalone</artifactId>
-            <version>${version.org.apache.openwebbeans}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-weld-embedded</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

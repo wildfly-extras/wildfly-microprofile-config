@@ -20,35 +20,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.microprofile.config.jsr;
+package org.wildfly.microprofile.config;
 
-import javax.config.spi.ConfigProviderResolver;
+import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
-import org.jboss.arquillian.test.spi.TestClass;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.wildfly.microprofile.config.jsr.inject.ConfigExtension;
+import org.wildfly.microprofile.config.inject.ConfigExtension;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class WildFlyConfigArchiveProcessor  implements ApplicationArchiveProcessor {
+public class WildFlyConfigAuxiliaryArchiveAppender implements AuxiliaryArchiveAppender {
 
     @Override
-    public void process(Archive<?> applicationArchive, TestClass testClass) {
-        if (applicationArchive instanceof WebArchive) {
-            JavaArchive configJar = ShrinkWrap
-                    .create(JavaArchive.class, "wildlfy-jsr-config-impl.jar")
-                    .addPackage(WildFlyConfig.class.getPackage())
-                    .addPackage(ConfigExtension.class.getPackage())
-                    .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                    .addAsServiceProvider(ConfigProviderResolver.class, WildFlyConfigProviderResolver.class);
-
-            ((WebArchive) applicationArchive).addAsLibraries(configJar);
-        }
+    public Archive<?> createAuxiliaryArchive() {
+        JavaArchive configJar = ShrinkWrap
+                .create(JavaArchive.class, "wildlfy-config-impl.jar")
+                .addPackage(WildFlyConfig.class.getPackage())
+                .addPackage(ConfigExtension.class.getPackage())
+                .addAsServiceProvider(Extension.class, ConfigExtension.class)
+                .addAsServiceProvider(ConfigProviderResolver.class, WildFlyConfigProviderResolver.class);
+        return configJar;
     }
 }

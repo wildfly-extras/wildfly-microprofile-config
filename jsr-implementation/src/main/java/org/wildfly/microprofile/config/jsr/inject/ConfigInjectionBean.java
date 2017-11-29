@@ -25,6 +25,7 @@ package org.wildfly.microprofile.config.jsr.inject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import javax.config.inject.ConfigProperty;
 import javax.config.spi.ConfigProviderResolver;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -87,12 +89,7 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
 
     @Override
     public T create(CreationalContext<T> context) {
-        Set<Bean<?>> beans = bm.getBeans(InjectionPoint.class);
-        Bean<?> bean = bm.resolve(beans);
-        InjectionPoint ip = (InjectionPoint) bm.getReference(bean, InjectionPoint.class,  context);
-        if (ip == null) {
-            throw new IllegalStateException("Could not retrieve InjectionPoint");
-        }
+        InjectionPoint ip = (InjectionPoint) bm.getInjectableReference(new InjectionPointMetadataInjectionPoint(), context);
         Annotated annotated = ip.getAnnotated();
         ConfigProperty configProperty = annotated.getAnnotation(ConfigProperty.class);
         String key = ConfigExtension.getConfigKey(ip, configProperty);
@@ -164,7 +161,7 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
 
     @Override
     public boolean isAlternative() {
-        return true;
+        return false;
     }
 
     @Override
@@ -203,6 +200,47 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
         private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
             in.defaultReadObject();
             config = ConfigProviderResolver.instance().getConfig();
+        }
+
+    }
+
+    private static class InjectionPointMetadataInjectionPoint implements InjectionPoint {
+
+        @Override
+        public Type getType() {
+            return InjectionPoint.class;
+        }
+
+        @SuppressWarnings("serial")
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return Collections.<Annotation> singleton(new AnnotationLiteral<Default>() {
+            });
+        }
+
+        @Override
+        public Bean<?> getBean() {
+            return null;
+        }
+
+        @Override
+        public Member getMember() {
+            return null;
+        }
+
+        @Override
+        public Annotated getAnnotated() {
+            return null;
+        }
+
+        @Override
+        public boolean isDelegate() {
+            return false;
+        }
+
+        @Override
+        public boolean isTransient() {
+            return false;
         }
 
     }
