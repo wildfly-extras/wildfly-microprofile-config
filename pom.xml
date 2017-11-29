@@ -39,7 +39,11 @@
         <version.eclipse.microprofile.config>1.1</version.eclipse.microprofile.config>
         <version.javax.javaee-api>7.0</version.javax.javaee-api>
         <version.junit>4.11</version.junit>
+        <version.org.jboss.arquillian>1.1.13.Final</version.org.jboss.arquillian>
+        <version.org.jboss.arquillian.container.weld-embedded>2.0.0.Beta5</version.org.jboss.arquillian.container.weld-embedded>
         <version.org.jboss.logging>2.0.1.Final</version.org.jboss.logging>
+        <version.org.jboss.weld>2.3.SP2</version.org.jboss.weld>
+        <version.org.jboss.weld.core.impl>2.3.5.Final</version.org.jboss.weld.core.impl>
         <version.org.wildfly>10.1.0.Final</version.org.wildfly>
         <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
         <version.org.wildfly.swarm>2017.7.0</version.org.wildfly.swarm>
@@ -164,6 +168,37 @@
                 <scope>test</scope>
                 <version>${version.junit}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-api</artifactId>
+                <version>${version.org.jboss.weld}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-spi</artifactId>
+                <version>${version.org.jboss.weld}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-core-impl</artifactId>
+                <version>${version.org.jboss.weld.core.impl}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-weld-embedded</artifactId>
+                <version>${version.org.jboss.arquillian.container.weld-embedded}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.org.jboss.arquillian}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <!-- Feature Packs -->
             <dependency>
@@ -215,6 +250,21 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <pluginManagement>
             <plugins>
