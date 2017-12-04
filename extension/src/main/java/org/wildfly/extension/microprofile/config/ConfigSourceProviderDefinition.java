@@ -66,6 +66,7 @@ public class ConfigSourceProviderDefinition extends PersistentResourceDefinition
             .setAllowNull(false)
             .setAllowNull(true)
             .setAttributeMarshaller(AttributeMarshaller.ATTRIBUTE_OBJECT)
+            .setRestartAllServices()
             .build();
 
     static AttributeDefinition[] ATTRIBUTES = { CLASS };
