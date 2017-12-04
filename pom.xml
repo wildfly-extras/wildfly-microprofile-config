@@ -30,7 +30,7 @@
 
     <groupId>org.wildfly</groupId>
     <artifactId>wildfly-microprofile-config</artifactId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.5</version>
 
     <packaging>pom</packaging>
     <name>WildFly: MicroProfile Config</name>
@@ -58,7 +58,7 @@
         <connection>scm:git:https://github.com/wildfly-extras/wildfly-microprofile-config.git</connection>
         <developerConnection>scm:git:https://github.com/wildfly-extras/wildfly-microprofile-config.git</developerConnection>
         <url>https://github.com/wildfly-extras/wildfly-microprofile-config/</url>
-      <tag>HEAD</tag>
+      <tag>1.1.5</tag>
   </scm>
 
     <modules>
