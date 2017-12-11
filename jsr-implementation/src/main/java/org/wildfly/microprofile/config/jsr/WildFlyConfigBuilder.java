@@ -22,10 +22,14 @@
 
 package org.wildfly.microprofile.config.jsr;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 import javax.config.Config;
@@ -45,7 +49,7 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
-    private List<Converter> converters = new ArrayList<>();
+    private Map<Type, Converter> converters = new HashMap<>();
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     private boolean addDefaultSources = false;
     private boolean addDiscoveredSources = false;
@@ -127,8 +131,18 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
     @Override
     public ConfigBuilder withConverters(Converter<?>[] converters) {
         for (Converter<?> converter: converters) {
-            this.converters.add(converter);
+            Type type = getConverterType(converter.getClass());
+            if (type == null) {
+                throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
+            }
+            this.converters.put(type, converter);
         }
+        return this;
+    }
+
+    @Override
+    public <T> ConfigBuilder withConverter(Class<T> type, Converter<T> converter) {
+        this.converters.put(type, converter);
         return this;
     }
 
@@ -142,7 +156,13 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
         }
 
         if (addDiscoveredConverters) {
-            converters.addAll(discoverConverters());
+            for(Converter converter : discoverConverters()) {
+                Type type = getConverterType(converter.getClass());
+                if (type == null) {
+                    throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
+                }
+                converters.put(type, converter);
+            }
         }
 
         Collections.sort(sources, new Comparator<ConfigSource>() {
@@ -153,5 +173,26 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
         });
 
         return new WildFlyConfig(sources, converters);
+    }
+
+    private Type getConverterType(Class clazz) {
+        if (clazz.equals(Object.class)) {
+            return null;
+        }
+
+        for (Type type : clazz.getGenericInterfaces()) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) type;
+                if (pt.getRawType().equals(Converter.class)) {
+                    Type[] typeArguments = pt.getActualTypeArguments();
+                    if (typeArguments.length != 1) {
+                        throw new IllegalStateException("Converter " + clazz + " must be parameterized with a single type");
+                    }
+                    return typeArguments[0];
+                }
+            }
+        }
+
+        return getConverterType(clazz.getSuperclass());
     }
 }

@@ -23,7 +23,6 @@
 package org.wildfly.microprofile.config.jsr;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,10 +45,10 @@ public class WildFlyConfig implements Config, Serializable {
     private final List<ConfigSource> configSources;
     private Map<Type, Converter> converters;
 
-    WildFlyConfig(List<ConfigSource> configSources, List<Converter> converters) {
+    WildFlyConfig(List<ConfigSource> configSources, Map<Type, Converter> converters) {
         this.configSources = configSources;
         this.converters = new HashMap<>(Converters.ALL_CONVERTERS);
-        addConverters(converters);
+        this.converters.putAll(converters);
     }
 
     @Override
@@ -106,34 +105,4 @@ public class WildFlyConfig implements Config, Serializable {
         return converter;
     }
 
-    private void addConverters(List<Converter> converters) {
-        for (Converter converter: converters) {
-            Type type = getConverterType(converter.getClass());
-            if (type == null) {
-                throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
-            }
-            this.converters.put(type, converter);
-        }
-    }
-
-    private Type getConverterType(Class clazz) {
-        if (clazz.equals(Object.class)) {
-            return null;
-        }
-
-        for (Type type : clazz.getGenericInterfaces()) {
-            if (type instanceof ParameterizedType) {
-                ParameterizedType pt = (ParameterizedType) type;
-                if (pt.getRawType().equals(Converter.class)) {
-                    Type[] typeArguments = pt.getActualTypeArguments();
-                    if (typeArguments.length != 1) {
-                        throw new IllegalStateException("Converter " + clazz + " must be parameterized with a single type");
-                    }
-                    return typeArguments[0];
-                }
-            }
-        }
-
-        return getConverterType(clazz.getSuperclass());
-    }
 }
