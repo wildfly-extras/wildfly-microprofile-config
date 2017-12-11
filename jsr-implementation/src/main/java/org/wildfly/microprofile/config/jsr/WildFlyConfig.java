@@ -22,8 +22,12 @@
 
 package org.wildfly.microprofile.config.jsr;
 
+import static java.lang.reflect.Array.newInstance;
+
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -90,19 +94,40 @@ public class WildFlyConfig implements Config, Serializable {
 
     public <T> T convert(String value, Class<T> asType) {
         if (value != null) {
-            Converter<T> converter = getConverter(asType);
-            return converter.convert(value);
+            boolean isArray = asType.isArray();
+            if (isArray) {
+                String[] split = StringUtil.split(value);
+                Class<?> componentType = asType.getComponentType();
+                T array =  (T)newInstance(componentType, split.length);
+                Converter<T> converter = getConverter(asType);
+                for (int i = 0 ; i < split.length ; i++) {
+                    T s = converter.convert(split[i]);
+                    Array.set(array, i, s);
+                }
+                return array;
+            } else {
+                Converter<T> converter = getConverter(asType);
+                return converter.convert(value);
+            }
         }
 
         return null;
     }
 
     private <T> Converter getConverter(Class<T> asType) {
-        Converter converter = converters.get(asType);
-        if (converter == null) {
-            throw new IllegalArgumentException("No Converter registered for class " + asType);
+        if (asType.isArray()) {
+            Class<?> componentType = asType.getComponentType();
+            Converter converter = converters.get(componentType);
+            if (converter == null) {
+                throw new IllegalArgumentException("No Converter registered for class " + componentType + ", registered: " + converters.keySet());
+            }
+            return converter;
+        } else {
+            Converter converter = converters.get(asType);
+            if (converter == null) {
+                throw new IllegalArgumentException("No Converter registered for class " + asType);
+            }
+            return converter;
         }
-        return converter;
     }
-
 }
