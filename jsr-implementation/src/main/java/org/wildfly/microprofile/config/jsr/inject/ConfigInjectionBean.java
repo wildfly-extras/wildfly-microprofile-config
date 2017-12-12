@@ -30,7 +30,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import javax.config.Config;
 import javax.config.ConfigProvider;
@@ -108,14 +110,15 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
         else {
             Class clazz = (Class) annotated.getBaseType();
             if (defaultValue == null || defaultValue.length() == 0) {
-                Object value = getConfig().getValue(key, clazz);
                 return (T) getConfig().getValue(key, clazz);
-            }
-            else {
+            } else {
                 Config config = getConfig();
-                T value = (T) config.getOptionalValue(key, clazz)
-                        .orElse(((WildFlyConfig) config).convert(defaultValue, clazz));
-                return value;
+                Optional<T> optionalValue = config.getOptionalValue(key, clazz);
+                if (optionalValue.isPresent()) {
+                    return optionalValue.get();
+                } else {
+                    return (T)((WildFlyConfig) config).convert(defaultValue, clazz);
+                }
             }
         }
 
