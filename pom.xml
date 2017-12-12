@@ -49,9 +49,11 @@
         <version.org.wildfly.swarm>2017.11.0</version.org.wildfly.swarm>
         <version.org.wildfly.swarm.config-api>1.1.0.Final</version.org.wildfly.swarm.config-api>
         <version.org.wildfly.swarm.fraction.plugin>55</version.org.wildfly.swarm.fraction.plugin>
+        <version.org.wildfly.arquillian>2.1.0.Final</version.org.wildfly.arquillian>
         <version.org.wildfly.plugins.maven>1.0.2.Final</version.org.wildfly.plugins.maven>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.wildfly.build-tools>1.1.8.Final</version.org.wildfly.build-tools>
+        <version.org.apache.httpcomponents>4.5.2</version.org.apache.httpcomponents>
     </properties>
 
     <scm>
@@ -67,6 +69,7 @@
         <module>extension</module>
         <module>feature-pack</module>
         <module>dist</module>
+        <module>testsuite</module>
         <module>config-api</module>
         <module>fraction</module>
         <module>examples</module>
@@ -115,6 +118,12 @@
                 <type>pom</type>
                 <scope>test</scope>
                 <version>${version.org.wildfly.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-core-testsuite-shared</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.wildfly</groupId>
@@ -169,6 +178,12 @@
                 <version>${version.junit}</version>
             </dependency>
             <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${version.org.wildfly.arquillian}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-api</artifactId>
                 <version>${version.org.jboss.weld}</version>
@@ -198,6 +213,12 @@
                 <version>${version.org.jboss.arquillian}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.org.apache.httpcomponents}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Feature Packs -->
