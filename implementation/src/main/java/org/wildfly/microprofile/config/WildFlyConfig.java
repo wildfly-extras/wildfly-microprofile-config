@@ -107,8 +107,8 @@ public class WildFlyConfig implements Config, Serializable {
             } else {
                 Converter<T> converter = getConverter(asType);
                 return converter.convert(value);
-            }        }
-
+            }
+        }
         return null;
     }
 

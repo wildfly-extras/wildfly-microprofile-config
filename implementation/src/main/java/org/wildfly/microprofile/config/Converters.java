@@ -132,6 +132,14 @@ class Converters {
         }
     };
 
+    static final Converter<Class<?>> CLASS_CONVERTER = (Converter & Serializable) value -> {
+        try {
+            return value != null ? Class.forName(value) : null;
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+    };
+
     public static final Map<Type, Converter> ALL_CONVERTERS = new HashMap<>();
 
     static {
@@ -161,5 +169,7 @@ class Converters {
         ALL_CONVERTERS.put(OffsetTime.class, OFFSET_TIME_CONVERTER);
 
         ALL_CONVERTERS.put(URL.class, URL_CONVERTER);
+
+        ALL_CONVERTERS.put(Class.class, CLASS_CONVERTER);
     }
 }
