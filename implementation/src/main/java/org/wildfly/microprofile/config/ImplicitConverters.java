@@ -34,7 +34,6 @@ import org.eclipse.microprofile.config.spi.Converter;
  */
 class ImplicitConverters {
 
-    // TODO add support for Enum#valueOf(Class, String)
     static Converter getConverter(Class<?> clazz) {
         for (Converter converter : new Converter[] {
                 getConverterFromConstructor(clazz, String.class),
@@ -61,7 +60,7 @@ class ImplicitConverters {
                 try {
                     return declaredConstructor.newInstance(value);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new IllegalArgumentException(e);
                 }
             };
         } catch (NoSuchMethodException e) {
@@ -80,7 +79,7 @@ class ImplicitConverters {
                     try {
                         return method.invoke(null, value);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalArgumentException(e);
                     }
                 };
             }
