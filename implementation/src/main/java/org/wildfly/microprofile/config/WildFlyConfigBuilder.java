@@ -22,11 +22,17 @@
 
 package org.wildfly.microprofile.config;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
+
+import javax.annotation.Priority;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
@@ -44,7 +50,7 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
-    private List<Converter> converters = new ArrayList<>();
+    private Map<Type, ConverterWithPriority> converters = new HashMap<>();
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     private boolean addDefaultSources = false;
     private boolean addDiscoveredSources = false;
@@ -126,9 +132,58 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
     @Override
     public ConfigBuilder withConverters(Converter<?>[] converters) {
         for (Converter<?> converter: converters) {
-            this.converters.add(converter);
+            Type type = getConverterType(converter.getClass());
+            if (type == null) {
+                throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
+            }
+            addConverter(type, getPriority(converter), converter);
         }
         return this;
+    }
+
+    @Override
+    public <T> ConfigBuilder withConverter(Class<T> type, int priority, Converter<T> converter) {
+        addConverter(type, priority, converter);
+        return this;
+    }
+
+    private void addConverter(Type type, int priority, Converter converter) {
+        // add the converter only if it has a higher priority than another converter for the same type
+        ConverterWithPriority oldConverter = this.converters.get(type);
+        int newPriority = getPriority(converter);
+        if (oldConverter == null || priority > oldConverter.priority) {
+            this.converters.put(type, new ConverterWithPriority(converter, newPriority));
+        }
+    }
+
+    private Type getConverterType(Class clazz) {
+        if (clazz.equals(Object.class)) {
+            return null;
+        }
+
+        for (Type type : clazz.getGenericInterfaces()) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) type;
+                if (pt.getRawType().equals(Converter.class)) {
+                    Type[] typeArguments = pt.getActualTypeArguments();
+                    if (typeArguments.length != 1) {
+                        throw new IllegalStateException("Converter " + clazz + " must be parameterized with a single type");
+                    }
+                    return typeArguments[0];
+                }
+            }
+        }
+
+        return getConverterType(clazz.getSuperclass());
+    }
+
+    private int getPriority(Converter<?> converter) {
+        int priority = 100;
+        Priority priorityAnnotation = converter.getClass().getAnnotation(Priority.class);
+        if (priorityAnnotation != null) {
+            priority = priorityAnnotation.value();
+        }
+        return priority;
     }
 
     @Override
@@ -141,7 +196,13 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
         }
 
         if (addDiscoveredConverters) {
-            converters.addAll(discoverConverters());
+            for(Converter converter : discoverConverters()) {
+                Type type = getConverterType(converter.getClass());
+                if (type == null) {
+                    throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
+                }
+                addConverter(type, getPriority(converter), converter);
+            }
         }
 
         Collections.sort(sources, new Comparator<ConfigSource>() {
@@ -151,6 +212,19 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
             }
         });
 
-        return new WildFlyConfig(sources, converters);
+        Map<Type, Converter> configConverters = new HashMap<>();
+        converters.forEach((type, converterWithPriority) -> configConverters.put(type, converterWithPriority.converter));
+        return new WildFlyConfig(sources, configConverters);
     }
+
+    private static class ConverterWithPriority {
+        private final Converter converter;
+        private final int priority;
+
+        private ConverterWithPriority(Converter converter, int priority) {
+            this.converter = converter;
+            this.priority = priority;
+        }
+    }
+
 }
