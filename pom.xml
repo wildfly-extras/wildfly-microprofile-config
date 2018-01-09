@@ -39,6 +39,8 @@
         <version.eclipse.microprofile.config>1.2</version.eclipse.microprofile.config>
         <version.javax.config.javaconfig-api>1.0-SNAPSHOT</version.javax.config.javaconfig-api>
         <version.javax.javaee-api>7.0</version.javax.javaee-api>
+        <version.javax.enterprise.cdi-api>1.2</version.javax.enterprise.cdi-api>
+        <version.javax.annotation-api>1.2</version.javax.annotation-api>
         <version.junit>4.11</version.junit>
         <version.org.jboss.arquillian>1.1.13.Final</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.container.weld-embedded>2.0.0.Beta5</version.org.jboss.arquillian.container.weld-embedded>
@@ -86,9 +88,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>${version.javax.javaee-api}</version>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <version>${version.javax.enterprise.cdi-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${version.javax.annotation-api}</version>
             </dependency>
             <dependency>
                 <groupId>javax.config</groupId>
@@ -194,6 +201,12 @@
                 <artifactId>junit</artifactId>
                 <scope>test</scope>
                 <version>${version.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${version.javax.javaee-api}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.arquillian</groupId>
