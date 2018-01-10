@@ -19,5 +19,6 @@
         <module name="org.jboss.as.ee" />
         <module name="org.wildfly.extension.undertow" />
         <module name="javax.enterprise.api" />
+        <module name="javax.annotation.api" />
     </dependencies>
 </module>
