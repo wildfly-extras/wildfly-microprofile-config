@@ -25,7 +25,6 @@ package org.wildfly.microprofile.config;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -49,7 +48,26 @@ public class EnvConfigSource implements ConfigSource, Serializable {
 
     @Override
     public String getValue(String name) {
-        return System.getenv(name);
+        if (name == null) {
+            return null;
+        }
+
+        String envVarName = name;
+        // exact match
+        if (System.getenv().containsKey(envVarName)) {
+            return System.getenv(envVarName);
+        }
+        // replace dots by underscores
+        envVarName = envVarName.replace('.', '_');
+        if (System.getenv().containsKey(envVarName)) {
+            return System.getenv(envVarName);
+        }
+        // replace dots by underscores and use upper case
+        envVarName = envVarName.toUpperCase();
+        if (System.getenv().containsKey(envVarName)) {
+            return System.getenv(envVarName);
+        }
+        return null;
     }
 
     @Override
