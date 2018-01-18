@@ -24,16 +24,6 @@ package org.wildfly.microprofile.config;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +34,10 @@ import org.eclipse.microprofile.config.spi.Converter;
  */
 class Converters {
 
+    @SuppressWarnings("unchecked")
     static final Converter<String> STRING_CONVERTER = (Converter & Serializable) value -> value;
 
+    @SuppressWarnings("unchecked")
     static final Converter<Boolean> BOOLEAN_CONVERTER = (Converter & Serializable) value -> {
         if (value != null) {
             return "TRUE".equalsIgnoreCase(value)
@@ -60,74 +52,23 @@ class Converters {
         return null;
     };
 
+    @SuppressWarnings("unchecked")
     static final Converter<Double> DOUBLE_CONVERTER = (Converter & Serializable) value -> value != null ? Double.valueOf(value) : null;
 
+    @SuppressWarnings("unchecked")
     static final Converter<Float> FLOAT_CONVERTER = (Converter & Serializable) value -> value != null ? Float.valueOf(value) : null;
 
+    @SuppressWarnings("unchecked")
     static final Converter<Long> LONG_CONVERTER = (Converter & Serializable) value -> value != null ? Long.valueOf(value) : null;
 
+    @SuppressWarnings("unchecked")
     static final Converter<Integer> INTEGER_CONVERTER = (Converter & Serializable) value -> value != null ? Integer.valueOf(value) : null;
 
-    static final Converter<Duration> DURATION_CONVERTER = (Converter & Serializable) value -> {
+    @SuppressWarnings("unchecked")
+    static final Converter<Class<?>> CLASS_CONVERTER = (Converter & Serializable) value -> {
         try {
-            return value != null ? Duration.parse(value) : null;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    };
-
-    static final Converter<LocalDate> LOCAL_DATE_CONVERTER = (Converter & Serializable) value -> {
-        try {
-            return value != null ? LocalDate.parse(value) : null;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    };
-
-    static final Converter<LocalTime> LOCAL_TIME_CONVERTER = (Converter & Serializable) value -> {
-        try {
-            return value != null ? LocalTime.parse(value) : null;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    };
-
-    static final Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = (Converter & Serializable) value -> {
-        try {
-            return value != null ? LocalDateTime.parse(value) : null;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    };
-
-    static final Converter<Instant> INSTANT_CONVERTER = (Converter & Serializable) value -> {
-        try {
-            return value != null ? Instant.parse(value) : null;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    };
-
-    static final Converter<OffsetTime> OFFSET_TIME_CONVERTER = (Converter & Serializable) value -> {
-        try {
-            return value != null ? OffsetTime.parse(value) : null;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    };
-
-    static final Converter<OffsetDateTime> OFFSET_DATE_TIME_CONVERTER = (Converter & Serializable) value -> {
-      try {
-         return value != null ? OffsetDateTime.parse(value) : null;
-      } catch (DateTimeParseException e) {
-         throw new IllegalArgumentException(e);
-      }
-   };
-
-    static final Converter<URL> URL_CONVERTER = (Converter & Serializable) value -> {
-        try {
-            return value != null ? new URL(value) : null;
-        } catch (MalformedURLException e) {
+            return value != null ? Class.forName(value) : null;
+        } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
     };
@@ -152,14 +93,6 @@ class Converters {
         ALL_CONVERTERS.put(Integer.class, INTEGER_CONVERTER);
         ALL_CONVERTERS.put(Integer.TYPE, INTEGER_CONVERTER);
 
-        ALL_CONVERTERS.put(Duration.class, DURATION_CONVERTER);
-        ALL_CONVERTERS.put(LocalDate.class, LOCAL_DATE_CONVERTER);
-        ALL_CONVERTERS.put(LocalTime.class, LOCAL_TIME_CONVERTER);
-        ALL_CONVERTERS.put(LocalDateTime.class, LOCAL_DATE_TIME_CONVERTER);
-        ALL_CONVERTERS.put(Instant.class, INSTANT_CONVERTER);
-        ALL_CONVERTERS.put(OffsetDateTime.class, OFFSET_DATE_TIME_CONVERTER);
-        ALL_CONVERTERS.put(OffsetTime.class, OFFSET_TIME_CONVERTER);
-
-        ALL_CONVERTERS.put(URL.class, URL_CONVERTER);
+        ALL_CONVERTERS.put(Class.class, CLASS_CONVERTER);
     }
 }

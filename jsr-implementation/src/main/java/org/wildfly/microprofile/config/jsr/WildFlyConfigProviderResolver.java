@@ -22,6 +22,7 @@
 
 package org.wildfly.microprofile.config.jsr;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map;
 import javax.config.Config;
 import javax.config.spi.ConfigBuilder;
 import javax.config.spi.ConfigProviderResolver;
+import javax.config.spi.ConfigSource;
 
 
 /**
@@ -77,11 +79,21 @@ public class WildFlyConfigProviderResolver extends ConfigProviderResolver {
         while (iterator.hasNext()) {
             Map.Entry<ClassLoader, Config> entry = iterator.next();
             if (entry.getValue() == config) {
+                for (ConfigSource configSource : config.getConfigSources()) {
+                    if (configSource instanceof AutoCloseable) {
+                        try {
+                            ((AutoCloseable) configSource).close();
+                        } catch (Exception e) {
+                        }
+                    }
+                }
                 iterator.remove();
-                return;
+                break;
             }
+        }
 
-
+        if (config instanceof WildFlyConfig) {
+            ((WildFlyConfig) config).close();
         }
     }
 }

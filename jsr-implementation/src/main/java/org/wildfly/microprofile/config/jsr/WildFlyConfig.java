@@ -24,10 +24,10 @@ package org.wildfly.microprofile.config.jsr;
 
 import static java.lang.reflect.Array.newInstance;
 
+import java.io.Closeable;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +44,7 @@ import javax.config.spi.Converter;
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
  */
-public class WildFlyConfig implements Config, Serializable {
+public class WildFlyConfig implements Config, Serializable, Closeable {
 
     private final List<ConfigSource> configSources;
     private Map<Type, Converter> converters;
@@ -92,6 +92,27 @@ public class WildFlyConfig implements Config, Serializable {
         return configSources;
     }
 
+    @Override
+    public void close() {
+        for (ConfigSource configSource : configSources) {
+            if (configSource instanceof AutoCloseable) {
+                try {
+                    ((AutoCloseable) configSource).close();
+                } catch (Exception e) {
+                }
+            }
+        }
+
+        for (Converter converter : converters.values()) {
+            if (converter instanceof AutoCloseable) {
+                try {
+                    ((AutoCloseable) converter).close();
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+
     public <T> T convert(String value, Class<T> asType) {
         if (value != null) {
             boolean isArray = asType.isArray();
@@ -116,14 +137,16 @@ public class WildFlyConfig implements Config, Serializable {
 
     private <T> Converter getConverter(Class<T> asType) {
         if (asType.isArray()) {
-            Class<?> componentType = asType.getComponentType();
-            Converter converter = converters.get(componentType);
-            if (converter == null) {
-                throw new IllegalArgumentException("No Converter registered for class " + componentType + ", registered: " + converters.keySet());
-            }
-            return converter;
+            return getConverter(asType.getComponentType());
         } else {
             Converter converter = converters.get(asType);
+            if (converter == null) {
+                // look for implicit converters
+                synchronized (converters) {
+                    converter = ImplicitConverters.getConverter(asType);
+                    converters.putIfAbsent(asType, converter);
+                }
+            }
             if (converter == null) {
                 throw new IllegalArgumentException("No Converter registered for class " + asType);
             }

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import javax.annotation.Priority;
 import javax.config.Config;
 import javax.config.spi.ConfigBuilder;
 import javax.config.spi.ConfigSource;
@@ -49,7 +50,7 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
     // sources are not sorted by their ordinals
     private List<ConfigSource> sources = new ArrayList<>();
-    private Map<Type, Converter> converters = new HashMap<>();
+    private Map<Type, ConverterWithPriority> converters = new HashMap<>();
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     private boolean addDefaultSources = false;
     private boolean addDiscoveredSources = false;
@@ -135,15 +136,33 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
             if (type == null) {
                 throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
             }
-            this.converters.put(type, converter);
+            addConverter(type, getPriority(converter), converter);
         }
         return this;
     }
 
     @Override
-    public <T> ConfigBuilder withConverter(Class<T> type, Converter<T> converter) {
-        this.converters.put(type, converter);
+    public <T> ConfigBuilder withConverter(Class<T> type, int priority, Converter<T> converter) {
+        addConverter(type, priority, converter);
         return this;
+    }
+
+    private void addConverter(Type type, int priority, Converter converter) {
+        // add the converter only if it has a higher priority than another converter for the same type
+        ConverterWithPriority oldConverter = this.converters.get(type);
+        int newPriority = getPriority(converter);
+        if (oldConverter == null || priority > oldConverter.priority) {
+            this.converters.put(type, new ConverterWithPriority(converter, newPriority));
+        }
+    }
+
+    private int getPriority(Converter<?> converter) {
+        int priority = 100;
+        Priority priorityAnnotation = converter.getClass().getAnnotation(Priority.class);
+        if (priorityAnnotation != null) {
+            priority = priorityAnnotation.value();
+        }
+        return priority;
     }
 
     @Override
@@ -161,7 +180,7 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
                 if (type == null) {
                     throw new IllegalStateException("Can not add converter " + converter + " that is not parameterized with a type");
                 }
-                converters.put(type, converter);
+                addConverter(type, getPriority(converter), converter);
             }
         }
 
@@ -172,7 +191,10 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
             }
         });
 
-        return new WildFlyConfig(sources, converters);
+        Map<Type, Converter> configConverters = new HashMap<>();
+        converters.forEach((type, converterWithPriority) -> configConverters.put(type, converterWithPriority.converter));
+
+        return new WildFlyConfig(sources, configConverters);
     }
 
     private Type getConverterType(Class clazz) {
@@ -195,4 +217,15 @@ public class WildFlyConfigBuilder implements ConfigBuilder {
 
         return getConverterType(clazz.getSuperclass());
     }
+
+    private static class ConverterWithPriority {
+        private final Converter converter;
+        private final int priority;
+
+        private ConverterWithPriority(Converter converter, int priority) {
+            this.converter = converter;
+            this.priority = priority;
+        }
+    }
+
 }

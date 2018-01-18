@@ -26,17 +26,22 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.wildfly.microprofile.config.WildFlyConfig;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.wildfly.microprofile.config.StringUtil;
+import org.wildfly.microprofile.config.WildFlyConfig;
 
 /**
  * CDI producer for {@link Config} bean.
@@ -106,6 +111,54 @@ public class ConfigProducer implements Serializable{
         return Optional.ofNullable(getValue(injectionPoint, valueType));
     }
 
+    @Dependent
+    @Produces @ConfigProperty
+    <T> Set<T> producesSetConfigPropery(InjectionPoint ip) {
+        Type type = ip.getAnnotated().getBaseType();
+        final Class<T> valueType;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            valueType = unwrapType(typeArguments[0]);
+        } else {
+            valueType = (Class<T>) String.class;
+        }
+        HashSet<T> s = new HashSet<>();
+        String stringValue = getStringValue(ip);
+        String[] split = StringUtil.split(stringValue);
+        Config config = getConfig(ip);
+        for(int i = 0 ; i < split.length ; i++) {
+            T item = ((WildFlyConfig) config).convert(split[i], valueType);
+            s.add(item);
+        }
+        return s;
+    }
+
+    @Dependent
+    @Produces @ConfigProperty
+    <T> List<T> producesListConfigPropery(InjectionPoint ip) {
+        Type type = ip.getAnnotated().getBaseType();
+        final Class<T> valueType;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            valueType = unwrapType(typeArguments[0]);
+        } else {
+            valueType = (Class<T>) String.class;
+        }
+        ArrayList<T> s = new ArrayList<>();
+        String stringValue = getStringValue(ip);
+        String[] split = StringUtil.split(stringValue);
+        Config config = getConfig(ip);
+        for(int i = 0 ; i < split.length ; i++) {
+            T item = ((WildFlyConfig) config).convert(split[i], valueType);
+            s.add(item);
+        }
+        return s;
+    }
+
     private <T> Class<T> unwrapType(Type type) {
         if (type instanceof ParameterizedType) {
             type = ((ParameterizedType) type).getRawType();
@@ -133,6 +186,20 @@ public class ConfigProducer implements Serializable{
                 }
             }
         } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    private String getStringValue(InjectionPoint injectionPoint) {
+        Config config = getConfig(injectionPoint);
+        String name = getName(injectionPoint);
+        if (name == null) {
+            return null;
+        }
+        Optional<String> optionalValue = config.getOptionalValue(name, String.class);
+        if (optionalValue.isPresent()) {
+            return optionalValue.get();
+        } else {
             return null;
         }
     }
