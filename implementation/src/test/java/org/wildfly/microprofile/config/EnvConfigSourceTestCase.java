@@ -54,5 +54,11 @@ public class EnvConfigSourceTestCase {
                 assertEquals(envProp, cs.getValue("WILDFLY.MP.CONFIG.PROP"));
                 // the config source returns only the name of the actual env variable
                 assertFalse(cs.getPropertyNames().contains("WILDFLY.MP.CONFIG.PROP"));
+
+                assertEquals(envProp, cs.getValue("wildfly-mp-config-prop"));
+                assertFalse(cs.getPropertyNames().contains("wildfly-mp-config-prop"));
+
+                assertEquals(envProp, cs.getValue("WILDFLY-MP-CONFIG-PROP"));
+                assertFalse(cs.getPropertyNames().contains("WILDFLY-MP-CONFIG-PROP"));
         }
 }
