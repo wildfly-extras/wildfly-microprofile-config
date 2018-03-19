@@ -49,7 +49,16 @@ public class EnvConfigSource implements ConfigSource, Serializable {
 
     @Override
     public String getValue(String name) {
-        return System.getenv(name);
+        String value = System.getenv(name);
+        if (value != null) {
+            return value;
+        }
+        name = name.replaceAll("[^a-zA-Z0-9_]", "_");
+        value = System.getenv(name);
+        if (value != null) {
+            return value;
+        }
+        return System.getenv(name.toUpperCase());
     }
 
     @Override
