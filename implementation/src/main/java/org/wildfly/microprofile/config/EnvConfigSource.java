@@ -52,22 +52,21 @@ public class EnvConfigSource implements ConfigSource, Serializable {
             return null;
         }
 
-        String envVarName = name;
         // exact match
-        if (System.getenv().containsKey(envVarName)) {
-            return System.getenv(envVarName);
+        String value = System.getenv(name);
+        if (value != null) {
+            return value;
         }
-        // replace dots by underscores
-        envVarName = envVarName.replace('.', '_');
-        if (System.getenv().containsKey(envVarName)) {
-            return System.getenv(envVarName);
+
+        // replace non-alphanumeric characters by underscores
+        name = name.replaceAll("[^a-zA-Z0-9_]", "_");
+        value = System.getenv(name);
+        if (value != null) {
+            return value;
         }
-        // replace dots by underscores and use upper case
-        envVarName = envVarName.toUpperCase();
-        if (System.getenv().containsKey(envVarName)) {
-            return System.getenv(envVarName);
-        }
-        return null;
+
+        // replace non-alphanumeric characters by underscores and convert to uppercase
+        return System.getenv(name.toUpperCase());
     }
 
     @Override
