@@ -76,6 +76,7 @@ public class MicroProfileConfigTestCase {
             assertTextContainsProperty(text, "my.prop.never.defined", Optional.empty().toString());
             assertTextContainsProperty(text, "my.prop", "BAR");
             assertTextContainsProperty(text, "my.other.prop", false);
+            assertTextContainsProperty(text, "optional.injected.prop.that.is.not.configured", Optional.empty().toString());
             assertTextContainsProperty(text, MY_PROP_FROM_SUBSYSTEM_PROP_NAME, MY_PROP_FROM_SUBSYSTEM_PROP_VALUE);
         }
     }

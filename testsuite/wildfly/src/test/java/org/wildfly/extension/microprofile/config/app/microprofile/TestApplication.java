@@ -61,6 +61,10 @@ public class TestApplication extends Application {
         @ConfigProperty(name = MY_PROP_FROM_SUBSYSTEM_PROP_NAME)
         String prop3;
 
+        @Inject
+        @ConfigProperty(name = "optional.injected.prop.that.is.not.configured")
+        Optional<String> optionalProp;
+
         @GET
         @Produces("text/plain")
         public Response doGet() {
@@ -69,6 +73,7 @@ public class TestApplication extends Application {
             text.append("my.prop.never.defined = " + foo + "\n");
             text.append("my.prop = " + prop1 + "\n");
             text.append("my.other.prop = " + prop2 + "\n");
+            text.append("optional.injected.prop.that.is.not.configured = " + optionalProp + "\n");
             text.append(MY_PROP_FROM_SUBSYSTEM_PROP_NAME + " = " + prop3 + "\n");
             return Response.ok(text).build();
         }

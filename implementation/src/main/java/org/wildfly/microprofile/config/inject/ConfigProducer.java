@@ -179,7 +179,7 @@ public class ConfigProducer implements Serializable{
                 return optionalValue.get();
             } else {
                 String defaultValue = getDefaultValue(injectionPoint);
-                if (defaultValue != null) {
+                if (defaultValue != null && !defaultValue.equals(ConfigProperty.UNCONFIGURED_VALUE)) {
                     return ((WildFlyConfig)config).convert(defaultValue, target);
                 } else {
                     return null;
