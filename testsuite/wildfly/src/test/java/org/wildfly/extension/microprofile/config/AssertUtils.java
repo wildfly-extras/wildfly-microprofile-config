@@ -30,7 +30,7 @@ import org.junit.Assert;
 public class AssertUtils {
 
     public static void assertTextContainsProperty(String text, String propName, Object propValue) {
-        Assert.assertTrue("Property not found in " + text,
+        Assert.assertTrue("Property " + propName + " not found in " + text,
                 text.contains(propName + " = " + propValue));
     }
 }
