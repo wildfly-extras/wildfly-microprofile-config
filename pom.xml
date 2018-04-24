@@ -45,11 +45,9 @@
         <version.org.jboss.weld.core.impl>2.3.5.Final</version.org.jboss.weld.core.impl>
         <version.org.wildfly>11.0.0.Final</version.org.wildfly>
         <version.org.wildfly.core>3.0.8.Final</version.org.wildfly.core>
-        <version.org.wildfly.swarm>2017.11.0</version.org.wildfly.swarm>
-        <version.org.wildfly.swarm.config-api>1.1.0.Final</version.org.wildfly.swarm.config-api>
-        <version.org.wildfly.swarm.fraction.plugin>55</version.org.wildfly.swarm.fraction.plugin>
         <version.org.wildfly.arquillian>2.1.0.Final</version.org.wildfly.arquillian>
         <version.org.wildfly.plugins.maven>1.0.2.Final</version.org.wildfly.plugins.maven>
+        <version.org.wildfly.swarm.config-api>1.1.0.Final</version.org.wildfly.swarm.config-api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.wildfly.build-tools>1.1.8.Final</version.org.wildfly.build-tools>
         <version.org.apache.httpcomponents>4.5.2</version.org.apache.httpcomponents>
@@ -70,8 +68,6 @@
         <module>dist</module>
         <module>testsuite</module>
         <module>config-api</module>
-        <module>fraction</module>
-        <module>examples</module>
     </modules>
 
     <dependencyManagement>
@@ -143,26 +139,6 @@
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-undertow</artifactId>
                 <version>${version.org.wildfly}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>container</artifactId>
-                <version>${version.org.wildfly.swarm}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>logging</artifactId>
-                <version>${version.org.wildfly.swarm}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>cdi</artifactId>
-                <version>${version.org.wildfly.swarm}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>meta-spi</artifactId>
-                <version>${version.org.wildfly.swarm}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
@@ -274,11 +250,6 @@
                 <version>${project.version}</version>
                 <type>zip</type>
             </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>microprofile-config-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -308,11 +279,6 @@
                     <groupId>org.wildfly.build</groupId>
                     <artifactId>wildfly-server-provisioning-maven-plugin</artifactId>
                     <version>${version.org.wildfly.build-tools}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>config-api-generator</artifactId>
-                    <version>${version.org.wildfly.swarm.config-api}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
