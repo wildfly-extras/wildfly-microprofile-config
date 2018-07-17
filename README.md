@@ -1,6 +1,6 @@
 # wildfly-microprofile-config
 
-[WildFly][wildfly]/[Swarm][swarm] Extension for [Eclipse MicroProfile Config][microprofile-config].
+[WildFly][wildfly]/[Thorntail][thorntail] Extension for [Eclipse MicroProfile Config][microprofile-config].
 
 [![Build Status](https://ci.wildfly.org/app/rest/builds/buildType:(id:MicroProfileJsr_WildflyMicroprofileConfig_MpConfig1xBranch)/statusIcon)](https://ci.wildfly.org/viewType.html?buildTypeId=MicroProfileJsr_WildflyMicroprofileConfig_MpConfig1xBranch&guest=1)
 
@@ -15,12 +15,10 @@ mvn clean install
 
 # Project structure
 
-* [implementation](implementation/) - Implementation of the Eclipse MicroProfile Config API.
-* [tck](tck/) - Test suite to run the implementation against the Eclipse MicroProfile Config TCK.
 * [extension](extension/) - WildFly Extension that provides the `microprofile-config` subsystem. It also allows to define ConfigSources that are stored in the subsystem configuration.
-* [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Swarm.
+* [feature-pack](feature-pack/) - Feature pack that bundles the extension with the JBoss Modules required to run it in WildFly and Thorntail.
 * [dist](dist/) - A distribution of WildFly with the microprofile-config extension installed (in its standalone-microprofile.xml configuration)
-* [config-api](config-api/) - Generation of Swarm Config API that provides a Java API to manage the `microprofile-config` subsystem.
+* [config-api](config-api/) - Generation of Thorntail Config API that provides a Java API to manage the `microprofile-config` subsystem.
 
 # Example
 
@@ -47,12 +45,12 @@ Optional<String> foo = config.getOptionalValue("FOO", String.class);
 
 ```
 
-The Eclipse MicroProfile Config can be used by the application by adding the corresponding Swarm fractions:
+The Eclipse MicroProfile Config can be used by the application by adding the corresponding Thorntail fractions:
 
 ```
 <dependency>
-  <groupId>org.wildfly</groupId>
-  <artifactId>wildfly-microprofile-config-fraction</artifactId>
+  <groupId>io.thorntail</groupId>
+  <artifactId>microprofile-config</artifactId>
   <version>${project.version}</version>
 </dependency>
 ```
@@ -61,11 +59,11 @@ First, run the `simple` example:
 
 ```
 $ cd examples/simple/
-$ mvn wildfly-swarm:run
+$ mvn thorntail:run
 ...
-2017-04-14 10:35:24,416 WARN  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction: Eclipse MicroProfile Config - UNSTABLE        org.wildfly.swarm:microprofile-config:1.0-SNAPSHOT
+2017-04-14 10:35:24,416 WARN  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction: Eclipse MicroProfile Config - UNSTABLE        io.thorntail:microprofile-config:1.0-SNAPSHOT
 ...
-2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
+2017-04-14 10:35:30,676 INFO  [org.wildfly.swarm] (main) WFSWARM99999: Thorntail is Ready
 ```
 
 
@@ -101,10 +99,10 @@ BOOL_PROP property = true
 # Links
 
 * [WildFly][wildfly]
-* [WildFly Swarm][swarm]
+* [Thorntail][thorntail]
 * [Eclipse MicroProfile Config][microprofile-config]
 
 
 [wildfly]: https://wildlfy.org/
-[swarm]: http://wildfly-swarm.io/
+[thorntail]: http://wildfly-swarm.io/
 [microprofile-config]: https://github.com/eclipse/microprofile-config/
