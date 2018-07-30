@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.wildfly.microprofile.config.DirConfigSource;
-import org.wildfly.microprofile.config.PropertiesConfigSource;
+import io.smallrye.config.DirConfigSource;
+import io.smallrye.config.PropertiesConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.as.controller.AbstractAddStepHandler;
 import org.jboss.as.controller.AbstractRemoveStepHandler;

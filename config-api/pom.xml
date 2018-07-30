@@ -6,17 +6,17 @@
   <parent>
     <groupId>org.wildfly</groupId>
     <artifactId>wildfly-microprofile-config</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
+  <groupId>io.thorntail</groupId>
   <artifactId>microprofile-config-api</artifactId>
-  <name>WildFly Swarm: Config API for MicroProfile Config</name>
+  <name>Thorntail: Config API for MicroProfile Config</name>
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>config-api-runtime</artifactId>
     </dependency>
     <dependency>
@@ -30,7 +30,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>config-api-generator</artifactId>
       <scope>test</scope>
     </dependency>
@@ -43,9 +43,9 @@
         <version>1.4.0</version>
         <dependencies>
           <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>config-api-generator</artifactId>
-            <version>${version.org.wildfly.swarm.config-api}</version>
+            <version>${version.io.thorntail.config-api}</version>
           </dependency>
         </dependencies>
         <executions>

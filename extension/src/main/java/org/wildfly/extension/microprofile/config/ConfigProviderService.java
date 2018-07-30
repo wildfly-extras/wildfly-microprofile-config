@@ -16,13 +16,13 @@
 
 package org.wildfly.extension.microprofile.config;
 
+import io.smallrye.config.SmallRyeConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
-import org.wildfly.microprofile.config.WildFlyConfigProviderResolver;
 
 /**
  * @author <a href="http://jmesnil.net/">Jeff Mesnil</a> (c) 2017 Red Hat inc.
@@ -41,7 +41,7 @@ public class ConfigProviderService implements Service<ConfigProviderResolver> {
 
     @Override
     public void start(StartContext context) throws StartException {
-        ConfigProviderResolver.setInstance(WildFlyConfigProviderResolver.INSTANCE);
+        ConfigProviderResolver.setInstance(SmallRyeConfigProviderResolver.INSTANCE);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class ConfigProviderService implements Service<ConfigProviderResolver> {
 
     @Override
     public ConfigProviderResolver getValue() throws IllegalStateException, IllegalArgumentException {
-        return WildFlyConfigProviderResolver.INSTANCE;
+        return SmallRyeConfigProviderResolver.INSTANCE;
     }
 }
