@@ -1,6 +1,6 @@
 # wildfly-microprofile-config
 
-[WildFly][wildfly]/[Thorntail][thorntail] Extension for [Eclipse MicroProfile Config][microprofile-config].
+[WildFly][wildfly]/[Thorntail][thorntail] Extension for [Eclipse MicroProfile Config][microprofile-config], based on the [SmallRye Config][smallrye-config] implementation.
 
 [![Build Status](https://ci.wildfly.org/app/rest/builds/buildType:(id:MicroProfileJsr_WildflyMicroprofileConfig_MpConfig1xBranch)/statusIcon)](https://ci.wildfly.org/viewType.html?buildTypeId=MicroProfileJsr_WildflyMicroprofileConfig_MpConfig1xBranch&guest=1)
 
@@ -106,3 +106,4 @@ BOOL_PROP property = true
 [wildfly]: https://wildlfy.org/
 [thorntail]: http://wildfly-swarm.io/
 [microprofile-config]: https://github.com/eclipse/microprofile-config/
+[smallrye-config]: https://github.com/smallrye/smallrye-config 
