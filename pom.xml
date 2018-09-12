@@ -34,7 +34,7 @@
 
     <properties>
         <version.eclipse.microprofile.config>1.3</version.eclipse.microprofile.config>
-        <version.smallrye>1.3.2</version.smallrye>
+        <version.smallrye>1.3.3</version.smallrye>
         <version.io.thorntail.config-api>1.4.0</version.io.thorntail.config-api>
         <version.javax.javaee-api>7.0</version.javax.javaee-api>
         <version.javax.enterprise.cdi-api>1.2</version.javax.enterprise.cdi-api>
