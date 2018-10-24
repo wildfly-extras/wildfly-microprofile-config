@@ -10,5 +10,6 @@
     <module name="org.eclipse.microprofile.config.api"/>
     <module name="javax.enterprise.api" />
     <module name="javax.annotation.api" />
+    <module name="org.jboss.logging" />
   </dependencies>
 </module>
