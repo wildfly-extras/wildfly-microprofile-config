@@ -45,7 +45,7 @@
         <version.org.jboss.logging>2.0.1.Final</version.org.jboss.logging>
         <version.org.jboss.weld>2.3.SP2</version.org.jboss.weld>
         <version.org.jboss.weld.core.impl>2.3.5.Final</version.org.jboss.weld.core.impl>
-        <version.org.wildfly>11.0.0.Final</version.org.wildfly>
+        <version.org.wildfly>18.0.0.Final</version.org.wildfly>
         <version.org.wildfly.core>3.0.8.Final</version.org.wildfly.core>
         <version.org.wildfly.arquillian>2.1.0.Final</version.org.wildfly.arquillian>
         <version.org.wildfly.plugins.maven>1.0.2.Final</version.org.wildfly.plugins.maven>
