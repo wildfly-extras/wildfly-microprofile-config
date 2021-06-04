@@ -51,7 +51,7 @@
         <version.org.wildfly.plugins.maven>1.0.2.Final</version.org.wildfly.plugins.maven>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.wildfly.build-tools>1.1.8.Final</version.org.wildfly.build-tools>
-        <version.org.apache.httpcomponents>4.5.2</version.org.apache.httpcomponents>
+        <version.org.apache.httpcomponents>4.5.13</version.org.apache.httpcomponents>
     </properties>
 
     <scm>
